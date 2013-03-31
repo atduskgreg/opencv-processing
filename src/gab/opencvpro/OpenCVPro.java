@@ -29,6 +29,11 @@
 
 package gab.opencvpro;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -51,12 +56,12 @@ import processing.core.*;
 public class OpenCVPro {
 	
 	// myParent is a reference to the parent sketch
-	PApplet myParent;
+	PApplet parent;
 
 	int myVariable = 0;
 	
 	public final static String VERSION = "##library.prettyVersion##";
-	
+	Mat buffer1;
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
@@ -68,15 +73,35 @@ public class OpenCVPro {
 	
     static{ System.loadLibrary("opencv_java244"); }
 	
-	public OpenCVPro(PApplet theParent) {
-		myParent = theParent;
+	public OpenCVPro(PApplet theParent, int width, int height) {
+		parent = theParent;
 		welcome();
 		System.out.println("Welcome to Java OpenCV " + Core.VERSION);
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		//Mat m  = Mat.eye(3, 3, CvType.CV_8UC1);
-        //System.out.println("m = " + m.dump());
+		
+		buffer1 = new Mat(height, width, CvType.CV_32S);
+		
 	}
 	
+	public void copy(PImage img){
+		BufferedImage image = (BufferedImage)img.getNative();
+		
+		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		buffer1.put(0, 0, pixels);
+	}
+	
+	public PImage toPImage(Mat mat){
+		PImage result = parent.createImage(mat.width(), mat.height(), PConstants.RGB);
+		result.loadPixels();
+		mat.get(0,0,result.pixels);
+		result.updatePixels();
+
+		return result;
+	}
+	
+	public PImage getBuffer(){
+		return toPImage(buffer1);
+	}
 	
 	private void welcome() {
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
