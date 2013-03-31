@@ -1,0 +1,46 @@
+How to install library ##library.name##
+
+
+Install with the "Add Library..." tool
+
+New for Processing 2.0: Add contributed libraries by selecting "Add Library..." 
+from the "Import Library..." submenu within the Sketch menu. Not all available 
+libraries have been converted to show up in this menu. If a library isn't there,
+it will need to be installed manually by following the instructions below.
+
+
+Manual Install
+
+Contributed libraries may be downloaded separately and manually placed within 
+the "libraries" folder of your Processing sketchbook. To find (and change) the 
+Processing sketchbook location on your computer, open the Preferences window 
+from the Processing application (PDE) and look for the "Sketchbook location" 
+item at the top.
+
+Copy the contributed library's folder into the "libraries" folder at this 
+location. You will need to create the "libraries" folder if this is your first 
+contributed library.
+
+By default the following locations are used for your sketchbook folder: 
+  For Mac users, the sketchbook folder is located inside ~/Documents/Processing. 
+  For Windows users, the sketchbook folder is located inside 
+    'My Documents'/Processing.
+
+The folder structure for library ##library.name## should be as follows:
+
+Processing
+  libraries
+    ##library.name##
+      examples
+      library
+        ##library.name##.jar
+      reference
+      src
+                      
+Some folders like "examples" or "src" might be missing. After library 
+##library.name## has been successfully installed, restart the Processing 
+application.
+
+
+If you're having trouble, have a look at the Processing Wiki for more 
+information: http://wiki.processing.org/w/How_to_Install_a_Contributed_Library

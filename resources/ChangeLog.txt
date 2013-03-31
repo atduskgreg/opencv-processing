@@ -1,0 +1,67 @@
+2012-10-05  Elie Zananiri
+      * version 0.4.8
+      * updated default classpath on OS X
+
+2012-02-16  Elie Zananiri
+      * version 0.4.7
+      * fixed up formatting to match new tool template
+
+2011-12-23  Elie Zananiri
+      * version 0.4.6
+      * changed the default Java compile version to 1.6
+      * added a "library.paragraph" to build.properties, used in the library.properties file
+      * added "library.sentence" and "library.paragraph" fields to index.html
+
+2011-11-17  Elie Zananiri
+      * version 0.4.5
+      * updated the library categories
+
+2011-11-10  Elie Zananiri
+      * version 0.4.4
+      * updated the build script to use the correct delimiter based on the OS when parsing source files
+
+2011-11-09  Elie Zananiri
+      * version 0.4.3
+      * removed the "-latest" suffix from the generated file names as it could lead to confusion when unzipping the library
+      * added the version number to the download link text to avoid confusion with the pretty version string
+      
+2011-11-07  Elie Zananiri
+      * version 0.4.2
+      * fixed some warnings in the Ant build script
+      
+2011-11-03  Elie Zananiri
+      * version 0.4.1
+      * added the library.properties file, used for the library engine in Processing 2.0
+      * added new fields to build.properties to fill in the library.properties file
+      * the script now generates two copies of the zip and properties file: one with the version number appended and another with "latest" appended (for the Processing 2.0 library engine)
+
+2010-05-07  Andreas Schlegel
+      * version 0.3.2
+      * build.xml: removing delete tag for bin folder, did cause issues with class referencing inside eclipse
+      * build.xml: for users using 0.3.1, comment out <delete dir="${project.bin}"/> inside target clean
+
+2010-05-01  Andreas Schlegel
+      * version 0.3.1
+      * the option to create a tool with the library template has been excluded. to create tools for processing see http://code.google.com/p/processing-tool-template
+      * build.properties and build.xml files have been adjusted accordingly
+      * modified: src, examples
+
+2010-04-25  Andreas Schlegel
+      * version 0.2.1
+      * build.xml: zip method adjusted, tested on osx 10.x and windows xp
+      * screencasts available for both library and tool, see wiki.
+      
+2010-04-12  Andreas Schlegel
+      * version 0.2.0
+      * the template now support both, processing libraries and tools
+      * added an install file for a library/tool distribution included in the .zip file.
+      * data: adding data folder, see README file for details
+      * lib: adding lib folder, see README file for details
+      * resources: excluding project related properties from build.xml, now located inside build.properties
+      * distribution: distributions are now archived with a version number
+      * bin: folder removed
+      * build.xml: ant build file has been mostly rewritten, now supports tool and library 
+      * build.properties: adding properties file for build.xml. please read comments inside build.properties.
+      * changeLog: adding ChangeLog file
+      
+     
