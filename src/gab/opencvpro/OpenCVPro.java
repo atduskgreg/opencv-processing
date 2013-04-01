@@ -30,6 +30,8 @@
 package gab.opencvpro;
 
 import java.awt.Image;
+import java.awt.Rectangle;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
@@ -37,7 +39,15 @@ import java.awt.image.DataBufferInt;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 
+import org.opencv.highgui.Highgui;
+import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.imgproc.Imgproc;
 
 import processing.core.*;
 
@@ -62,6 +72,11 @@ public class OpenCVPro {
 	
 	public final static String VERSION = "##library.prettyVersion##";
 	Mat buffer1;
+	Mat grayBuffer;
+	
+	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
+	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
+	CascadeClassifier faceDetector;
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
@@ -79,8 +94,20 @@ public class OpenCVPro {
 		System.out.println("Welcome to Java OpenCV " + Core.VERSION);
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		buffer1 = new Mat(height, width, CvType.CV_32S);
+		//CvType.makeType(CvType.CV_8U, 1);
 		
+		int rgbType = CvType.makeType(CvType.CV_32S, 4);
+		int grayType = CvType.makeType(CvType.CV_32S, 1);
+		
+		buffer1 = new Mat(height, width, rgbType); // this is probably not always right CvType.CV_32S
+		
+		
+		PApplet.println("buffer1 Mat type should be: " +  CvType.CV_32S);
+		PApplet.println("buffer1 Mat type calculated as: " +  rgbType);
+		PApplet.println("gray type: " +  grayType);
+		
+		grayBuffer = new Mat(height, width, CvType.CV_8U); // 1channel gray
+
 	}
 	
 	public void copy(PImage img){
@@ -90,8 +117,40 @@ public class OpenCVPro {
 		buffer1.put(0, 0, pixels);
 	}
 	
+	
+	public void loadCascade(String cascadeFileName){
+		PApplet.println(cascadeFileName);
+        faceDetector = new CascadeClassifier(cascadeFileName);   
+	}
+	
+	public Rectangle[] detect(){
+		MatOfRect faceDetections = new MatOfRect();
+		gray(buffer1);
+		faceDetector.detectMultiScale(grayBuffer, faceDetections);
+		
+		Rect[] detections = faceDetections.toArray(); 
+		Rectangle[] results = new Rectangle[detections.length];
+		for(int i = 0; i < detections.length; i++){
+			results[i] = new Rectangle(detections[i].x, detections[i].y, detections[i].width, detections[i].height);
+		}
+		
+		return results;
+	}
+	
+	public void gray(Mat src){
+		Imgproc.cvtColor(src, grayBuffer, Imgproc.COLOR_RGB2GRAY);
+	}
+	
+	// FIXME: This seems to cause a problem with toPImage()
+	//        where the Mat coming from imread()
+	//		  is not the right CvType
+	public void loadImage(String imgPath){
+		PApplet.println(imgPath);
+		buffer1 = Highgui.imread(imgPath);
+	}
+	
 	public PImage toPImage(Mat mat){
-		PImage result = parent.createImage(mat.width(), mat.height(), PConstants.RGB);
+		PImage result = parent.createImage(mat.width(), mat.height(), PConstants.ARGB);
 		result.loadPixels();
 		mat.get(0,0,result.pixels);
 		result.updatePixels();
