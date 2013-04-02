@@ -35,6 +35,9 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
+import java.io.File;
+
+import javax.print.DocFlavor.URL;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -97,16 +100,16 @@ public class OpenCVPro {
 		//CvType.makeType(CvType.CV_8U, 1);
 		
 		int rgbType = CvType.makeType(CvType.CV_32S, 4);
-		int grayType = CvType.makeType(CvType.CV_32S, 1);
+		int grayType = CvType.makeType(CvType.CV_8U, 1);
 		
-		buffer1 = new Mat(height, width, rgbType); // this is probably not always right CvType.CV_32S
+		//buffer1 = new Mat(height, width, rgbType); // this is probably not always right CvType.CV_32S
 		
 		
 		PApplet.println("buffer1 Mat type should be: " +  CvType.CV_32S);
 		PApplet.println("buffer1 Mat type calculated as: " +  rgbType);
 		PApplet.println("gray type: " +  grayType);
 		
-		grayBuffer = new Mat(height, width, CvType.CV_8U); // 1channel gray
+		//grayBuffer = new Mat(height, width, grayType); // 1channel gray
 
 	}
 	
@@ -117,10 +120,36 @@ public class OpenCVPro {
 		buffer1.put(0, 0, pixels);
 	}
 	
-	
+	// load a cascade xml file from the data folder
+	// NB: ant build scripts copy the data folder outside of the
+	// jar so that this will work.
 	public void loadCascade(String cascadeFileName){
-		PApplet.println(cascadeFileName);
-        faceDetector = new CascadeClassifier(cascadeFileName);   
+
+		// localize path to cascade file to point at the library's data folder
+		String relativePath = "/data/" + cascadeFileName;		
+		String cascadePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+		PApplet.println(cascadePath);
+
+		String[] parts = cascadePath.split("/");
+		
+		String correctPath = "";
+		for(int i = 0; i < parts.length-2; i++){
+			correctPath += "/" + parts[i];
+		}
+		
+		correctPath += relativePath;
+		
+		
+		PApplet.println(correctPath);
+		
+        faceDetector = new CascadeClassifier(correctPath);   
+		
+        
+        if(faceDetector.empty()){
+        	PApplet.println("Cascade failed to load");
+        } else {
+        	PApplet.println("Cascade loaded: " + cascadeFileName);
+        }
 	}
 	
 	public Rectangle[] detect(){
@@ -138,7 +167,9 @@ public class OpenCVPro {
 	}
 	
 	public void gray(Mat src){
-		Imgproc.cvtColor(src, grayBuffer, Imgproc.COLOR_RGB2GRAY);
+		Mat gray = new Mat(src.size(), CvType.makeType(src.depth(), 1));
+		//Mat tst = new Mat(src.height(), src.width(), CvType.makeType(CvType.CV_8U, 1));
+		Imgproc.cvtColor(src, gray, Imgproc.COLOR_RGB2GRAY);
 	}
 	
 	// FIXME: This seems to cause a problem with toPImage()
@@ -160,6 +191,10 @@ public class OpenCVPro {
 	
 	public PImage getBuffer(){
 		return toPImage(buffer1);
+	}
+	
+	public Mat getMat(){
+		return buffer1;
 	}
 	
 	private void welcome() {
