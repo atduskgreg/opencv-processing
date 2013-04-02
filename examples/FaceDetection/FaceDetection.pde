@@ -3,39 +3,38 @@ import java.awt.Rectangle;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Size;
 
 OpenCVPro opencv;
-
+Mat blurMat;
+PImage blurred;
 void setup() {
-  PImage src = loadImage("test.jpg");
-  size(src.width, src.height);
-  opencv = new OpenCVPro(this, src.width, src.height);
-  
-  println("32F: " + CvType.CV_32F + " CV_8UC3: " + CvType.CV_8UC3 + " 8u1: " + CvType.makeType(CvType.CV_8U, 1));
-  
-  //opencv.copy(src);
-  opencv.loadImage("test.jpg");
+  opencv = new OpenCVPro(this, "test.jpg");  
+  size(opencv.width, opencv.height);
+  //
 
-  Mat gray = new Mat(opencv.getMat().size(), CvType.makeType(opencv.getMat().depth(), opencv.getMat().channels()));
-  
-  println("gray type is: " + CvType.typeToString(gray.type()));
-  println("mat type is: " + CvType.typeToString(opencv.getMat().type()));
-  
-  
   //Imgproc.cvtColor(opencv.getMat(), gray, Imgproc.COLOR_RGB2RGBA);
   
-  
- opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);
+   //blurMat = new Mat(src.height, src.width,CvType.makeType(CvType.CV_32S, 3));
+   //Imgproc.blur(opencv.getMat(), blurMat, new Size(3,3));
+    //opencv.gray(opencv.getMat());
+   
+  // opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);
+   //blurred = opencv.toPImage(blurMat);
+ //  blurred = opencv.getGrayBuffer();
+   blurred = opencv.getGrayBuffer();
 }
-/*
+
 void draw() {
-  //image(opencv.getBuffer(), 0, 0);
-  Rectangle[] faces = opencv.detect();
-  
-  noFill();
-  stroke(255);
-  for(int i = 0; i < faces.length; i++){
-    rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
-  }
+  image(blurred, 0, 0);
+  //image(blurred, 0,0);
+//  image(opencv.getBuffer(), 0, 0);
+//  Rectangle[] faces = opencv.detect();
+//  
+//  noFill();
+//  stroke(255);
+//  for(int i = 0; i < faces.length; i++){
+//    rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
+//  }
 }
-*/
+

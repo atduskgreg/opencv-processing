@@ -29,15 +29,12 @@
 
 package gab.opencvpro;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 import java.io.File;
-
-import javax.print.DocFlavor.URL;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -48,7 +45,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
-import org.opencv.highgui.Highgui;
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
 
@@ -70,16 +66,21 @@ public class OpenCVPro {
 	
 	// myParent is a reference to the parent sketch
 	PApplet parent;
-
-	int myVariable = 0;
 	
-	public final static String VERSION = "##library.prettyVersion##";
+	public int width;
+	public int height;
+	
 	Mat buffer1;
 	Mat grayBuffer;
+	Mat workingRGB;
+	private PImage outputImage;
 	
+	CascadeClassifier classifier;
+
+	public final static String VERSION = "##library.prettyVersion##";
 	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
-	CascadeClassifier faceDetector;
+
 
 	/**
 	 * a Constructor, usually called in the setup() method in your sketch to
@@ -91,106 +92,189 @@ public class OpenCVPro {
 	
     static{ System.loadLibrary("opencv_java244"); }
 	
-	public OpenCVPro(PApplet theParent, int width, int height) {
-		parent = theParent;
+    
+    /**
+     * Initialize OpenCVPro with the path to an image.
+     * The image will be loaded and prepared for processing.
+     * 
+     * @param theParent - A PApplet representing the user sketch, i.e "this"
+     * @param pathToImg - A String with a path to the image to be loaded
+     */
+    public OpenCVPro(PApplet theParent, String pathToImg){
+    	parent = theParent;
+    	init();
+    	loadImage(pathToImg);
+    	setupWorkingImages();
+    }
+    
+    /**
+     * Initialize OpenCVPro with an image.
+     * The image's pixels will be copied and prepared for processing.
+     * 
+     * @param theParent
+     * 			A PApplet representing the user sketch, i.e "this"
+     * @param img
+     * 			A PImage to be loaded
+     */
+    public OpenCVPro(PApplet theParent, PImage img){
+    	parent = theParent;
+    	width = img.width;
+    	height = img.height;
+    	init();
+    	buffer1 = toMat(img);
+    	setupWorkingImages();
+    }
+    
+    private void init(){
 		welcome();
-		System.out.println("Welcome to Java OpenCV " + Core.VERSION);
-        //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
-		//CvType.makeType(CvType.CV_8U, 1);
-		
-		int rgbType = CvType.makeType(CvType.CV_32S, 4);
+		int rgbType = CvType.makeType(CvType.CV_32S, 3); // this is probably not always right
 		int grayType = CvType.makeType(CvType.CV_8U, 1);
 		
-		//buffer1 = new Mat(height, width, rgbType); // this is probably not always right CvType.CV_32S
-		
-		
-		PApplet.println("buffer1 Mat type should be: " +  CvType.CV_32S);
-		PApplet.println("buffer1 Mat type calculated as: " +  rgbType);
-		PApplet.println("gray type: " +  grayType);
-		
-		//grayBuffer = new Mat(height, width, grayType); // 1channel gray
-
+		buffer1 = new Mat(height, width, rgbType); 		
+		workingRGB = new Mat(height, width, rgbType); 		
+		grayBuffer = new Mat(height, width, grayType);
+    }
+    
+    private void setupWorkingImages(){
+		outputImage = parent.createImage(width,height, PConstants.RGB);
+    }
+    
+    /**
+     * Initialize OpenCVPro with a width and height.
+     * You will need to load an image in before processing.
+     * See copy(PImage img).
+     * 
+     * @param theParent
+     * 			A PApplet representing the user sketch, i.e "this"
+     * @param width
+     * 			int
+     * @param height
+     * 			int
+     */
+	public OpenCVPro(PApplet theParent, int width, int height) {
+		parent = theParent;
+		this.width = width;
+		this.height = height;
+		init();
+		setupWorkingImages();
 	}
 	
+	/**
+	 * Copy the pixel data from a PImage
+	 * into OpenCVPro for further processing.
+	 * 
+	 * @param img 
+	 */
 	public void copy(PImage img){
 		BufferedImage image = (BufferedImage)img.getNative();
-		
 		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		buffer1.put(0, 0, pixels);
 	}
 	
-	// load a cascade xml file from the data folder
-	// NB: ant build scripts copy the data folder outside of the
-	// jar so that this will work.
+	/**
+	 * load a cascade xml file from the data folder
+	 * NB: ant build scripts copy the data folder outside of the
+	 * jar so that this will work.
+	 * 
+	 * @param cascadeFileName
+	*/
 	public void loadCascade(String cascadeFileName){
 
 		// localize path to cascade file to point at the library's data folder
-		String relativePath = "/data/" + cascadeFileName;		
-		String cascadePath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-		PApplet.println(cascadePath);
+		String relativePath = "data/" + cascadeFileName;		
+		String jarPath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 
-		String[] parts = cascadePath.split("/");
+		String[] parts = jarPath.split("/");
 		
-		String correctPath = "";
+		String cascadePath = "";
 		for(int i = 0; i < parts.length-2; i++){
-			correctPath += "/" + parts[i];
+			cascadePath += parts[i] + "/";
 		}
+		cascadePath += relativePath;
 		
-		correctPath += relativePath;
-		
-		
-		PApplet.println(correctPath);
-		
-        faceDetector = new CascadeClassifier(correctPath);   
-		
+		classifier = new CascadeClassifier(cascadePath);   
         
-        if(faceDetector.empty()){
-        	PApplet.println("Cascade failed to load");
+        if(classifier.empty()){
+        	PApplet.println("Cascade failed to load"); // raise exception here?
         } else {
         	PApplet.println("Cascade loaded: " + cascadeFileName);
         }
 	}
 	
 	public Rectangle[] detect(){
-		MatOfRect faceDetections = new MatOfRect();
+		MatOfRect detections = new MatOfRect();
 		gray(buffer1);
-		faceDetector.detectMultiScale(grayBuffer, faceDetections);
+		classifier.detectMultiScale(grayBuffer, detections);
 		
-		Rect[] detections = faceDetections.toArray(); 
-		Rectangle[] results = new Rectangle[detections.length];
-		for(int i = 0; i < detections.length; i++){
-			results[i] = new Rectangle(detections[i].x, detections[i].y, detections[i].width, detections[i].height);
+		Rect[] rects = detections.toArray(); 
+		Rectangle[] results = new Rectangle[rects.length];
+		for(int i = 0; i < rects.length; i++){
+			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
 		}
 		
 		return results;
 	}
 	
+	public void gray(){
+		gray(buffer1);
+	}
+	
 	public void gray(Mat src){
-		Mat gray = new Mat(src.size(), CvType.makeType(src.depth(), 1));
-		//Mat tst = new Mat(src.height(), src.width(), CvType.makeType(CvType.CV_8U, 1));
-		Imgproc.cvtColor(src, gray, Imgproc.COLOR_RGB2GRAY);
+		Mat floatBuffer = new Mat(src.height(), src.width(), CvType.CV_32F);
+		src.convertTo(floatBuffer, CvType.CV_32F);
+		Imgproc.cvtColor(floatBuffer, grayBuffer, Imgproc.COLOR_RGB2GRAY);
 	}
 	
-	// FIXME: This seems to cause a problem with toPImage()
-	//        where the Mat coming from imread()
-	//		  is not the right CvType
+	/**
+	 * Load an image from a path to 
+	 * 
+	 * @param imgPath
+	 * 			String with the path to the image
+	 */
 	public void loadImage(String imgPath){
-		PApplet.println(imgPath);
-		buffer1 = Highgui.imread(imgPath);
+		PImage img = parent.loadImage(imgPath);
+		width = img.width;
+		height = img.height;
+		buffer1 = toMat(img);
 	}
 	
-	public PImage toPImage(Mat mat){
-		PImage result = parent.createImage(mat.width(), mat.height(), PConstants.ARGB);
-		result.loadPixels();
-		mat.get(0,0,result.pixels);
-		result.updatePixels();
-
+	public Mat toMat(PImage img){
+		Mat result = new Mat(img.height, img.width, buffer1.type());
+		BufferedImage image = (BufferedImage)img.getNative();
+		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		result.put(0, 0, pixels);	
 		return result;
+	}
+	
+	/**
+	 * Convert an OpenCV Mat object into a PImage
+	 * to be used in other Processing code.
+	 * Copies the Mat's pixel data into the PImage's pixel array.
+	 * 
+	 * (Mainly used internally by OpenCVPro. Inspired by toCv()
+	 * from KyleMcDonald's ofxCv.)
+	 * 
+	 * @param mat
+	 * 			an OpenCV Mat
+	 * @return 
+	 * 			a PImage created from the given Mat
+	 */
+	public PImage toPImage(Mat mat){		
+		mat.convertTo(workingRGB, buffer1.type());
+		outputImage.loadPixels();
+		workingRGB.get(0,0, outputImage.pixels);
+		outputImage.updatePixels();
+
+		return outputImage;
 	}
 	
 	public PImage getBuffer(){
 		return toPImage(buffer1);
+	}
+	
+	public PImage getGrayBuffer(){
+		return toPImage(grayBuffer);
 	}
 	
 	public Mat getMat(){
@@ -199,12 +283,10 @@ public class OpenCVPro {
 	
 	private void welcome() {
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+		System.out.println("Using Java OpenCV " + Core.VERSION);
+
 	}
 	
-	
-	public String sayHello() {
-		return "hello library.";
-	}
 	/**
 	 * return the version of the library.
 	 * 
@@ -212,25 +294,6 @@ public class OpenCVPro {
 	 */
 	public static String version() {
 		return VERSION;
-	}
-
-	/**
-	 * 
-	 * @param theA
-	 *          the width of test
-	 * @param theB
-	 *          the height of test
-	 */
-	public void setVariable(int theA, int theB) {
-		myVariable = theA + theB;
-	}
-
-	/**
-	 * 
-	 * @return int
-	 */
-	public int getVariable() {
-		return myVariable;
 	}
 }
 
