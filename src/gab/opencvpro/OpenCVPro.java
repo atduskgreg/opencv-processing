@@ -32,18 +32,14 @@ package gab.opencvpro;
 import java.awt.Rectangle;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
-import java.io.File;
+import java.util.ArrayList;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
@@ -70,10 +66,13 @@ public class OpenCVPro {
 	public int width;
 	public int height;
 	
-	Mat buffer1;
-	Mat grayBuffer;
-	Mat workingRGB;
+	public Mat bufferBGRA;
+	public Mat bufferR, bufferG, bufferB, bufferA;
+	public Mat bufferGray;
+	public Mat pImageMat;
+	
 	private PImage outputImage;
+	private PImage inputImage;
 	
 	CascadeClassifier classifier;
 
@@ -102,9 +101,9 @@ public class OpenCVPro {
      */
     public OpenCVPro(PApplet theParent, String pathToImg){
     	parent = theParent;
-    	init();
-    	loadImage(pathToImg);
-    	setupWorkingImages();
+    	PImage imageToLoad = parent.loadImage(pathToImg);
+    	init(imageToLoad.width, imageToLoad.height);
+    	loadImage(imageToLoad);
     }
     
     /**
@@ -118,27 +117,10 @@ public class OpenCVPro {
      */
     public OpenCVPro(PApplet theParent, PImage img){
     	parent = theParent;
-    	width = img.width;
-    	height = img.height;
-    	init();
-    	buffer1 = toMat(img);
-    	setupWorkingImages();
+    	init(img.width, img.height);
+    	loadImage(img);
     }
     
-    private void init(){
-		welcome();
-		
-		int rgbType = CvType.makeType(CvType.CV_32S, 3); // this is probably not always right
-		int grayType = CvType.makeType(CvType.CV_8U, 1);
-		
-		buffer1 = new Mat(height, width, rgbType); 		
-		workingRGB = new Mat(height, width, rgbType); 		
-		grayBuffer = new Mat(height, width, grayType);
-    }
-    
-    private void setupWorkingImages(){
-		outputImage = parent.createImage(width,height, PConstants.RGB);
-    }
     
     /**
      * Initialize OpenCVPro with a width and height.
@@ -154,23 +136,35 @@ public class OpenCVPro {
      */
 	public OpenCVPro(PApplet theParent, int width, int height) {
 		parent = theParent;
-		this.width = width;
-		this.height = height;
-		init();
+		init(width, height);
+	}
+    
+    private void init(int w, int h){
+    	width = w;
+    	height = h;
+		welcome();
 		setupWorkingImages();
-	}
+
+		
+		PApplet.println("init buffers at: " + width+"x"+height);
+		
+		bufferR = new Mat(height, width, CvType.CV_8UC1);
+		bufferG = new Mat(height, width, CvType.CV_8UC1);
+		bufferB = new Mat(height, width, CvType.CV_8UC1);
+		bufferA = new Mat(height, width, CvType.CV_8UC1);
+		bufferGray = new Mat(height, width, CvType.CV_8UC1);
+		
+		pImageMat = new Mat(height, width, CvType.CV_32SC1);
+		
+		bufferBGRA = new Mat(height, width, CvType.CV_8UC4);
+		
+    }
+    
+    private void setupWorkingImages(){
+		outputImage = parent.createImage(width,height, PConstants.ARGB);
+    }
+
 	
-	/**
-	 * Copy the pixel data from a PImage
-	 * into OpenCVPro for further processing.
-	 * 
-	 * @param img 
-	 */
-	public void copy(PImage img){
-		BufferedImage image = (BufferedImage)img.getNative();
-		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		buffer1.put(0, 0, pixels);
-	}
 	
 	/**
 	 * load a cascade xml file from the data folder
@@ -204,10 +198,13 @@ public class OpenCVPro {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		gray(buffer1);
-		classifier.detectMultiScale(grayBuffer, detections);
+		bufferGray = gray(bufferBGRA);
+		PApplet.println("bufferGray: " + matToS(bufferGray));
+		classifier.detectMultiScale(bufferGray, detections);
 		
 		Rect[] rects = detections.toArray(); 
+		PApplet.println("numRects: " + rects.length);
+
 		Rectangle[] results = new Rectangle[rects.length];
 		for(int i = 0; i < rects.length; i++){
 			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
@@ -216,41 +213,87 @@ public class OpenCVPro {
 		return results;
 	}
 	
-	public void gray(){
-		gray(buffer1);
-	}
-	
-	public void gray(Mat src){
-		Mat floatBuffer = new Mat(src.height(), src.width(), CvType.CV_32F);
-		src.convertTo(floatBuffer, CvType.CV_32F);
-		Imgproc.cvtColor(floatBuffer, grayBuffer, Imgproc.COLOR_RGB2GRAY);
-	}
 	
 	/**
-	 * Load an image from a path to 
+	 * 
+	 * @param src
+	 * 		A Mat of type 8UC4 with channels arranged as BGRA.
+	 * @return
+	 * 		A Mat of type 8UC1 in grayscale.
+	 */
+	public Mat gray(Mat src){
+		
+		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC1);
+		Imgproc.cvtColor(src, result, Imgproc.COLOR_BGRA2GRAY);
+			
+		return result;
+	}
+	
+
+	/**
+	 * Load an image from a path.
 	 * 
 	 * @param imgPath
 	 * 			String with the path to the image
 	 */
 	public void loadImage(String imgPath){
-		PImage img = parent.loadImage(imgPath);
-		width = img.width;
-		height = img.height;
-		buffer1 = toMat(img);
+		// FIXME: is there a better way to hold onto
+		// 			this?
+		inputImage = parent.loadImage(imgPath);
+		loadImage(inputImage);
 	}
 	
-	public Mat toMat(PImage img){
-		Mat result = new Mat(img.height, img.width, buffer1.type());
+	public void loadImage(PImage img){
+
 		BufferedImage image = (BufferedImage)img.getNative();
-		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		result.put(0, 0, pixels);	
-		return result;
+		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		pImageMat.put(0,0, matPixels);
+		
+		PApplet.println(width+"x"+height);
+		
+		// FIXME: maybe these should not get re-allocated?
+		//		  (hopefully we're doing this at most once per-frame)
+		//		  (and even more hopefully, this code won't be around long)
+		byte[] rPix = new byte[getSize()];
+		byte[] gPix = new byte[getSize()];
+		byte[] bPix = new byte[getSize()];
+		byte[] aPix = new byte[getSize()];
+		
+		for (int i = 0; i < getSize(); i++) {
+			rPix[i] = (byte)((matPixels[i] >> 16) & 0xFF);
+			gPix[i] = (byte)((matPixels[i] >> 8) & 0xFF);
+			bPix[i] = (byte)((matPixels[i] >> 0) & 0xFF);
+			aPix[i] = (byte)((matPixels[i] >> 24) & 0xFF);
+		}
+				
+		bufferR.put(0,0,rPix);
+		bufferG.put(0,0,gPix);
+		bufferB.put(0,0,bPix);
+		bufferA.put(0,0,aPix);	
+		
+		PApplet.println("merginging channels");
+		ArrayList<Mat> channels = new ArrayList<Mat>();
+		channels.add(bufferB);
+		channels.add(bufferG);
+		channels.add(bufferR);
+		channels.add(bufferA);
+		
+		Core.merge(channels, bufferBGRA);	
 	}
+	
+
+	
+	
+	public int getSize(){
+		return width * height;
+	}
+	
 	
 	/**
 	 * Convert an OpenCV Mat object into a PImage
 	 * to be used in other Processing code.
 	 * Copies the Mat's pixel data into the PImage's pixel array.
+	 * Iterates over each pixel in the Mat, i.e. expensive.
 	 * 
 	 * (Mainly used internally by OpenCVPro. Inspired by toCv()
 	 * from KyleMcDonald's ofxCv.)
@@ -260,25 +303,65 @@ public class OpenCVPro {
 	 * @return 
 	 * 			a PImage created from the given Mat
 	 */
-	public PImage toPImage(Mat mat){		
-		mat.convertTo(workingRGB, buffer1.type());
-		outputImage.loadPixels();
-		workingRGB.get(0,0, outputImage.pixels);
-		outputImage.updatePixels();
-
+	public void toPImage(Mat m, PImage img){
+		  
+		  PApplet.println("mat to convert: " + matToS(m));
+		  img.loadPixels();
+		  
+		  if(m.channels() == 3){
+			  byte[] matPixels = new byte[width*height*3];
+			  m.get(0,0, matPixels);
+			  for(int i = 0; i < m.width()*m.height()*3; i+=3){
+				  img.pixels[PApplet.floor(i/3)] = parent.color(matPixels[i+2]&0xFF, matPixels[i+1]&0xFF, matPixels[i]&0xFF);
+			  }
+		  } else if(m.channels() == 1){
+			  PApplet.println("goddman muthafucking 1 channel");
+			  byte[] matPixels = new byte[width*height];
+			  m.get(0,0, matPixels);
+		      for(int i = 0; i < m.width()*m.height(); i++){
+		    	  img.pixels[i] = parent.color(matPixels[i]&0xFF);
+		      }
+		  } else if(m.channels() == 4){
+			  byte[] matPixels = new byte[width*height*4];
+			  m.get(0,0, matPixels);
+			  for(int i = 0; i < m.width()*m.height()*4; i+=4){
+				  img.pixels[PApplet.floor(i/4)] = parent.color(matPixels[i+2]&0xFF, matPixels[i+1]&0xFF, matPixels[i]&0xFF, matPixels[i+3]&0xFF);
+			  }
+		  }
+		  
+		  img.updatePixels();
+	}
+	
+	public String matToS(Mat mat){
+		return CvType.typeToString(mat.type());
+	}
+	
+	public PImage getImage(){
+		toPImage(bufferBGRA, outputImage);
 		return outputImage;
 	}
 	
-	public PImage getBuffer(){
-		return toPImage(buffer1);
+	public Mat getBufferR(){
+		return bufferR;
 	}
 	
-	public PImage getGrayBuffer(){
-		return toPImage(grayBuffer);
+	public Mat getBufferG(){
+		return bufferG;
+	}
+	public Mat getBufferB(){
+		return bufferB;
 	}
 	
-	public Mat getMat(){
-		return buffer1;
+	public Mat getBufferA(){
+		return bufferA;
+	}
+	
+	public Mat getBufferGray(){
+		return bufferGray;
+	}
+	
+	public Mat getColorBuffer(){
+		return bufferBGRA;
 	}
 	
 	private void welcome() {

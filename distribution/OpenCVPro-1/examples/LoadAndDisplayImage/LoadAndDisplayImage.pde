@@ -1,14 +1,14 @@
 import gab.opencvpro.*;
 
 OpenCVPro opencv;
-
+PImage  img;
 void setup() {
-  PImage src = loadImage("test.png");
-  size(src.width, src.height);
-  opencv = new OpenCVPro(this, src.width, src.height);
-  opencv.copy(src);
+  opencv = new OpenCVPro(this, "test.jpg");
+  size(opencv.width, opencv.height);
+
+  img = opencv.getImage();
 }
 
 void draw() {
-  image(opencv.getBuffer(), 0, 0);
+  image(img, 0, 0);
 }

@@ -1,43 +1,34 @@
 import gab.opencvpro.*;
 import java.awt.Rectangle;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Size;
+import java.awt.List;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+
 
 OpenCVPro opencv;
-Mat blurMat;
-PImage blurred;
+PImage img, gray;
 void setup() {
-  PImage src = loadImage("test.jpg");
-  size(src.width, src.height);
-  opencv = new OpenCVPro(this, src.width, src.height);  
-  opencv.copy(src);
-  //opencv.loadImage(dataPath("test.jpg"));
+  opencv = new OpenCVPro(this, "test.jpg");
+  size(opencv.width, opencv.height);
 
-  //Imgproc.cvtColor(opencv.getMat(), gray, Imgproc.COLOR_RGB2RGBA);
+  opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);  
+  img = opencv.getImage();
+
+  gray = createImage(img.width, img.height, RGB); 
   
-   //blurMat = new Mat(src.height, src.width,CvType.makeType(CvType.CV_32S, 3));
-   //Imgproc.blur(opencv.getMat(), blurMat, new Size(3,3));
-  // opencv.gray(opencv.getMat());
-   
-   //opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);
-   //blurred = opencv.toPImage(blurMat);
- //  blurred = opencv.getGrayBuffer();
- blurred = opencv.getBuffer();
+  Mat grayscale = opencv.gray(opencv.getColorBuffer());
+
+  opencv.toPImage(grayscale, gray);
+
 }
 
 void draw() {
-  scale(0.5,0.5);
-  image(blurred, 0, 0);
-  //image(blurred, 0,0);
-//  image(opencv.getBuffer(), 0, 0);
-//  Rectangle[] faces = opencv.detect();
-//  
-//  noFill();
-//  stroke(255);
-//  for(int i = 0; i < faces.length; i++){
-//    rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);
-//  }
+  scale(0.5, 0.5);
+  image(img, 0, 0);
+  image(gray, img.width, 0);
 }
 
