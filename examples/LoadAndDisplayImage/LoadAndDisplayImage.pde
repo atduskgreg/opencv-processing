@@ -6,7 +6,7 @@ void setup() {
   opencv = new OpenCVPro(this, "test.jpg");
   size(opencv.width, opencv.height);
 
-  img = opencv.getImage();
+  img = opencv.getInputImage();
 }
 
 void draw() {

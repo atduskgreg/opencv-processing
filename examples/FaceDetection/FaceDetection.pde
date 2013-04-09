@@ -10,7 +10,7 @@ void setup() {
   opencv = new OpenCVPro(this, "test.jpg");
   size(opencv.width, opencv.height);
 
-  img = opencv.getImage();
+  img = opencv.getInputImage();
 
   opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);  
   faces = opencv.detect();

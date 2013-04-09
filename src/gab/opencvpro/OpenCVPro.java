@@ -213,6 +213,51 @@ public class OpenCVPro {
 		return results;
 	}
 	
+
+	
+	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
+		Mat result = new Mat(src.height(), src.width(), src.type());
+		Imgproc.Canny(src, result, lowThreshold, highThreshold);
+		return result;
+	}
+	
+	public PImage findCannyEdges(int lowThreshold, int highThreshold){
+		bufferGray = findCannyEdges(bufferBGRA, lowThreshold, highThreshold);
+		toPImage(bufferGray, outputImage);
+		return outputImage;
+	}
+	
+	
+	public Mat findSobelEdges(Mat src, int dx, int dy){
+		Mat result = new Mat(src.height(), src.width(), src.type());
+		Imgproc.Sobel(src, result, -1, dx, dy); // -1 depth = use source CvType
+		return result;
+	}
+	
+	public PImage findSobelEdges(int dx, int dy){
+		bufferGray = findSobelEdges(bufferBGRA, dx, dy);
+		toPImage(bufferGray, outputImage);
+		return outputImage;
+	}
+	
+	public Mat findScharr(Mat src, int dx, int dy){
+		Mat dst = new Mat(src.height(), src.width(), src.type());
+		Imgproc.Scharr(src, dst, -1, dx, dy);
+		return dst;
+	}
+	
+	public PImage findScharrX(){
+		Mat dst = findScharr(bufferBGRA,1, 0);
+		toPImage(dst, outputImage);
+		return outputImage;
+	}
+	
+	public PImage findScharrY(){
+		bufferGray = findScharr(bufferBGRA,0,1);
+		toPImage(bufferGray, outputImage);
+		return outputImage;
+	}
+	
 	
 	/**
 	 * 
@@ -237,14 +282,14 @@ public class OpenCVPro {
 	 * 			String with the path to the image
 	 */
 	public void loadImage(String imgPath){
-		// FIXME: is there a better way to hold onto
-		// 			this?
-		inputImage = parent.loadImage(imgPath);
-		loadImage(inputImage);
+		loadImage(parent.loadImage(imgPath));
 	}
 	
 	public void loadImage(PImage img){
-
+		// FIXME: is there a better way to hold onto
+		// 			this?
+		inputImage = img;
+		
 		BufferedImage image = (BufferedImage)img.getNative();
 		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		pImageMat.put(0,0, matPixels);
@@ -315,7 +360,6 @@ public class OpenCVPro {
 				  img.pixels[PApplet.floor(i/3)] = parent.color(matPixels[i+2]&0xFF, matPixels[i+1]&0xFF, matPixels[i]&0xFF);
 			  }
 		  } else if(m.channels() == 1){
-			  PApplet.println("goddman muthafucking 1 channel");
 			  byte[] matPixels = new byte[width*height];
 			  m.get(0,0, matPixels);
 		      for(int i = 0; i < m.width()*m.height(); i++){
@@ -336,9 +380,13 @@ public class OpenCVPro {
 		return CvType.typeToString(mat.type());
 	}
 	
-	public PImage getImage(){
+	public PImage getOutputImage(){
 		toPImage(bufferBGRA, outputImage);
 		return outputImage;
+	}
+	
+	public PImage getInputImage(){
+		return inputImage;
 	}
 	
 	public Mat getBufferR(){
@@ -367,7 +415,6 @@ public class OpenCVPro {
 	private void welcome() {
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
 		System.out.println("Using Java OpenCV " + Core.VERSION);
-
 	}
 	
 	/**
