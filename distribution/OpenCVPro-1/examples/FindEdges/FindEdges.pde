@@ -1,48 +1,48 @@
 import gab.opencvpro.*;
-import java.awt.Rectangle;
-import org.opencv.core.Mat;
-import org.opencv.core.CvType;
 
-import org.opencv.imgproc.Imgproc;
-
-OpenCVPro cannyFilter, sobelFilter;
-
-PImage src, canny, sobel;
+OpenCVPro cannyFilter, scharrFilter, sobelFilter;
+PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
+  size(src.width, src.height);
+
   cannyFilter = new OpenCVPro(this, src);
+  scharrFilter = new OpenCVPro(this, src);
   sobelFilter = new OpenCVPro(this, src);
 
-  size(cannyFilter.width, cannyFilter.height);
 
-  
-  //sobel = createImage(src.width, src.height, RGB);
-  //sobel = sobelFilter.findSobelEdges(2,2);
-  sobel = sobelFilter.findScharrX();
-  canny = cannyFilter.findCannyEdges(20, 75);
-  
- // Mat src = sobelFilter.getColorBuffer();
- // Mat dst = new Mat(src.height(), src.width(), src.type());
-//  
- // Imgproc.Sobel(src, dst, -1, 1, 1); 
- 
- //Imgproc.Scharr(src, dst, -1, 1, 0);
- 
-//  
-  //sobelFilter.toPImage(dst, sobel);
-  
-  //opencv.toPImage(opencv.findSobelEdges(20, 75), canny);
+  cannyFilter.findCannyEdges(20, 75);
+  scharrFilter.findScharrX();
+  sobelFilter.findSobelEdges(1,0);
 
-  noFill();
-  stroke(0, 255, 0);
-  strokeWeight(3);
+  canny = cannyFilter.getOutputImage();
+
+  // FIXME: need a better API for getting the gray image...
+  sobel = createImage(src.width, src.height, RGB);
+  sobelFilter.toPImage(sobelFilter.getBufferGray(), sobel);
+
+  // FIXME: Why doesn't this work?
+  // scharr = scharrFilter.getOutputImage();
+  scharr = createImage(src.width, src.height, RGB);
+  scharrFilter.toPImage(scharrFilter.getBufferColor(), scharr);
 }
 
+
 void draw() {
+
+  pushMatrix();
   scale(0.5);
   image(src, 0, 0);
-  image(canny,src.width,0);
-  image(sobel,src.width, src.height);
+  image(canny, src.width, 0);
+  image(scharr, 0, src.height);
+  image(sobel, src.width, src.height);
+
+  popMatrix();
+
+  text("Source", 10, 25); 
+  text("Canny", src.width/2 + 10, 25); 
+  text("Scharr", 10, src.height/2 + 25); 
+  text("Sobel", src.width/2 + 10, src.height/2 + 25);
 }
 

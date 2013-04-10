@@ -213,6 +213,11 @@ public class OpenCVPro {
 		return results;
 	}
 	
+	
+	public void threshold(int threshold){
+		gray();
+		Imgproc.threshold(bufferGray, bufferGray, 80, 255, Imgproc.THRESH_BINARY); 
+	}
 
 	
 	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
@@ -221,23 +226,28 @@ public class OpenCVPro {
 		return result;
 	}
 	
-	public PImage findCannyEdges(int lowThreshold, int highThreshold){
-		bufferGray = findCannyEdges(bufferBGRA, lowThreshold, highThreshold);
-		toPImage(bufferGray, outputImage);
-		return outputImage;
+	public void findCannyEdges(int lowThreshold, int highThreshold){
+		bufferBGRA = findCannyEdges(bufferBGRA, lowThreshold, highThreshold);
 	}
 	
 	
 	public Mat findSobelEdges(Mat src, int dx, int dy){
-		Mat result = new Mat(src.height(), src.width(), src.type());
-		Imgproc.Sobel(src, result, -1, dx, dy); // -1 depth = use source CvType
+		Mat sobeled = new Mat(src.height(), src.width(), CvType.CV_32F);
+		
+		Imgproc.Sobel(src, sobeled, CvType.CV_32F, 1, 0);
+
+		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC4);
+		sobeled.convertTo(result, result.type());
+		
+		//Imgproc.Sobel(src, result, -1, dx, dy); // -1 depth = use source CvType
+		//Imgproc.Canny(src, result, 20, 100);	
+
 		return result;
 	}
 	
-	public PImage findSobelEdges(int dx, int dy){
-		bufferGray = findSobelEdges(bufferBGRA, dx, dy);
-		toPImage(bufferGray, outputImage);
-		return outputImage;
+	public void findSobelEdges(int dx, int dy){
+		gray();
+		bufferGray = findSobelEdges(bufferGray, dx, dy);
 	}
 	
 	public Mat findScharr(Mat src, int dx, int dy){
@@ -246,16 +256,14 @@ public class OpenCVPro {
 		return dst;
 	}
 	
-	public PImage findScharrX(){
-		Mat dst = findScharr(bufferBGRA,1, 0);
-		toPImage(dst, outputImage);
-		return outputImage;
+	public void findScharrX(){
+		//Mat dst = new Mat(bufferBGRA.height(), bufferBGRA.width(), bufferBGRA.type());
+		Imgproc.Scharr(bufferBGRA, bufferBGRA, -1, 1, 0);
+		//bufferBGRA = findScharr(bufferBGRA,1,0);
 	}
 	
-	public PImage findScharrY(){
-		bufferGray = findScharr(bufferBGRA,0,1);
-		toPImage(bufferGray, outputImage);
-		return outputImage;
+	public void findScharrY(){
+		bufferBGRA = findScharr(bufferBGRA,0,1);
 	}
 	
 	
@@ -267,11 +275,14 @@ public class OpenCVPro {
 	 * 		A Mat of type 8UC1 in grayscale.
 	 */
 	public Mat gray(Mat src){
-		
 		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC1);
 		Imgproc.cvtColor(src, result, Imgproc.COLOR_BGRA2GRAY);
 			
 		return result;
+	}
+	
+	public void gray(){
+		bufferGray = gray(bufferBGRA);
 	}
 	
 
@@ -325,8 +336,6 @@ public class OpenCVPro {
 		
 		Core.merge(channels, bufferBGRA);	
 	}
-	
-
 	
 	
 	public int getSize(){
@@ -408,7 +417,7 @@ public class OpenCVPro {
 		return bufferGray;
 	}
 	
-	public Mat getColorBuffer(){
+	public Mat getBufferColor(){
 		return bufferBGRA;
 	}
 	
