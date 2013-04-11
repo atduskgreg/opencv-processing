@@ -214,6 +214,15 @@ public class OpenCVPro {
 		return results;
 	}
 	
+	public static Mat imitate(Mat m){
+		return new Mat(m.height(), m.width(), m.type());
+	}
+	
+	public static void diff(Mat mat1, Mat mat2){
+		Mat dst = imitate(mat1);
+		Core.absdiff(mat1, mat2, dst);
+		dst.assignTo(mat1);
+	}
 	
 	public void threshold(int threshold){
 		gray();

@@ -1,8 +1,4 @@
 import gab.opencvpro.*;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.core.CvType;
-import org.opencv.core.Size;
 
 OpenCVPro thresholdFilter, blurFilter;
 PImage  img, thresh, blur;
@@ -15,23 +11,14 @@ void setup() {
   thresholdFilter.threshold(80);
   blurFilter.blur(12);
 
+  // FIXME: We need a better way to get the gray image automatically 
+  //        from getOutputImage() when the processing needed it (or maybe always)
   thresh = createImage(thresholdFilter.width, thresholdFilter.height, RGB);
   thresholdFilter.toPImage(thresholdFilter.getBufferGray(), thresh);
-  
-  
-  
+    
   blur = createImage(blurFilter.width, thresholdFilter.height, RGB);
-  blurFilter.toPImage(blurFilter.getBufferGray, blur);
-  
-//  blurFilter.gray();
-//  Mat gray = blurFilter.getBufferGray();
-//  
-//  Mat dst = new Mat(gray.height(), gray.width(), gray.type());
-//  
-//  Imgproc.blur(gray, dst, new Size((double)12, (double)12));
-//  
-//  blurFilter.toPImage(dst, blur);
-//  
+  blurFilter.toPImage(blurFilter.getBufferGray(), blur);
+
   img = thresholdFilter.getInputImage();
 }
 
