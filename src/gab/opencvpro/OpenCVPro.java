@@ -40,6 +40,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
 
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
@@ -219,6 +220,10 @@ public class OpenCVPro {
 		Imgproc.threshold(bufferGray, bufferGray, 80, 255, Imgproc.THRESH_BINARY); 
 	}
 
+	public void blur(int blurSize){
+		gray();
+		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 
+	}
 	
 	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
 		Mat result = new Mat(src.height(), src.width(), src.type());
@@ -238,9 +243,6 @@ public class OpenCVPro {
 
 		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC4);
 		sobeled.convertTo(result, result.type());
-		
-		//Imgproc.Sobel(src, result, -1, dx, dy); // -1 depth = use source CvType
-		//Imgproc.Canny(src, result, 20, 100);	
 
 		return result;
 	}
