@@ -226,7 +226,7 @@ public class OpenCVPro {
 	
 	public void threshold(int threshold){
 		gray();
-		Imgproc.threshold(bufferGray, bufferGray, 80, 255, Imgproc.THRESH_BINARY); 
+		Imgproc.threshold(bufferGray, bufferGray, threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void blur(int blurSize){
