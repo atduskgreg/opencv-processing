@@ -229,6 +229,12 @@ public class OpenCVPro {
 		Imgproc.threshold(bufferGray, bufferGray, threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
+	public void adaptiveThreshold(int blockSize, int c){
+		gray();
+		Imgproc.adaptiveThreshold(bufferGray, bufferGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+
+	}
+	
 	public void blur(int blurSize){
 		gray();
 		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 

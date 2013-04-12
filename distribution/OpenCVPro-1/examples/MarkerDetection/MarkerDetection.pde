@@ -63,10 +63,11 @@ void setup() {
   println("num points: " + markers.get(0).height());
 
   Mat transform = Imgproc.getPerspectiveTransform(markers.get(0), canonicalMarker);
-  Mat unWarpedMarkrer = new Mat(50, 50, CvType.CV_8UC1);  
-  Imgproc.warpPerspective(gray, unWarpedMarkrer, transform, new Size(350, 350));
+  Mat unWarpedMarker = new Mat(50, 50, CvType.CV_8UC1);  
+  Imgproc.warpPerspective(gray, unWarpedMarker, transform, new Size(350, 350));
 
-  Imgproc.threshold(unWarpedMarkrer, unWarpedMarkrer, 125, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU);
+
+  Imgproc.threshold(unWarpedMarker, unWarpedMarker, 125, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU);
 
   float cellSize = 350/7.0;
 
@@ -77,7 +78,7 @@ void setup() {
       int cellX = int(col*cellSize);
       int cellY = int(row*cellSize);
 
-      Mat cell = unWarpedMarkrer.submat(cellX, cellX +(int)cellSize, cellY, cellY+ (int)cellSize); 
+      Mat cell = unWarpedMarker.submat(cellX, cellX +(int)cellSize, cellY, cellY+ (int)cellSize); 
       markerCells[row][col] = (Core.countNonZero(cell) > (cellSize*cellSize)/2);
     }
   }
@@ -95,7 +96,7 @@ void setup() {
   }
 
   dst  = createImage(350, 350, RGB);
-  opencv.toPImage(unWarpedMarkrer, dst);
+  opencv.toPImage(unWarpedMarker, dst);
 }
 
 
