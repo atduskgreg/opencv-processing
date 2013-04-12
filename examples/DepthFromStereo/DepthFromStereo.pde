@@ -4,18 +4,23 @@ import org.opencv.calib3d.StereoBM;
 import org.opencv.core.CvType;
 import org.opencv.calib3d.StereoSGBM;
 
-OpenCVPro opencv;
-PImage  img, depth1, depth2;
+OpenCVPro ocvL, ocvR;
+PImage  imgL, imgR, depth1, depth2;
 
 void setup() {
-  opencv = new OpenCVPro(this, "stereo_pair.jpg");
-  size(opencv.width * 2, opencv.height);
 
+  imgL = loadImage("scene_l.jpg");
+  imgR = loadImage("scene_r.jpg");
+  ocvL = new OpenCVPro(this, imgL);
 
-  opencv.gray();
+  ocvR = new OpenCVPro(this, imgR);
 
-  Mat left = opencv.getBufferGray().submat(0, opencv.height, 0, opencv.width/2);
-  Mat right = opencv.getBufferGray().submat(0, opencv.height, opencv.width/2, opencv.width - 1);
+  size(ocvL.width * 2, ocvL.height*2);
+
+  ocvL.gray();
+  ocvR.gray();
+  Mat left = ocvL.getBufferGray();
+  Mat right = ocvR.getBufferGray();
 
   Mat disparity = OpenCVPro.imitate(left);
 
@@ -25,36 +30,29 @@ void setup() {
   Mat depthMat = OpenCVPro.imitate(left);
   disparity.convertTo(depthMat, depthMat.type());
 
-  img = opencv.getOutputImage();
-
   depth1 = createImage(depthMat.width(), depthMat.height(), RGB);
-  opencv.toPImage(depthMat, depth1);
-  
+  ocvL.toPImage(depthMat, depth1);
+
   StereoBM stereo2 = new StereoBM();
   stereo2.compute(left, right, disparity );
   disparity.convertTo(depthMat, depthMat.type());
 
-  
+
   depth2 = createImage(depthMat.width(), depthMat.height(), RGB);
-  opencv.toPImage(depthMat, depth2);
+  ocvL.toPImage(depthMat, depth2);
 }
 
 void draw() {
-  image(img, 0, 0);
-  image(depth1, img.width, 0);
-  image(depth2, img.width + depth1.width, 0);
+  image(imgL, 0, 0);
+  image(imgR, imgL.width, 0);
 
+  image(depth1, 0, imgL.height);
+  image(depth2, imgL.width, imgL.height);
 
-  noStroke();
-  fill(0);
-  rect(10 + img.width - 5, 5, 100, 20);
-  rect(10 + img.width + img.width/2 - 5, 5, 100, 20);
-  
-  fill(255,0,0);
+  fill(255, 0, 0);
   text("left", 10, 20);
-  text("right", 10 + img.width/2, 20);
-  text("stereo SGBM", 10 + img.width, 20);
-  text("stereo BM", 10 + img.width + img.width/2, 20);
-  
+  text("right", 10 + imgL.width, 20);
+  text("stereo SGBM", 10, imgL.height + 20);
+  text("stereo BM", 10 + imgL.width, imgL.height+ 20);
 }
 
