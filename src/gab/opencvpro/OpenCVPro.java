@@ -33,6 +33,9 @@ import java.awt.Rectangle;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 import java.util.ArrayList;
 
 import org.opencv.core.Core;
@@ -320,38 +323,32 @@ public class OpenCVPro {
 		
 		BufferedImage image = (BufferedImage)img.getNative();
 		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		pImageMat.put(0,0, matPixels);
 		
-		PApplet.println(width+"x"+height);
+		ByteBuffer bb = ByteBuffer.allocate(matPixels.length * 4);
+		IntBuffer ib = bb.asIntBuffer();
+		ib.put(matPixels);
 		
-		// FIXME: maybe these should not get re-allocated?
-		//		  (hopefully we're doing this at most once per-frame)
-		//		  (and even more hopefully, this code won't be around long)
-		byte[] rPix = new byte[getSize()];
-		byte[] gPix = new byte[getSize()];
-		byte[] bPix = new byte[getSize()];
-		byte[] aPix = new byte[getSize()];
-		
-		for (int i = 0; i < getSize(); i++) {
-			rPix[i] = (byte)((matPixels[i] >> 16) & 0xFF);
-			gPix[i] = (byte)((matPixels[i] >> 8) & 0xFF);
-			bPix[i] = (byte)((matPixels[i] >> 0) & 0xFF);
-			aPix[i] = (byte)((matPixels[i] >> 24) & 0xFF);
-		}
-				
-		bufferR.put(0,0,rPix);
-		bufferG.put(0,0,gPix);
-		bufferB.put(0,0,bPix);
-		bufferA.put(0,0,aPix);	
-		
-		PApplet.println("merginging channels");
+		byte[] bvals = bb.array();
+
+		bufferBGRA.put(0,0, bvals);
+		  
 		ArrayList<Mat> channels = new ArrayList<Mat>();
-		channels.add(bufferB);
-		channels.add(bufferG);
-		channels.add(bufferR);
-		channels.add(bufferA);
-		
-		Core.merge(channels, bufferBGRA);	
+		Core.split(bufferBGRA, channels);
+
+		// Starts as ARGB. 
+		// Make into BGRA.
+		bufferB = channels.get(3);
+		bufferG = channels.get(2);
+		bufferR = channels.get(1);
+		bufferA = channels.get(0);
+
+		ArrayList<Mat> reordered = new ArrayList<Mat>();
+		reordered.add(bufferB);
+		reordered.add(bufferG);
+		reordered.add(bufferR);
+		reordered.add(bufferA);
+		  
+		Core.merge(reordered, bufferBGRA);	
 	}
 	
 	
