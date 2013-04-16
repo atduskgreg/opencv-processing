@@ -3,6 +3,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
 OpenCVPro thresholdFilter, blurFilter, adaptiveFilter;
+
 PImage  img, thresh, blur, adaptive;
 void setup() {
   thresholdFilter = new OpenCVPro(this, "test.jpg");

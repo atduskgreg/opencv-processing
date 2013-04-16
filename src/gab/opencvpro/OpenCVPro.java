@@ -410,7 +410,7 @@ public class OpenCVPro {
 		toPImage(bufferBGRA, outputImage);
 		return outputImage;
 	}
-	
+			
 	public PImage getInputImage(){
 		return inputImage;
 	}
