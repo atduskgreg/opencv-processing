@@ -203,11 +203,9 @@ public class OpenCVPro {
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
 		bufferGray = gray(bufferBGRA);
-		PApplet.println("bufferGray: " + matToS(bufferGray));
 		classifier.detectMultiScale(bufferGray, detections);
 		
 		Rect[] rects = detections.toArray(); 
-		PApplet.println("numRects: " + rects.length);
 
 		Rectangle[] results = new Rectangle[rects.length];
 		for(int i = 0; i < rects.length; i++){
@@ -316,6 +314,8 @@ public class OpenCVPro {
 		loadImage(parent.loadImage(imgPath));
 	}
 	
+	// NOTE: We're not handling the signed/unsigned
+	// 		 conversion. Is that any issue?
 	public void loadImage(PImage img){
 		// FIXME: is there a better way to hold onto
 		// 			this?
@@ -371,9 +371,7 @@ public class OpenCVPro {
 	 * @return 
 	 * 			a PImage created from the given Mat
 	 */
-	public void toPImage(Mat m, PImage img){
-		  
-		  PApplet.println("mat to convert: " + matToS(m));
+	public void toPImage(Mat m, PImage img){		  
 		  img.loadPixels();
 		  
 		  if(m.channels() == 3){
@@ -419,6 +417,7 @@ public class OpenCVPro {
 	public Mat getBufferG(){
 		return bufferG;
 	}
+	
 	public Mat getBufferB(){
 		return bufferB;
 	}
