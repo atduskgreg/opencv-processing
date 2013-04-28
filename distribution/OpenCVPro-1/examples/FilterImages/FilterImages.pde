@@ -9,6 +9,10 @@ void setup() {
   thresholdFilter = new OpenCVPro(this, "test.jpg");
   blurFilter = new OpenCVPro(this, "test.jpg");
   adaptiveFilter = new OpenCVPro(this, "test.jpg");
+  
+  thresholdFilter.gray();
+  blurFilter.gray();
+  adaptiveFilter.gray();
 
   size(thresholdFilter.width, thresholdFilter.height);
 

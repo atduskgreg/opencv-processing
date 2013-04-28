@@ -93,7 +93,7 @@ public class OpenCVPro {
 	 * @param theParent
 	 */
 	
-    static{ System.loadLibrary("opencv_java244"); }
+    static{ System.loadLibrary("opencv_java245"); }
 	
     
     /**
@@ -202,7 +202,7 @@ public class OpenCVPro {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		bufferGray = gray(bufferBGRA);
+		bufferGray = gray(bufferBGRA); // maybe drop this one, too?
 		classifier.detectMultiScale(bufferGray, detections);
 		
 		Rect[] rects = detections.toArray(); 
@@ -226,18 +226,22 @@ public class OpenCVPro {
 	}
 	
 	public void threshold(int threshold){
-		gray();
+		//gray();
 		Imgproc.threshold(bufferGray, bufferGray, threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
-		gray();
+		//gray();
 		Imgproc.adaptiveThreshold(bufferGray, bufferGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
-
+	}
+	
+	public void equalizeHistogram(){
+		//gray();
+		Imgproc.equalizeHist(bufferGray, bufferGray);
 	}
 	
 	public void blur(int blurSize){
-		gray();
+		//gray();
 		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 
 	}
 	
@@ -255,7 +259,7 @@ public class OpenCVPro {
 	public Mat findSobelEdges(Mat src, int dx, int dy){
 		Mat sobeled = new Mat(src.height(), src.width(), CvType.CV_32F);
 		
-		Imgproc.Sobel(src, sobeled, CvType.CV_32F, 1, 0);
+		Imgproc.Sobel(src, sobeled, CvType.CV_32F, dx, dy);
 
 		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC4);
 		sobeled.convertTo(result, result.type());
@@ -264,7 +268,7 @@ public class OpenCVPro {
 	}
 	
 	public void findSobelEdges(int dx, int dy){
-		gray();
+		//gray();
 		bufferGray = findSobelEdges(bufferGray, dx, dy);
 	}
 	
@@ -428,6 +432,10 @@ public class OpenCVPro {
 	
 	public Mat getBufferGray(){
 		return bufferGray;
+	}
+	
+	public void setBufferGray(Mat m){
+		bufferGray = m;
 	}
 	
 	public Mat getBufferColor(){

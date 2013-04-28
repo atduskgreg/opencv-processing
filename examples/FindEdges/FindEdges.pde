@@ -10,8 +10,9 @@ void setup() {
   cannyFilter = new OpenCVPro(this, src);
   scharrFilter = new OpenCVPro(this, src);
   sobelFilter = new OpenCVPro(this, src);
-
-
+  
+  sobelFilter.gray();
+  
   cannyFilter.findCannyEdges(20, 75);
   scharrFilter.findScharrX();
   sobelFilter.findSobelEdges(1,0);
