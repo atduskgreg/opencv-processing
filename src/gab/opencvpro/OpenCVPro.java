@@ -42,8 +42,13 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Rect;
 import org.opencv.core.Size;
+import org.opencv.core.Point;
+import org.opencv.calib3d.Calib3d;
+
 
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
@@ -77,6 +82,7 @@ public class OpenCVPro {
 	
 	private PImage outputImage;
 	private PImage inputImage;
+	private PImage grayImage;
 	
 	CascadeClassifier classifier;
 
@@ -166,6 +172,8 @@ public class OpenCVPro {
     
     private void setupWorkingImages(){
 		outputImage = parent.createImage(width,height, PConstants.ARGB);
+		grayImage = parent.createImage(width,height, PConstants.ARGB);
+
     }
 
 	
@@ -279,15 +287,18 @@ public class OpenCVPro {
 	}
 	
 	public void findScharrX(){
-		//Mat dst = new Mat(bufferBGRA.height(), bufferBGRA.width(), bufferBGRA.type());
 		Imgproc.Scharr(bufferBGRA, bufferBGRA, -1, 1, 0);
-		//bufferBGRA = findScharr(bufferBGRA,1,0);
 	}
 	
 	public void findScharrY(){
 		bufferBGRA = findScharr(bufferBGRA,0,1);
 	}
 	
+	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
+		MatOfPoint2f corners = new MatOfPoint2f();
+		Calib3d.findChessboardCorners(bufferGray, new Size(patternWidth,patternHeight), corners);
+		return OpenCVPro.matToPVectors(corners);
+	}
 	
 	/**
 	 * 
@@ -320,7 +331,7 @@ public class OpenCVPro {
 	
 	// NOTE: We're not handling the signed/unsigned
 	// 		 conversion. Is that any issue?
-	public void loadImage(PImage img){
+	public void loadImage(PImage img){		
 		// FIXME: is there a better way to hold onto
 		// 			this?
 		inputImage = img;
@@ -375,9 +386,9 @@ public class OpenCVPro {
 	 * @return 
 	 * 			a PImage created from the given Mat
 	 */
-	public void toPImage(Mat m, PImage img){		  
+	public void toPImage(Mat m, PImage img){	
 		  img.loadPixels();
-		  
+
 		  if(m.channels() == 3){
 			  byte[] matPixels = new byte[width*height*3];
 			  m.get(0,0, matPixels);
@@ -393,7 +404,7 @@ public class OpenCVPro {
 		  } else if(m.channels() == 4){
 			  byte[] matPixels = new byte[width*height*4];
 			  m.get(0,0, matPixels);
-			  for(int i = 0; i < m.width()*m.height()*4; i+=4){
+			  for(int i = 0; i < m.width()*m.height()*4; i+=4){				  
 				  img.pixels[PApplet.floor(i/4)] = parent.color(matPixels[i+2]&0xFF, matPixels[i+1]&0xFF, matPixels[i]&0xFF, matPixels[i+3]&0xFF);
 			  }
 		  }
@@ -401,17 +412,46 @@ public class OpenCVPro {
 		  img.updatePixels();
 	}
 	
+	public static ArrayList<PVector> matToPVectors(MatOfPoint mat){
+		ArrayList<PVector> result = new ArrayList<PVector>();
+		Point[] points =  mat.toArray();
+		for(int i = 0; i < points.length; i++){
+			result.add(new PVector((float)points[i].x, (float)points[i].y));
+		}
+		  
+		return result;
+	}
+
+	public static ArrayList<PVector> matToPVectors(MatOfPoint2f mat){
+		ArrayList<PVector> result = new ArrayList<PVector>();
+		Point[] points =  mat.toArray();
+		for(int i = 0; i < points.length; i++){
+			result.add(new PVector((float)points[i].x, (float)points[i].y));
+		}
+		  
+		return result;
+	}
+	
 	public String matToS(Mat mat){
 		return CvType.typeToString(mat.type());
 	}
 	
-	public PImage getOutputImage(){
+	public void updateOutputImage(){
 		toPImage(bufferBGRA, outputImage);
+	}
+	
+	public PImage getOutputImage(){
+		updateOutputImage();
 		return outputImage;
 	}
 			
 	public PImage getInputImage(){
 		return inputImage;
+	}
+	
+	public PImage getGrayImage(){
+		toPImage(bufferGray, grayImage);
+		return grayImage;
 	}
 	
 	public Mat getBufferR(){

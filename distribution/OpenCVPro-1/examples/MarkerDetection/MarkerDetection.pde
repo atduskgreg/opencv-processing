@@ -37,8 +37,6 @@ void setup() {
 
   opencv.blur(5);
 
-
-
   Imgproc.adaptiveThreshold(opencv.getBufferGray(), thresholdMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 451, -65);
 
   contours = new ArrayList<MatOfPoint>();
