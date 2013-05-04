@@ -234,27 +234,23 @@ public class OpenCVPro {
 	}
 	
 	public void threshold(int threshold){
-		//gray();
 		Imgproc.threshold(bufferGray, bufferGray, threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
-		//gray();
 		Imgproc.adaptiveThreshold(bufferGray, bufferGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
 	}
 	
 	public void equalizeHistogram(){
-		//gray();
 		Imgproc.equalizeHist(bufferGray, bufferGray);
 	}
 	
 	public void blur(int blurSize){
-		//gray();
 		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 
 	}
 	
 	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
-		Mat result = new Mat(src.height(), src.width(), src.type());
+		Mat result = imitate(src);
 		Imgproc.Canny(src, result, lowThreshold, highThreshold);
 		return result;
 	}
@@ -266,7 +262,6 @@ public class OpenCVPro {
 	
 	public Mat findSobelEdges(Mat src, int dx, int dy){
 		Mat sobeled = new Mat(src.height(), src.width(), CvType.CV_32F);
-		
 		Imgproc.Sobel(src, sobeled, CvType.CV_32F, dx, dy);
 
 		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC4);
@@ -276,18 +271,17 @@ public class OpenCVPro {
 	}
 	
 	public void findSobelEdges(int dx, int dy){
-		//gray();
 		bufferGray = findSobelEdges(bufferGray, dx, dy);
 	}
 	
 	public Mat findScharr(Mat src, int dx, int dy){
-		Mat dst = new Mat(src.height(), src.width(), src.type());
-		Imgproc.Scharr(src, dst, -1, dx, dy);
-		return dst;
+		Mat result = imitate(src);
+		Imgproc.Scharr(src, result, -1, dx, dy);
+		return result;
 	}
 	
 	public void findScharrX(){
-		Imgproc.Scharr(bufferBGRA, bufferBGRA, -1, 1, 0);
+		bufferBGRA = findScharr(bufferBGRA, 1, 0);
 	}
 	
 	public void findScharrY(){
@@ -436,12 +430,8 @@ public class OpenCVPro {
 		return CvType.typeToString(mat.type());
 	}
 	
-	public void updateOutputImage(){
+	public PImage getColorImage(){
 		toPImage(bufferBGRA, outputImage);
-	}
-	
-	public PImage getOutputImage(){
-		updateOutputImage();
 		return outputImage;
 	}
 			
