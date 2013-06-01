@@ -29,6 +29,8 @@
 
 package gab.opencvpro;
 
+import gab.opencvpro.Contour;
+
 import java.awt.Rectangle;
 
 import java.awt.image.BufferedImage;
@@ -286,6 +288,19 @@ public class OpenCVPro {
 	
 	public void findScharrY(){
 		bufferBGRA = findScharr(bufferBGRA,0,1);
+	}
+	
+	public ArrayList<Contour> findContours(){
+		ArrayList<Contour> result = new ArrayList<Contour>();
+		
+		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
+		Imgproc.findContours(bufferGray, contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+		  
+		  for (MatOfPoint c : contourMat) {
+		    result.add(new Contour(c));
+		  }
+		
+		return result;
 	}
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){

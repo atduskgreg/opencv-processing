@@ -5,7 +5,7 @@ PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
-  size(src.width, src.height);
+  size(src.width, src.height, P2D);
 
   cannyFilter = new OpenCVPro(this, src);
   scharrFilter = new OpenCVPro(this, src);
@@ -14,7 +14,7 @@ void setup() {
   sobelFilter.gray();
   
   cannyFilter.findCannyEdges(20, 75);
-  scharrFilter.findScharrY();
+  scharrFilter.findScharrX(); // also try: scharrFilter.findScharrY()
   sobelFilter.findSobelEdges(1,0);
 
   canny = cannyFilter.getColorImage();
