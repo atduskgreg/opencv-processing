@@ -12,15 +12,15 @@ import org.opencv.core.Point;
 public class Contour {
 	private ArrayList<PVector> points;
 	private Point[] inputPoints;
-	private double epsilon;
+	private double polygonApproximationFactor;
 	
 	public Contour(MatOfPoint mat){
-		epsilon = mat.size().height * 0.01;
+		polygonApproximationFactor = mat.size().height * 0.01;
 	    loadPoints(mat.toArray());
 	}
 	
 	public Contour(MatOfPoint2f mat){
-		epsilon = mat.size().height * 0.01;
+		polygonApproximationFactor = mat.size().height * 0.01;
 	    loadPoints(mat.toArray());	    
 	}
 	
@@ -33,12 +33,21 @@ public class Contour {
 		}
 	}
 	
+	// The polygonApproximationFactor is used to determine
+	// how strictly to follow a curvy polygon when converting
+	// it into a simpler polygon with getPolygonApproximation().
+	// For advanced use only. Set to a sane value by default.
+	public void setPolygonApproximationFactor(double polygonApproximationFactor){
+		this.polygonApproximationFactor = polygonApproximationFactor;
+	}
+	
+	public double getPolygonApproximationFactor(){
+		return polygonApproximationFactor;
+	}
+	
 	public Contour getPolygonApproximation(){
-		
 		MatOfPoint2f approx = new MatOfPoint2f();
-	    Imgproc.approxPolyDP(new MatOfPoint2f(inputPoints), approx, epsilon, true);
-		
-		
+	    Imgproc.approxPolyDP(new MatOfPoint2f(inputPoints), approx, polygonApproximationFactor, true);
 		return new Contour(approx);
 	}
 	

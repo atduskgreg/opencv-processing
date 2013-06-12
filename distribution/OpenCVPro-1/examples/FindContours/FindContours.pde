@@ -4,6 +4,7 @@ PImage src, dst;
 OpenCVPro opencv;
 
 ArrayList<Contour> contours;
+ArrayList<Contour> polygons;
 
 void setup() {
   src = loadImage("test.jpg"); 
@@ -16,22 +17,30 @@ void setup() {
 
   contours = opencv.findContours();
   println("found " + contours.size() + " contours");
-
 }
 
 void draw() {
   scale(0.5);
   image(src, 0, 0);
   image(dst, src.width, 0);
-  
+
   noFill();
-  stroke(0,255,0);
   strokeWeight(3);
+  
   for (Contour contour : contours) {
+    stroke(0, 255, 0);
     beginShape();
     for (PVector point : contour.getPoints()) {
       vertex(point.x, point.y);
     }
     endShape();
+    
+    stroke(255, 0, 0);
+    beginShape();
+    for (PVector point : contour.getPolygonApproximation().getPoints()) {
+      vertex(point.x, point.y);
+    }
+    endShape();
   }
 }
+
