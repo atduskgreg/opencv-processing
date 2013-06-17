@@ -212,7 +212,6 @@ public class OpenCVPro {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		bufferGray = gray(bufferBGRA); // maybe drop this one, too?
 		classifier.detectMultiScale(bufferGray, detections);
 		
 		Rect[] rects = detections.toArray(); 
@@ -221,7 +220,7 @@ public class OpenCVPro {
 		for(int i = 0; i < rects.length; i++){
 			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
 		}
-		
+
 		return results;
 	}
 	
@@ -340,10 +339,11 @@ public class OpenCVPro {
 	
 	// NOTE: We're not handling the signed/unsigned
 	// 		 conversion. Is that any issue?
-	public void loadImage(PImage img){		
+	public void loadImage(PImage img){				
 		// FIXME: is there a better way to hold onto
 		// 			this?
 		inputImage = img;
+		
 		
 		BufferedImage image = (BufferedImage)img.getNative();
 		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();

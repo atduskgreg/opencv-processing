@@ -1,5 +1,3 @@
-.project
-.metadata
 bin/**
 tmp/**
 tmp/**/*
@@ -8,12 +6,9 @@ tmp/**/*
 *.swp
 *~.nib
 local.properties
-.classpath
 .settings/
 .loadpath
 distribution/Channels*
-
-*.svn*
 
 # External tool builders
 .externalToolBuilders/
@@ -21,8 +16,4 @@ distribution/Channels*
 # Locally stored "Eclipse launch configurations"
 *.launch
 
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
+.DS_Store
