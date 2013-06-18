@@ -246,6 +246,18 @@ public class OpenCVPro {
 		Imgproc.equalizeHist(bufferGray, bufferGray);
 	}
 	
+	public void invert(){
+		Core.bitwise_not(bufferGray,bufferGray);
+	}
+	
+	public void dilate(){
+		Imgproc.dilate(bufferGray, bufferGray, new Mat());
+	}
+	
+	public void erode(){
+		Imgproc.erode(bufferGray, bufferGray, new Mat());
+	}
+	
 	public void blur(int blurSize){
 		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 
 	}
@@ -457,6 +469,14 @@ public class OpenCVPro {
 	public PImage getGrayImage(){
 		toPImage(bufferGray, grayImage);
 		return grayImage;
+	}
+	
+	public PImage getSnapshot(){
+		toPImage(bufferGray, grayImage);
+
+		PImage result = parent.createImage(width, height, PApplet.ARGB);
+		result.copy(grayImage, 0, 0, width, height, 0, 0, width, height);
+		return result;
 	}
 	
 	public Mat getBufferR(){
