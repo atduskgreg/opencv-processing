@@ -296,7 +296,7 @@ public class OpenCVPro {
 		Imgproc.findContours(bufferGray, contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 		  
 		  for (MatOfPoint c : contourMat) {
-		    result.add(new Contour(c));
+		    result.add(new Contour(parent, c));
 		  }
 		
 		return result;

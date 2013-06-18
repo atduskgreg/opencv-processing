@@ -13,14 +13,17 @@ public class Contour {
 	private ArrayList<PVector> points;
 	private Point[] inputPoints;
 	private double polygonApproximationFactor;
+	PApplet parent;
 	
-	public Contour(MatOfPoint mat){
+	public Contour(PApplet parent, MatOfPoint mat){
 		polygonApproximationFactor = mat.size().height * 0.01;
+		this.parent = parent;
 	    loadPoints(mat.toArray());
 	}
 	
-	public Contour(MatOfPoint2f mat){
+	public Contour(PApplet parent, MatOfPoint2f mat){
 		polygonApproximationFactor = mat.size().height * 0.01;
+		this.parent = parent;
 	    loadPoints(mat.toArray());	    
 	}
 	
@@ -36,7 +39,7 @@ public class Contour {
 	// The polygonApproximationFactor is used to determine
 	// how strictly to follow a curvy polygon when converting
 	// it into a simpler polygon with getPolygonApproximation().
-	// For advanced use only. Set to a sane value by default.
+	// For advanced use only. Set to a sane value by default.	
 	public void setPolygonApproximationFactor(double polygonApproximationFactor){
 		this.polygonApproximationFactor = polygonApproximationFactor;
 	}
@@ -48,7 +51,15 @@ public class Contour {
 	public Contour getPolygonApproximation(){
 		MatOfPoint2f approx = new MatOfPoint2f();
 	    Imgproc.approxPolyDP(new MatOfPoint2f(inputPoints), approx, polygonApproximationFactor, true);
-		return new Contour(approx);
+		return new Contour(parent, approx);
+	}
+	
+	public void draw(){
+		for (PVector p : points) {
+		    parent.beginShape();
+		      parent.vertex(p.x, p.y);
+		    parent.endShape();
+		  }
 	}
 	
 	public ArrayList<PVector> getPoints(){
