@@ -1,6 +1,6 @@
 import gab.opencvpro.*;
 
-OpenCVPro cannyFilter, scharrFilter, sobelFilter;
+OpenCVPro opencv;
 PImage src, canny, scharr, sobel;
 
 void setup() {

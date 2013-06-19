@@ -87,7 +87,6 @@ public class OpenCVPro {
 	
 	private PImage outputImage;
 	private PImage inputImage;
-	private PImage grayImage;
 	
 	CascadeClassifier classifier;
 
@@ -391,6 +390,7 @@ public class OpenCVPro {
 	
 	public void gray(){
 		bufferGray = gray(bufferBGRA);
+		useGray(); //???
 	}
 	
 
@@ -445,7 +445,7 @@ public class OpenCVPro {
 			useColor();
 		} else {
 			gray();
-			useGray();
+//			useGray();
 		}
 	}
 	
@@ -524,7 +524,6 @@ public class OpenCVPro {
 	}
 	
 	public PImage getOutput(){
-		PApplet.println("getOutput() useColor: " + useColor);
 		if(useColor){
 			toPImage(bufferBGRA, outputImage);
 		} else {

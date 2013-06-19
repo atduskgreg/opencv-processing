@@ -1,37 +1,27 @@
 import gab.opencvpro.*;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
-OpenCVPro thresholdFilter, blurFilter, adaptiveFilter;
-
+OpenCVPro opencv;
 PImage  img, thresh, blur, adaptive;
+
 void setup() {
-  thresholdFilter = new OpenCVPro(this, "test.jpg");
-  blurFilter = new OpenCVPro(this, "test.jpg");
-  adaptiveFilter = new OpenCVPro(this, "test.jpg");
+  img = loadImage("test.jpg");
+  size(img.width, img.height);
+
+  opencv = new OpenCVPro(this, img);
   
-  thresholdFilter.gray();
-  blurFilter.gray();
-  adaptiveFilter.gray();
-
-  size(thresholdFilter.width, thresholdFilter.height);
-
-  thresholdFilter.threshold(80);
-  blurFilter.blur(12);  
-  adaptiveFilter.adaptiveThreshold(591, 1);
-
-  // FIXME: We need a better way to get the gray image automatically 
-  //        from getOutputImage() when the processing needed it (or maybe always)
-  thresh = createImage(thresholdFilter.width, thresholdFilter.height, RGB);
-  thresholdFilter.toPImage(thresholdFilter.getBufferGray(), thresh);
-
-  blur = createImage(blurFilter.width, blurFilter.height, RGB);
-  blurFilter.toPImage(blurFilter.getBufferGray(), blur);
-
-  adaptive = createImage(adaptiveFilter.width, adaptiveFilter.height, RGB);
-  adaptiveFilter.toPImage(adaptiveFilter.getBufferGray(), adaptive);
-
-  img = thresholdFilter.getInputImage();
+  opencv.gray();
+  PImage gray = opencv.getSnapshot();
+ 
+  opencv.threshold(80);
+  thresh = opencv.getSnapshot();
+  
+  opencv.loadImage(gray);
+  opencv.blur(12);  
+  blur = opencv.getSnapshot();
+  
+  opencv.loadImage(gray);
+  opencv.adaptiveThreshold(591, 1);
+  adaptive = opencv.getSnapshot();
 }
 
 void draw() {

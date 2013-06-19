@@ -13,7 +13,7 @@ void setup() {
 
   opencv.gray();
   opencv.threshold(70);
-  dst = opencv.getGrayImage();
+  dst = opencv.getOutput();
 
   contours = opencv.findContours();
   println("found " + contours.size() + " contours");

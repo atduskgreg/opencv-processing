@@ -19,7 +19,8 @@ void setup(){
   src = loadImage("test.jpg");
   src.resize(src.width/2, 0);
   size(src.width*2 + 256, src.height, P2D);
-  opencv = new OpenCVPro(this, src);  
+  // third argument is: useColor
+  opencv = new OpenCVPro(this, src, true);  
 
   skinHistogram = Mat.zeros(256, 256, CvType.CV_8UC1);
   Core.ellipse(skinHistogram, new Point(113.0, 155.6), new Size(40.0, 25.2), 43.0, 0.0, 360.0, new Scalar(255, 255, 255), Core.FILLED);
@@ -29,7 +30,7 @@ void setup(){
  hist = loadImage("cb-cr.png");
  hist.blend(histMask, 0,0,256,256,0,0,256,256, ADD);
  
- dst = opencv.getColorImage();
+ dst = opencv.getOutput();
  dst.loadPixels();
  
  for(int i = 0; i < dst.pixels.length; i++){

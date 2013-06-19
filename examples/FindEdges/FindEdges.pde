@@ -1,41 +1,34 @@
 import gab.opencvpro.*;
 
-OpenCVPro cannyFilter, scharrFilter, sobelFilter;
+OpenCVPro opencv;
 PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
   size(src.width, src.height, P2D);
-
-  cannyFilter = new OpenCVPro(this, src);
-  scharrFilter = new OpenCVPro(this, src);
-  sobelFilter = new OpenCVPro(this, src);
   
-  sobelFilter.gray();
+  opencv = new OpenCVPro(this, src);
   
-  cannyFilter.findCannyEdges(20, 75);
-  scharrFilter.findScharrX(); // also try: scharrFilter.findScharrY()
-  sobelFilter.findSobelEdges(1,0);
-
-  canny = cannyFilter.getColorImage();
-  sobel = sobelFilter.getGrayImage();
-
-  // FIXME: Why doesn't this work?
-  //scharr = scharrFilter.getColorImage();
-  scharr = createImage(src.width, src.height, RGB);
-  scharrFilter.toPImage(scharrFilter.getBufferColor(), scharr);
+  opencv.findCannyEdges(20,75);
+  canny = opencv.getSnapshot();
+  
+  opencv.loadImage(src);
+  opencv.findScharrX();// also try: opencv.findScharrY()
+  scharr = opencv.getSnapshot();
+  
+  opencv.loadImage(src);
+  opencv.findSobelEdges(1,0);
+  sobel = opencv.getSnapshot();
 }
 
 
 void draw() {
-
   pushMatrix();
   scale(0.5);
   image(src, 0, 0);
   image(canny, src.width, 0);
   image(scharr, 0, src.height);
   image(sobel, src.width, src.height);
-
   popMatrix();
 
   text("Source", 10, 25); 

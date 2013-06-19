@@ -15,7 +15,7 @@ void setup() {
 }
 
 void draw() {
-  image( opencv.getGrayImage(), 0, 0);
+  image( opencv.getOutput(), 0, 0);
   fill(255,0,0);
   noStroke();
   for(PVector p : cornerPoints){

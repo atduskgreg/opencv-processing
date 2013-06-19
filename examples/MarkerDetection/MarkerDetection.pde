@@ -24,7 +24,7 @@ boolean[][] markerCells;
 void setup() {
   opencv = new OpenCVPro(this, "marker_test.jpg");
   size(opencv.width, opencv.height/2);
-  src = opencv.getInputImage();
+  src = opencv.getInput();
 
   opencv.gray();
 
@@ -36,7 +36,7 @@ void setup() {
   Mat thresholdMat = OpenCVPro.imitate(opencv.getBufferGray());
 
   opencv.blur(5);
-
+  
   Imgproc.adaptiveThreshold(opencv.getBufferGray(), thresholdMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 451, -65);
 
   contours = new ArrayList<MatOfPoint>();
