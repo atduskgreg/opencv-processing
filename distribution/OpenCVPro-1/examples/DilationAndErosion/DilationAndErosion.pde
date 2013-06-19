@@ -3,32 +3,52 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
-PImage src,dilated, eroded;
-OpenCVPro opencv;
+PImage src,dilated, eroded, both;
+OpenCVPro dilateFilter, erodeFilter;
 
 void setup() {
-  src = loadImage("line_drawing.jpg"); 
+  src = loadImage("pen_sketch.jpg"); 
+  src.resize(src.width/2,0);
   size(src.width*2, src.height*2, P2D);
-  opencv = new OpenCVPro(this, src);
+  
+  dilateFilter = new OpenCVPro(this, src);
+  erodeFilter = new OpenCVPro(this, src);
 
-  opencv.gray();
-  opencv.threshold(70);
-  dst = createImage(src.width, src.height, ARGB);
+  dilateFilter.gray();
+  dilateFilter.threshold(200);
+
+  erodeFilter.gray();
+  erodeFilter.threshold(200);
   
-  Mat dilatedMat = OpenCVPro.imitate(opencv.getBufferGray());
+  dilateFilter.invert();
+  src = dilateFilter.getSnapshot();
   
-  Imgproc.dilate(opencv.getBufferGray(), dilated, new Mat());
+  dilateFilter.dilate();
   
-  opencv.toPImage(dilated, dst);
+  erodeFilter.invert();
+  erodeFilter.erode();
   
+  dilated = dilateFilter.getSnapshot();
+  dilateFilter.erode();
+  both = dilateFilter.getSnapshot();
+
+  eroded = erodeFilter.getGrayImage();
+  
+
+  noLoop();
 
 }
 
 void draw(){
-  background(125);
-  size(0.5)
   image(src,0,0);
+  image(eroded, src.width, 0);
   image(dilated,0, src.height);  
-  image(eroded,src.width, src.height);  
+  image(both,src.width, src.height);  
+  
+  fill(0,255,0);
+  text("original", 20,20);
+  text("erode", src.width + 20,20);
+  text("dilate", 20,src.height+20);
+  text("dilate then erode\n(close holes)", src.width+20,src.height+20);
 
 }

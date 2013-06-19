@@ -7,7 +7,7 @@ PImage  before, after, colorDiff, grayDiff;
 void setup() {
   before = loadImage("before.jpg");
   after = loadImage("after.jpg");
-  size(before.width, before.height, P2D);
+  size(before.width, before.height);
 
   beforeCv = new OpenCVPro(this, before);
   afterCv = new OpenCVPro(this, after);

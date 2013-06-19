@@ -77,10 +77,13 @@ public class OpenCVPro {
 	public int width;
 	public int height;
 	
+	public Mat currentBuffer;
+	
 	public Mat bufferBGRA;
 	public Mat bufferR, bufferG, bufferB, bufferA;
 	public Mat bufferGray;
-	public Mat pImageMat;
+	
+	boolean useColor;
 	
 	private PImage outputImage;
 	private PImage inputImage;
@@ -112,10 +115,28 @@ public class OpenCVPro {
      * @param pathToImg - A String with a path to the image to be loaded
      */
     public OpenCVPro(PApplet theParent, String pathToImg){
+    	useColor = false;
+    	loadFromString(theParent, pathToImg);
+    }
+    
+    /**
+     * Initialize OpenCVPro with the path to an image.
+     * The image will be loaded and prepared for processing.
+     * 
+     * @param theParent - A PApplet representing the user sketch, i.e "this"
+     * @param pathToImg - A String with a path to the image to be loaded
+     * @param useColor - (Optional) Set to true if you want to use the color version of the image for processing.
+     */
+    public OpenCVPro(PApplet theParent, String pathToImg, boolean useColor){
+    	this.useColor = useColor;
+    	loadFromString(theParent, pathToImg);
+    }
+    
+    private void loadFromString(PApplet theParent, String pathToImg){
     	parent = theParent;
     	PImage imageToLoad = parent.loadImage(pathToImg);
     	init(imageToLoad.width, imageToLoad.height);
-    	loadImage(imageToLoad);
+    	loadImage(imageToLoad);	
     }
     
     /**
@@ -128,9 +149,50 @@ public class OpenCVPro {
      * 			A PImage to be loaded
      */
     public OpenCVPro(PApplet theParent, PImage img){
+    	useColor = false;
+    	loadFromPImage(theParent, img);
+    }
+    
+    /**
+     * Initialize OpenCVPro with an image.
+     * The image's pixels will be copied and prepared for processing.
+     * 
+     * @param theParent
+     * 			A PApplet representing the user sketch, i.e "this"
+     * @param img
+     * 			A PImage to be loaded
+     * @param useColor
+     * 			(Optional) Set to true if you want to use the color version of the image for processing.
+     */
+    public OpenCVPro(PApplet theParent, PImage img, boolean useColor){
+    	this.useColor = useColor;
+    	loadFromPImage(theParent, img);
+    }
+    
+    private void loadFromPImage(PApplet theParent, PImage img){
     	parent = theParent;
     	init(img.width, img.height);
     	loadImage(img);
+    }
+    
+    /**
+     * 
+     * Apply subsequent image processing to
+     * the color version of the loaded image.
+     * 
+     * Note: Many OpenCV functions require a grayscale
+     *       image. Those functions will raise an exception
+     *       if attempted on a color image. 
+     * 
+     */
+    public void useColor(){
+    	useColor = true;
+    	currentBuffer = bufferBGRA;
+    }
+    
+    public void useGray(){
+    	useColor = false;
+    	currentBuffer = bufferGray;
     }
     
     
@@ -157,7 +219,6 @@ public class OpenCVPro {
 		welcome();
 		setupWorkingImages();
 
-		
 		PApplet.println("init buffers at: " + width+"x"+height);
 		
 		bufferR = new Mat(height, width, CvType.CV_8UC1);
@@ -166,20 +227,14 @@ public class OpenCVPro {
 		bufferA = new Mat(height, width, CvType.CV_8UC1);
 		bufferGray = new Mat(height, width, CvType.CV_8UC1);
 		
-		pImageMat = new Mat(height, width, CvType.CV_32SC1);
-		
 		bufferBGRA = new Mat(height, width, CvType.CV_8UC4);
-		
     }
     
     private void setupWorkingImages(){
 		outputImage = parent.createImage(width,height, PConstants.ARGB);
 		grayImage = parent.createImage(width,height, PConstants.ARGB);
-
     }
 
-	
-	
 	/**
 	 * load a cascade xml file from the data folder
 	 * NB: ant build scripts copy the data folder outside of the
@@ -335,6 +390,7 @@ public class OpenCVPro {
 	}
 	
 	public void gray(){
+		parent.println("gray()");
 		bufferGray = gray(bufferBGRA);
 	}
 	
@@ -384,7 +440,14 @@ public class OpenCVPro {
 		reordered.add(bufferR);
 		reordered.add(bufferA);
 		  
-		Core.merge(reordered, bufferBGRA);	
+		Core.merge(reordered, bufferBGRA);
+		
+		if(useColor){
+			useColor();
+		} else {
+			gray();
+			useGray();
+		}
 	}
 	
 	
@@ -457,25 +520,36 @@ public class OpenCVPro {
 		return CvType.typeToString(mat.type());
 	}
 	
-	public PImage getColorImage(){
-		toPImage(bufferBGRA, outputImage);
-		return outputImage;
-	}
+//	public PImage getColorImage(){
+//		toPImage(bufferBGRA, outputImage);
+//		return outputImage;
+//	}
 			
-	public PImage getInputImage(){
+	public PImage getInput(){
 		return inputImage;
 	}
 	
-	public PImage getGrayImage(){
-		toPImage(bufferGray, grayImage);
-		return grayImage;
+	public PImage getOutput(){
+		PApplet.println("getOutput() useColor: " + useColor);
+		if(useColor){
+			toPImage(bufferBGRA, outputImage);
+		} else {
+			toPImage(bufferGray, outputImage);
+		}
+		
+		return outputImage;	
 	}
 	
+//	public PImage getGrayImage(){
+//		toPImage(bufferGray, grayImage);
+//		return grayImage;
+//	}
+	
 	public PImage getSnapshot(){
-		toPImage(bufferGray, grayImage);
+		toPImage(currentBuffer, outputImage);
 
 		PImage result = parent.createImage(width, height, PApplet.ARGB);
-		result.copy(grayImage, 0, 0, width, height, 0, 0, width, height);
+		result.copy(outputImage, 0, 0, width, height, 0, 0, width, height);
 		return result;
 	}
 	
