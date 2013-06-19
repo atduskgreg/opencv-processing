@@ -267,7 +267,7 @@ public class OpenCVPro {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		classifier.detectMultiScale(bufferGray, detections);
+		classifier.detectMultiScale(currentBuffer, detections);
 		
 		Rect[] rects = detections.toArray(); 
 
@@ -290,31 +290,31 @@ public class OpenCVPro {
 	}
 	
 	public void threshold(int threshold){
-		Imgproc.threshold(bufferGray, bufferGray, threshold, 255, Imgproc.THRESH_BINARY); 
+		Imgproc.threshold(currentBuffer, currentBuffer, threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
-		Imgproc.adaptiveThreshold(bufferGray, bufferGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+		Imgproc.adaptiveThreshold(currentBuffer, currentBuffer, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
 	}
 	
 	public void equalizeHistogram(){
-		Imgproc.equalizeHist(bufferGray, bufferGray);
+		Imgproc.equalizeHist(currentBuffer, currentBuffer);
 	}
 	
 	public void invert(){
-		Core.bitwise_not(bufferGray,bufferGray);
+		Core.bitwise_not(currentBuffer,currentBuffer);
 	}
 	
 	public void dilate(){
-		Imgproc.dilate(bufferGray, bufferGray, new Mat());
+		Imgproc.dilate(currentBuffer, currentBuffer, new Mat());
 	}
 	
 	public void erode(){
-		Imgproc.erode(bufferGray, bufferGray, new Mat());
+		Imgproc.erode(currentBuffer, currentBuffer, new Mat());
 	}
 	
 	public void blur(int blurSize){
-		Imgproc.blur(bufferGray, bufferGray, new Size(blurSize, blurSize)); 
+		Imgproc.blur(currentBuffer, currentBuffer, new Size(blurSize, blurSize)); 
 	}
 	
 	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
@@ -324,7 +324,7 @@ public class OpenCVPro {
 	}
 	
 	public void findCannyEdges(int lowThreshold, int highThreshold){
-		bufferBGRA = findCannyEdges(bufferBGRA, lowThreshold, highThreshold);
+		currentBuffer = findCannyEdges(currentBuffer, lowThreshold, highThreshold);
 	}
 	
 	
@@ -339,7 +339,7 @@ public class OpenCVPro {
 	}
 	
 	public void findSobelEdges(int dx, int dy){
-		bufferGray = findSobelEdges(bufferGray, dx, dy);
+		currentBuffer = findSobelEdges(currentBuffer, dx, dy);
 	}
 	
 	public Mat findScharr(Mat src, int dx, int dy){
@@ -349,18 +349,18 @@ public class OpenCVPro {
 	}
 	
 	public void findScharrX(){
-		bufferBGRA = findScharr(bufferBGRA, 1, 0);
+		currentBuffer = findScharr(currentBuffer, 1, 0);
 	}
 	
 	public void findScharrY(){
-		bufferBGRA = findScharr(bufferBGRA,0,1);
+		currentBuffer = findScharr(currentBuffer,0,1);
 	}
 	
 	public ArrayList<Contour> findContours(){
 		ArrayList<Contour> result = new ArrayList<Contour>();
 		
 		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
-		Imgproc.findContours(bufferGray, contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+		Imgproc.findContours(currentBuffer, contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 		  
 		  for (MatOfPoint c : contourMat) {
 		    result.add(new Contour(parent, c));
@@ -371,7 +371,7 @@ public class OpenCVPro {
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();
-		Calib3d.findChessboardCorners(bufferGray, new Size(patternWidth,patternHeight), corners);
+		Calib3d.findChessboardCorners(currentBuffer, new Size(patternWidth,patternHeight), corners);
 		return OpenCVPro.matToPVectors(corners);
 	}
 	
@@ -390,7 +390,6 @@ public class OpenCVPro {
 	}
 	
 	public void gray(){
-		parent.println("gray()");
 		bufferGray = gray(bufferBGRA);
 	}
 	
@@ -519,11 +518,6 @@ public class OpenCVPro {
 	public String matToS(Mat mat){
 		return CvType.typeToString(mat.type());
 	}
-	
-//	public PImage getColorImage(){
-//		toPImage(bufferBGRA, outputImage);
-//		return outputImage;
-//	}
 			
 	public PImage getInput(){
 		return inputImage;
@@ -539,11 +533,6 @@ public class OpenCVPro {
 		
 		return outputImage;	
 	}
-	
-//	public PImage getGrayImage(){
-//		toPImage(bufferGray, grayImage);
-//		return grayImage;
-//	}
 	
 	public PImage getSnapshot(){
 		toPImage(currentBuffer, outputImage);
