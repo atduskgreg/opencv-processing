@@ -76,7 +76,7 @@ public class OpenCVPro {
 	public int width;
 	public int height;
 	
-	public Mat currentBuffer;
+	//public Mat currentBuffer;
 	
 	public Mat bufferBGRA;
 	public Mat bufferR, bufferG, bufferB, bufferA;
@@ -85,6 +85,7 @@ public class OpenCVPro {
 	public Mat nonROIBuffer; // so that releaseROI() can return to color/gray as appropriate
 	
 	private boolean useColor;
+	private boolean useROI;
 	
 	private PImage outputImage;
 	private PImage inputImage;
@@ -187,18 +188,31 @@ public class OpenCVPro {
      */
     public void useColor(){
     	useColor = true;
-    	currentBuffer = bufferBGRA;
+    	//currentBuffer = bufferBGRA;
     }
     
     public void useGray(){
     	useColor = false;
-    	currentBuffer = bufferGray;
+    	//currentBuffer = bufferGray;
     }
     
     public boolean getUseColor(){
     	return useColor;
     }
     
+    private Mat getCurrentBuffer(){
+    	if(useROI){
+    		return bufferROI;
+    		
+    	} else{
+    	
+    		if(useColor){
+    			return bufferBGRA;
+    		} else{
+    			return bufferGray;
+    		}
+    	}
+    }
     
     /**
      * Initialize OpenCVPro with a width and height.
@@ -270,7 +284,7 @@ public class OpenCVPro {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		classifier.detectMultiScale(currentBuffer, detections);
+		classifier.detectMultiScale(getCurrentBuffer(), detections);
 		
 		Rect[] rects = detections.toArray(); 
 
@@ -293,77 +307,56 @@ public class OpenCVPro {
 	}
 	
 	public void threshold(int threshold){
-		Imgproc.threshold(currentBuffer, currentBuffer, threshold, 255, Imgproc.THRESH_BINARY); 
+		Imgproc.threshold(getCurrentBuffer(), getCurrentBuffer(), threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
-		Imgproc.adaptiveThreshold(currentBuffer, currentBuffer, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+		Imgproc.adaptiveThreshold(getCurrentBuffer(), getCurrentBuffer(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
 	}
 	
 	public void equalizeHistogram(){
-		Imgproc.equalizeHist(currentBuffer, currentBuffer);
+		Imgproc.equalizeHist(getCurrentBuffer(), getCurrentBuffer());
 	}
 	
 	public void invert(){
-		Core.bitwise_not(currentBuffer,currentBuffer);
+		Core.bitwise_not(getCurrentBuffer(),getCurrentBuffer());
 	}
 	
 	public void dilate(){
-		Imgproc.dilate(currentBuffer, currentBuffer, new Mat());
+		Imgproc.dilate(getCurrentBuffer(), getCurrentBuffer(), new Mat());
 	}
 	
 	public void erode(){
-		Imgproc.erode(currentBuffer, currentBuffer, new Mat());
+		Imgproc.erode(getCurrentBuffer(), getCurrentBuffer(), new Mat());
 	}
 	
 	public void blur(int blurSize){
-		Imgproc.blur(currentBuffer, currentBuffer, new Size(blurSize, blurSize)); 
-	}
-	
-	public Mat findCannyEdges(Mat src, int lowThreshold, int highThreshold){
-		Mat result = imitate(src);
-		Imgproc.Canny(src, result, lowThreshold, highThreshold);
-		return result;
+		Imgproc.blur(getCurrentBuffer(), getCurrentBuffer(), new Size(blurSize, blurSize)); 
 	}
 	
 	public void findCannyEdges(int lowThreshold, int highThreshold){
-		currentBuffer = findCannyEdges(currentBuffer, lowThreshold, highThreshold);
-	}
-	
-	
-	public Mat findSobelEdges(Mat src, int dx, int dy){
-		Mat sobeled = new Mat(src.height(), src.width(), CvType.CV_32F);
-		Imgproc.Sobel(src, sobeled, CvType.CV_32F, dx, dy);
-
-		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC4);
-		sobeled.convertTo(result, result.type());
-
-		return result;
+		Imgproc.Canny(getCurrentBuffer(), getCurrentBuffer(), lowThreshold, highThreshold);
 	}
 	
 	public void findSobelEdges(int dx, int dy){
-		currentBuffer = findSobelEdges(currentBuffer, dx, dy);
-	}
-	
-	public Mat findScharr(Mat src, int dx, int dy){
-		Mat result = imitate(src);
-		Imgproc.Scharr(src, result, -1, dx, dy);
-		return result;
+		Mat sobeled = new Mat(getCurrentBuffer().height(), getCurrentBuffer().width(), CvType.CV_32F);
+		Imgproc.Sobel(getCurrentBuffer(), sobeled, CvType.CV_32F, dx, dy);
+		sobeled.convertTo(getCurrentBuffer(), getCurrentBuffer().type());
 	}
 	
 	public void findScharrX(){
-		currentBuffer = findScharr(currentBuffer, 1, 0);
+		Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 1, 0 );
 	}
 	
 	public void findScharrY(){
-		currentBuffer = findScharr(currentBuffer,0,1);
+		Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 0, 1 );
 	}
 	
 	public ArrayList<Contour> findContours(){
 		ArrayList<Contour> result = new ArrayList<Contour>();
 		
 		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
-		Imgproc.findContours(currentBuffer, contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+		Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 		  
 		  for (MatOfPoint c : contourMat) {
 		    result.add(new Contour(parent, c));
@@ -374,7 +367,7 @@ public class OpenCVPro {
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();
-		Calib3d.findChessboardCorners(currentBuffer, new Size(patternWidth,patternHeight), corners);
+		Calib3d.findChessboardCorners(getCurrentBuffer(), new Size(patternWidth,patternHeight), corners);
 		return OpenCVPro.matToPVectors(corners);
 	}
 	
@@ -408,9 +401,9 @@ public class OpenCVPro {
 	 */
 	public boolean setROI(int x, int y, int w, int h){
 		if(x < 0 ||
-		   x + w > width-1 ||
+		   x + w > width ||
 		   y < 0 ||
-		   y + h > height -1){
+		   y + h > height){
 			return false;
 		} else{
 		
@@ -422,14 +415,16 @@ public class OpenCVPro {
 				nonROIBuffer = bufferGray;
 				bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
 			}
-			currentBuffer = bufferROI;
+			//currentBuffer = bufferROI;
+			useROI = true;
 			
 			return true;
 		}
 	}
 	
 	public void releaseROI(){
-		currentBuffer = nonROIBuffer;
+		//currentBuffer = nonROIBuffer;
+		useROI = false;
 	}
 
 	/**
@@ -572,8 +567,12 @@ public class OpenCVPro {
 	}
 	
 	public PImage getSnapshot(){
-		toPImage(currentBuffer, outputImage);
-
+		if(useColor){
+			toPImage(bufferBGRA, outputImage);
+		} else {
+			toPImage(bufferGray, outputImage);
+		}
+		
 		PImage result = parent.createImage(width, height, PApplet.ARGB);
 		result.copy(outputImage, 0, 0, width, height, 0, 0, width, height);
 		return result;
@@ -601,16 +600,24 @@ public class OpenCVPro {
 	
 	public void setBufferGray(Mat m){
 		bufferGray = m;
+		useColor = false;
+		//currentBuffer = bufferGray;
 	}
 	
 	public void setBufferColor(Mat m){
 		bufferBGRA = m;
+		useColor = true;
+		//currentBuffer = bufferBGRA;
 	}
 	
 	public Mat getBufferColor(){
 		return bufferBGRA;
 	}
 	
+	public Mat getBufferROI(){
+		return bufferROI;
+	}
+
 	private void welcome() {
 		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
 		System.out.println("Using Java OpenCV " + Core.VERSION);

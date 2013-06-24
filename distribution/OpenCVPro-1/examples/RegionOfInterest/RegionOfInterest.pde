@@ -1,6 +1,5 @@
 import gab.opencvpro.*;
 
-
 PImage src;
 OpenCVPro opencv;
 
@@ -17,22 +16,12 @@ void setup() {
 
 void draw() {
   opencv.loadImage(src);
-  opencv.gray();
 
-  // if we're using the ROI
-  // and the ROI is wholly within the image
-  // then set the ROI
-  if (useROI &&
-    mouseX > 0 && 
-    mouseX < width-roiWidth && 
-    mouseY > 0 && 
-    mouseY < height-roiHeight) {
-  
+  if (useROI) {
     opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);
   }
 
-  // threshold either the ROI or the full image
-  opencv.threshold(75);
+  opencv.findCannyEdges(20,75);
   image(opencv.getOutput(), 0, 0);
 }
 

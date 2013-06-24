@@ -16,14 +16,12 @@ void setup() {
 
 void draw() {
   opencv.loadImage(src);
-  opencv.gray();
 
-  if (useROI){
-    opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);    
+  if (useROI) {
+    opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);
   }
 
-  // threshold applies to ROI if it is set
-  opencv.threshold(75);
+  opencv.findCannyEdges(20,75);
   image(opencv.getOutput(), 0, 0);
 }
 
