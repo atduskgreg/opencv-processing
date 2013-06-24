@@ -1,6 +1,4 @@
 import gab.opencvpro.*;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
 OpenCVPro opencv;
 PImage threshold, blur;
