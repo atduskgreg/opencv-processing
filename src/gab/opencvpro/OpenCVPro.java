@@ -76,6 +76,9 @@ public class OpenCVPro {
 	public int width;
 	public int height;
 	
+	private int roiWidth;
+	private int roiHeight;
+	
 	//public Mat currentBuffer;
 	
 	public Mat bufferBGRA;
@@ -406,7 +409,8 @@ public class OpenCVPro {
 		   y + h > height){
 			return false;
 		} else{
-		
+			roiWidth = w;
+			roiHeight = h;
 		
 			if(useColor){
 				nonROIBuffer = bufferBGRA;
@@ -480,6 +484,7 @@ public class OpenCVPro {
 			gray();
 //			useGray();
 		}
+		
 	}
 	
 	
@@ -575,6 +580,12 @@ public class OpenCVPro {
 		
 		PImage result = parent.createImage(width, height, PApplet.ARGB);
 		result.copy(outputImage, 0, 0, width, height, 0, 0, width, height);
+		return result;
+	}
+	
+	public PImage getROI(){
+		PImage result = parent.createImage(roiWidth, roiHeight, PApplet.ARGB);
+		toPImage(bufferROI, result);
 		return result;
 	}
 	
