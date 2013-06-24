@@ -1,6 +1,5 @@
 import gab.opencvpro.*;
 
-
 PImage src;
 OpenCVPro opencv;
 
@@ -19,20 +18,11 @@ void draw() {
   opencv.loadImage(src);
   opencv.gray();
 
-  // if we're using the ROI
-  // and the ROI is wholly within the image
-  // then set the ROI
-  if (useROI &&
-    mouseX > 0 && 
-    mouseX < width-roiWidth && 
-    mouseY > 0 && 
-    mouseY < height-roiHeight) {
-  
-    opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);
+  if (useROI){
+    opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);    
   }
-  
 
-  // threshold either the ROI or the full image
+  // threshold applies to ROI if it is set
   opencv.threshold(75);
   image(opencv.getOutput(), 0, 0);
 }

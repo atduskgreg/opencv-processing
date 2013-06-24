@@ -30,7 +30,6 @@ void draw() {
   
     opencv.setROI(mouseX, mouseY, roiWidth, roiHeight);
   }
-  
 
   // threshold either the ROI or the full image
   opencv.threshold(75);

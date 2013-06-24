@@ -397,15 +397,35 @@ public class OpenCVPro {
 		useGray(); //???
 	}
 	
-	public void setROI(int x, int y, int w, int h){
-		if(useColor){
-			nonROIBuffer = bufferBGRA;
-			bufferROI = new Mat(bufferBGRA, new Rect(x, y, w, h));
-		} else {
-			nonROIBuffer = bufferGray;
-			bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
+	/*
+	 * Set a Region of Interest within the image. Subsequent image processing
+	 * functions will apply to this ROI rather than the full image.
+	 * Full image will display be included in output.
+	 * 
+	 * @return
+	 * 		False if requested ROI exceed the bounds of the working image.
+	 * 		True if ROI was successfully set.
+	 */
+	public boolean setROI(int x, int y, int w, int h){
+		if(x < 0 ||
+		   x + w > width-1 ||
+		   y < 0 ||
+		   y + h > height -1){
+			return false;
+		} else{
+		
+		
+			if(useColor){
+				nonROIBuffer = bufferBGRA;
+				bufferROI = new Mat(bufferBGRA, new Rect(x, y, w, h));
+			} else {
+				nonROIBuffer = bufferGray;
+				bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
+			}
+			currentBuffer = bufferROI;
+			
+			return true;
 		}
-		currentBuffer = bufferROI;
 	}
 	
 	public void releaseROI(){
