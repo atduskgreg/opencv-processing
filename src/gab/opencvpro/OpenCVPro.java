@@ -50,7 +50,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Size;
 import org.opencv.core.Point;
 import org.opencv.calib3d.Calib3d;
-
+import org.opencv.core.CvException;
 
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
@@ -191,12 +191,10 @@ public class OpenCVPro {
      */
     public void useColor(){
     	useColor = true;
-    	//currentBuffer = bufferBGRA;
     }
     
     public void useGray(){
     	useColor = false;
-    	//currentBuffer = bufferGray;
     }
     
     public boolean getUseColor(){
@@ -314,11 +312,21 @@ public class OpenCVPro {
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
-		Imgproc.adaptiveThreshold(getCurrentBuffer(), getCurrentBuffer(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+		try{
+			Imgproc.adaptiveThreshold(getCurrentBuffer(), getCurrentBuffer(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+		} catch(CvException e){
+			PApplet.println("ERROR: adaptiveThreshold function only works on gray images");
+			throw e;
+		}
 	}
 	
 	public void equalizeHistogram(){
-		Imgproc.equalizeHist(getCurrentBuffer(), getCurrentBuffer());
+		try{
+			Imgproc.equalizeHist(getCurrentBuffer(), getCurrentBuffer());
+		} catch(CvException e){
+			PApplet.println("ERROR: equalizeHistogram only works on a gray image.");
+			throw e;
+		}
 	}
 	
 	public void invert(){
@@ -359,8 +367,12 @@ public class OpenCVPro {
 		ArrayList<Contour> result = new ArrayList<Contour>();
 		
 		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
+		try{
 		Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
-		  
+		} catch(CvException e){
+			PApplet.println("ERROR: findContours only works with a gray image");
+			throw e;
+		}
 		  for (MatOfPoint c : contourMat) {
 		    result.add(new Contour(parent, c));
 		  }
@@ -419,7 +431,6 @@ public class OpenCVPro {
 				nonROIBuffer = bufferGray;
 				bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
 			}
-			//currentBuffer = bufferROI;
 			useROI = true;
 			
 			return true;
@@ -427,7 +438,6 @@ public class OpenCVPro {
 	}
 	
 	public void releaseROI(){
-		//currentBuffer = nonROIBuffer;
 		useROI = false;
 	}
 
@@ -612,13 +622,11 @@ public class OpenCVPro {
 	public void setBufferGray(Mat m){
 		bufferGray = m;
 		useColor = false;
-		//currentBuffer = bufferGray;
 	}
 	
 	public void setBufferColor(Mat m){
 		bufferBGRA = m;
 		useColor = true;
-		//currentBuffer = bufferBGRA;
 	}
 	
 	public Mat getBufferColor(){
