@@ -71,7 +71,6 @@ import processing.core.*;
 
 public class OpenCVPro {
 	
-	// myParent is a reference to the parent sketch
 	PApplet parent;
 	
 	public int width;
@@ -82,8 +81,10 @@ public class OpenCVPro {
 	public Mat bufferBGRA;
 	public Mat bufferR, bufferG, bufferB, bufferA;
 	public Mat bufferGray;
+	public Mat bufferROI;
+	public Mat nonROIBuffer; // so that releaseROI() can return to color/gray as appropriate
 	
-	boolean useColor;
+	private boolean useColor;
 	
 	private PImage outputImage;
 	private PImage inputImage;
@@ -194,6 +195,10 @@ public class OpenCVPro {
     	currentBuffer = bufferGray;
     }
     
+    public boolean getUseColor(){
+    	return useColor;
+    }
+    
     
     /**
      * Initialize OpenCVPro with a width and height.
@@ -231,7 +236,6 @@ public class OpenCVPro {
     
     private void setupWorkingImages(){
 		outputImage = parent.createImage(width,height, PConstants.ARGB);
-		grayImage = parent.createImage(width,height, PConstants.ARGB);
     }
 
 	/**
@@ -393,6 +397,20 @@ public class OpenCVPro {
 		useGray(); //???
 	}
 	
+	public void setROI(int x, int y, int w, int h){
+		if(useColor){
+			nonROIBuffer = bufferBGRA;
+			bufferROI = new Mat(bufferBGRA, new Rect(x, y, w, h));
+		} else {
+			nonROIBuffer = bufferGray;
+			bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
+		}
+		currentBuffer = bufferROI;
+	}
+	
+	public void releaseROI(){
+		currentBuffer = nonROIBuffer;
+	}
 
 	/**
 	 * Load an image from a path.
@@ -563,6 +581,10 @@ public class OpenCVPro {
 	
 	public void setBufferGray(Mat m){
 		bufferGray = m;
+	}
+	
+	public void setBufferColor(Mat m){
+		bufferBGRA = m;
 	}
 	
 	public Mat getBufferColor(){

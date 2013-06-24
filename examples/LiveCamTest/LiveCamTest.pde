@@ -8,7 +8,6 @@ OpenCVPro opencv;
 void setup() {
   size(640, 480);
   video = new Capture(this, 640/2, 480/2);
-
   opencv = new OpenCVPro(this, 640/2, 480/2);
   opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);  
 
