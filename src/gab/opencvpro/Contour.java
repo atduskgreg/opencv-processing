@@ -6,26 +6,40 @@ import processing.core.*;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Rect;
 
 import org.opencv.core.Point;
+
+import java.awt.Rectangle;
+
 
 public class Contour {
 	private ArrayList<PVector> points;
 	private Point[] inputPoints;
 	private double polygonApproximationFactor;
 	PApplet parent;
+	Rectangle boundingBox;
 	
 	public Contour(PApplet parent, MatOfPoint mat){
 		polygonApproximationFactor = mat.size().height * 0.01;
 		this.parent = parent;
+		
+		Rect r = Imgproc.boundingRect(mat);
+		boundingBox = new Rectangle(r.x, r.y, r.width, r.height);
+		
 	    loadPoints(mat.toArray());
 	}
 	
 	public Contour(PApplet parent, MatOfPoint2f mat){
 		polygonApproximationFactor = mat.size().height * 0.01;
 		this.parent = parent;
-	    loadPoints(mat.toArray());	    
+		
+		Rect r = Imgproc.minAreaRect(mat).boundingRect();
+		boundingBox = new Rectangle(r.x, r.y, r.width, r.height);
+
+		loadPoints(mat.toArray());	    
 	}
+
 	
 	public void loadPoints(Point[] pts){
 	    points = new ArrayList<PVector>();
@@ -55,11 +69,12 @@ public class Contour {
 	}
 	
 	public void draw(){
+		parent.beginShape();
 		for (PVector p : points) {
-		    parent.beginShape();
-		      parent.vertex(p.x, p.y);
-		    parent.endShape();
-		  }
+			parent.vertex(p.x, p.y);
+		}
+		parent.endShape();
+
 	}
 	
 	public ArrayList<PVector> getPoints(){
@@ -70,5 +85,8 @@ public class Contour {
 		return points.size();
 	}
 	
+	public Rectangle getBoundingBox(){
+		return boundingBox;
+	}
 }
 

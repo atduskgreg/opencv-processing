@@ -29,11 +29,7 @@ void draw() {
   
   for (Contour contour : contours) {
     stroke(0, 255, 0);
-    beginShape();
-    for (PVector point : contour.getPoints()) {
-      vertex(point.x, point.y);
-    }
-    endShape();
+    contour.draw();
     
     stroke(255, 0, 0);
     beginShape();
