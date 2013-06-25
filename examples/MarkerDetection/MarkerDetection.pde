@@ -133,9 +133,6 @@ ArrayList<MatOfPoint2f> selectMarkers(ArrayList<MatOfPoint2f> candidates) {
       continue;
     }
 
-
-
-
     result.add(candidate);
   }
 
