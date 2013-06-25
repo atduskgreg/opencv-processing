@@ -1,9 +1,7 @@
 import gab.opencvpro.*;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 
 OpenCVPro opencv;
-PImage threshold;
+PImage threshold, blur;
 
 void setup() {
   PImage img = loadImage("test.jpg");
@@ -16,14 +14,16 @@ void setup() {
   opencv.useColor();  
 
   // A lot of OpenCV operations only work on gray.
-  // But some do work in color, like threshold:
+  // But some do work in color, like threshold, blur, findCannyEdges, findChessboardCorners, etc.:
   opencv.threshold(75);
   threshold = opencv.getSnapshot();
+
+  opencv.blur(30);
+  blur = opencv.getSnapshot();
 
   // If you try an operation that does not work in color
   // it will raise an exception and print out a message:
   try{
-    opencv.loadImage(img);
     opencv.adaptiveThreshold(591, 1);
   } catch (Exception e){
   }
@@ -33,5 +33,6 @@ void setup() {
 void draw() {
   scale(0.5);
   image(threshold, 0, 0);
+  image(blur, threshold.width,0);
 }
 

@@ -237,8 +237,6 @@ public class OpenCVPro {
     	height = h;
 		welcome();
 		setupWorkingImages();
-
-		PApplet.println("init buffers at: " + width+"x"+height);
 		
 		bufferR = new Mat(height, width, CvType.CV_8UC1);
 		bufferG = new Mat(height, width, CvType.CV_8UC1);
@@ -315,8 +313,7 @@ public class OpenCVPro {
 		try{
 			Imgproc.adaptiveThreshold(getCurrentBuffer(), getCurrentBuffer(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
 		} catch(CvException e){
-			PApplet.println("ERROR: adaptiveThreshold function only works on gray images");
-			throw e;
+			PApplet.println("ERROR: adaptiveThreshold function only works on gray images.");
 		}
 	}
 	
@@ -325,7 +322,6 @@ public class OpenCVPro {
 			Imgproc.equalizeHist(getCurrentBuffer(), getCurrentBuffer());
 		} catch(CvException e){
 			PApplet.println("ERROR: equalizeHistogram only works on a gray image.");
-			throw e;
 		}
 	}
 	
@@ -370,8 +366,7 @@ public class OpenCVPro {
 		try{
 		Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
 		} catch(CvException e){
-			PApplet.println("ERROR: findContours only works with a gray image");
-			throw e;
+			PApplet.println("ERROR: findContours only works with a gray image.");
 		}
 		  for (MatOfPoint c : contourMat) {
 		    result.add(new Contour(parent, c));
