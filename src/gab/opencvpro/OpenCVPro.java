@@ -47,6 +47,7 @@ import org.opencv.core.MatOfRect;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.core.Point;
 import org.opencv.calib3d.Calib3d;
@@ -293,6 +294,45 @@ public class OpenCVPro {
 		}
 
 		return results;
+	}
+	
+	/**
+	 * 
+	 * Adjust the contrast of the image. Works on color or black and white images.
+	 * 
+	 * @param amt
+	 * 			Amount of contrast to apply. 0-1.0 reduces contrast. Above 1.0 increases contrast.
+	 * 
+	 **/
+	public void contrast(float amt){
+		Scalar modifier;
+		if(useColor){
+			modifier = new Scalar(amt,amt,amt,1);
+
+		} else{
+			modifier = new Scalar(amt);
+		}
+		
+		Core.multiply(getCurrentBuffer(), modifier, getCurrentBuffer());
+	}
+	
+	/**
+	 * Adjust the brightness of the image. Works on color or black and white images.
+	 * 
+	 * @param amt
+	 * 			The amount to brighten the image. Ranges -255 to 255. 
+	 * 
+	 **/	
+	public void brightness(int amt){
+		Scalar modifier;
+		if(useColor){
+			modifier = new Scalar(amt,amt,amt, 1);
+
+		} else{
+			modifier = new Scalar(amt);
+		}
+		
+		Core.add(getCurrentBuffer(), modifier, getCurrentBuffer());
 	}
 	
 	public static Mat imitate(Mat m){
