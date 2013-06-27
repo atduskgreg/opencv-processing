@@ -31,6 +31,14 @@ Detect faces in images.
 
 Code: [FaceDetection.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FaceDetection/FaceDetection.pde)
 
+#### BrightnessContrast
+
+Adjust the brightness and contrast of color and gray images.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9155239258/" title="brightness and contrast by atduskgreg, on Flickr"><img src="http://farm3.staticflickr.com/2841/9155239258_41a7df36c6.jpg" width="500" height="358" alt="brightness and contrast"></a>
+
+Code: [BrightnessContrast.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/BrightnessContrast/BrightnessContrast.pde
+
 #### FilterImages
 
 Basic filtering operations on images: threshold, blur, and adaptive thresholds.
