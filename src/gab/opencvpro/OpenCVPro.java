@@ -30,6 +30,7 @@
 package gab.opencvpro;
 
 import gab.opencvpro.Contour;
+import gab.opencvpro.Histogram;
 
 import java.awt.Rectangle;
 
@@ -46,6 +47,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfFloat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -419,6 +422,22 @@ public class OpenCVPro {
 		MatOfPoint2f corners = new MatOfPoint2f();
 		Calib3d.findChessboardCorners(getCurrentBuffer(), new Size(patternWidth,patternHeight), corners);
 		return OpenCVPro.matToPVectors(corners);
+	}
+	
+	public Histogram findHistogram(Mat m, int numBins){
+		MatOfInt channels = new MatOfInt(0);
+		MatOfInt histSize = new MatOfInt(numBins);
+		float[] r = {0f, 256f};
+		MatOfFloat ranges = new MatOfFloat(r);
+		Mat hist = new Mat();
+		
+		ArrayList<Mat> images = new ArrayList<Mat>();
+		images.add(m);
+
+		Imgproc.calcHist( images, channels, new Mat(), hist, histSize, ranges);
+		Core.normalize(hist, hist);
+		
+		return new Histogram(parent, hist);
 	}
 	
 	/**
