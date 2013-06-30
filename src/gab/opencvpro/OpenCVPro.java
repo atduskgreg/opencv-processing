@@ -424,7 +424,16 @@ public class OpenCVPro {
 		return OpenCVPro.matToPVectors(corners);
 	}
 	
-	public Histogram findHistogram(Mat m, int numBins){
+	/**
+	 * 
+	 * @param buffer 
+	 * 		The buffer from which to calculate the histogram. Get this from getBufferGray(), getBufferR(), getBufferG(), or getBufferB()
+	 * @param numBins 
+	 * 		The number of bins into which divide the histogram should be divided.
+	 * @return
+	 * 		A Histogram object that you can call draw() on.
+	 */
+	public Histogram findHistogram(Mat buffer, int numBins){
 		MatOfInt channels = new MatOfInt(0);
 		MatOfInt histSize = new MatOfInt(numBins);
 		float[] r = {0f, 256f};
@@ -432,7 +441,7 @@ public class OpenCVPro {
 		Mat hist = new Mat();
 		
 		ArrayList<Mat> images = new ArrayList<Mat>();
-		images.add(m);
+		images.add(buffer);
 
 		Imgproc.calcHist( images, channels, new Mat(), hist, histSize, ranges);
 		Core.normalize(hist, hist);

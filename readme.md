@@ -95,6 +95,14 @@ Demonstration of what you can do color images in OpenCV (threshold, blur, etc) a
 
 Code: [WorkingWithColorImages.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/WorkingWithColorImages/WorkingWithColorImages.pde)
 
+#### FindHistogram
+
+Demonstrates use of the findHistogram() function and the Histogram class to get and draw histograms for grayscale and individual color channels.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9174190443/" title="gray, red, green, blue histograms by atduskgreg, on Flickr"><img src="http://farm8.staticflickr.com/7287/9174190443_224a740ce8.jpg" width="500" height="355" alt="gray, red, green, blue histograms"></a>
+
+Code: [https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde)
+
 #### CalibrationDemo (in progress)
 
 An example of the process involved in calibrating a camera. Currently only detects the corners in a chessboard pattern.
