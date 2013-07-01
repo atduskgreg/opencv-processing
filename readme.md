@@ -101,7 +101,7 @@ Demonstrates use of the findHistogram() function and the Histogram class to get 
 
 <a href="http://www.flickr.com/photos/unavoidablegrain/9174190443/" title="gray, red, green, blue histograms by atduskgreg, on Flickr"><img src="http://farm8.staticflickr.com/7287/9174190443_224a740ce8.jpg" width="500" height="355" alt="gray, red, green, blue histograms"></a>
 
-Code: [https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde)
+Code: [FindHistogram.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde)
 
 #### CalibrationDemo (in progress)
 
