@@ -85,6 +85,8 @@ public class OpenCVPro {
 		
 	public Mat bufferBGRA;
 	public Mat bufferR, bufferG, bufferB, bufferA;
+	public Mat bufferHSV;
+	public Mat bufferH, bufferS, bufferV;
 	public Mat bufferGray;
 	public Mat bufferROI;
 	public Mat nonROIBuffer; // so that releaseROI() can return to color/gray as appropriate
@@ -128,6 +130,9 @@ public class OpenCVPro {
      */
     public OpenCVPro(PApplet theParent, String pathToImg, boolean useColor){
     	this.useColor = useColor;
+    	if(useColor){
+    		useColor(); // have to set the color space.
+    	}
     	loadFromString(theParent, pathToImg);
     }
     
@@ -165,6 +170,9 @@ public class OpenCVPro {
      */
     public OpenCVPro(PApplet theParent, PImage img, boolean useColor){
     	this.useColor = useColor;
+    	if(useColor){
+    		useColor();  
+    	}
     	loadFromPImage(theParent, img);
     }
     
@@ -185,7 +193,31 @@ public class OpenCVPro {
      * 
      */
     public void useColor(){
+    	useColor(PApplet.RGB);
+    }
+    
+    public void useColor(int colorSpace){
     	useColor = true;
+    	if(colorSpace != PApplet.RGB && colorSpace != PApplet.HSB){
+    		PApplet.println("ERROR: color space must be either RGB or HSB");
+    	} else {
+    		this.colorSpace = colorSpace;
+    	}
+    	
+    	if(this.colorSpace == PApplet.HSB){
+    		populateHSV();
+    	}
+    }
+    
+    private void populateHSV(){
+    	bufferHSV = imitate(bufferBGRA);
+    	Imgproc.cvtColor(bufferBGRA, bufferHSV, Imgproc.COLOR_BGR2HSV);
+    	ArrayList<Mat> channels = new ArrayList<Mat>();
+    	Core.split(bufferHSV, channels);
+    	
+    	bufferH = channels.get(0);
+    	bufferS = channels.get(1);
+    	bufferV = channels.get(2);
     }
     
     public void useGray(){
@@ -556,10 +588,9 @@ public class OpenCVPro {
 		Core.merge(reordered, bufferBGRA);
 		
 		if(useColor){
-			useColor();
+			useColor(this.colorSpace);
 		} else {
 			gray();
-//			useGray();
 		}
 		
 	}
@@ -650,7 +681,11 @@ public class OpenCVPro {
 	
 	public PImage getSnapshot(){
 		if(useColor){
-			toPImage(bufferBGRA, outputImage);
+			if(colorSpace == PApplet.HSB){
+				toPImage(bufferHSV, outputImage);
+			} else {
+				toPImage(bufferBGRA, outputImage);
+			}
 		} else {
 			toPImage(bufferGray, outputImage);
 		}
@@ -680,6 +715,18 @@ public class OpenCVPro {
 	
 	public Mat getBufferA(){
 		return bufferA;
+	}
+	
+	public Mat getBufferH(){
+		return bufferH;
+	}
+	
+	public Mat getBufferS(){
+		return bufferS;
+	}
+	
+	public Mat getBufferV(){
+		return bufferV;
 	}
 	
 	public Mat getBufferGray(){
