@@ -103,6 +103,14 @@ Demonstrates use of the findHistogram() function and the Histogram class to get 
 
 Code: [FindHistogram.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindHistogram/FindHistogram.pde)
 
+#### HueRangeSelection
+
+Detect objects based on their color. Demonstrates the use of HSV color space as well as range-based image filtering.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9193745547/" title="Hue-based color detection by atduskgreg, on Flickr"><img src="http://farm4.staticflickr.com/3799/9193745547_8f09e55a39.jpg" width="500" height="397" alt="Hue-based color detection"></a>
+
+Code: [HueRangeSelection.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/HueRangeSelection/HueRangeSelection.pde)
+
 #### CalibrationDemo (in progress)
 
 An example of the process involved in calibrating a camera. Currently only detects the corners in a chessboard pattern.

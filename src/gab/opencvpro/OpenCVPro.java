@@ -196,6 +196,10 @@ public class OpenCVPro {
     	useColor(PApplet.RGB);
     }
     
+    public int getColorSpace(){
+    	return colorSpace;
+    }
+    
     public void useColor(int colorSpace){
     	useColor = true;
     	if(colorSpace != PApplet.RGB && colorSpace != PApplet.HSB){
@@ -214,6 +218,8 @@ public class OpenCVPro {
     	Imgproc.cvtColor(bufferBGRA, bufferHSV, Imgproc.COLOR_BGR2HSV);
     	ArrayList<Mat> channels = new ArrayList<Mat>();
     	Core.split(bufferHSV, channels);
+    	
+    	PApplet.println("populating hsv. num channels: " + channels.size());
     	
     	bufferH = channels.get(0);
     	bufferS = channels.get(1);
@@ -483,6 +489,19 @@ public class OpenCVPro {
 		
 		return new Histogram(parent, hist);
 		
+	}
+	
+	/**
+	 * 
+	 * Filter the image for values between a lower and upper bound.
+	 * Converts the current image into a binary image with white where pixel
+	 * values were within bounds and black elsewhere.
+	 * 
+	 * @param lowerBound
+	 * @param upperBound
+	 */
+	public void inRange(int lowerBound, int upperBound){
+		Core.inRange(getCurrentBuffer(), new Scalar(lowerBound), new Scalar(upperBound), getCurrentBuffer());
 	}
 	
 	/**
