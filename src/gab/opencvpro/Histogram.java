@@ -4,8 +4,8 @@ import processing.core.*;
 import org.opencv.core.Mat;
 
 public class Histogram {
-	Mat mat;
-	PApplet parent;
+	private Mat mat;
+	private PApplet parent;
 	
 	Histogram(PApplet parent, Mat mat){
 		this.mat = mat;
@@ -23,5 +23,9 @@ public class Histogram {
 			parent.rect(i*binWidth, h, binWidth, -h*v);
 		}
 		parent.popMatrix();
+	}
+	
+	public Mat getMat(){
+		return mat;
 	}
 }

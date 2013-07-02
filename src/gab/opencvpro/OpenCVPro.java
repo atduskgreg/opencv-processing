@@ -82,9 +82,7 @@ public class OpenCVPro {
 	
 	private int roiWidth;
 	private int roiHeight;
-	
-	//public Mat currentBuffer;
-	
+		
 	public Mat bufferBGRA;
 	public Mat bufferR, bufferG, bufferB, bufferA;
 	public Mat bufferGray;
@@ -93,6 +91,7 @@ public class OpenCVPro {
 	
 	private boolean useColor;
 	private boolean useROI;
+	public int colorSpace;
 	
 	private PImage outputImage;
 	private PImage inputImage;
@@ -103,14 +102,6 @@ public class OpenCVPro {
 	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
 
-
-	/**
-	 * a Constructor, usually called in the setup() method in your sketch to
-	 * initialize and start the library.
-	 * 
-	 * @example Hello
-	 * @param theParent
-	 */
 	
     static{ System.loadLibrary("opencv_java245"); }
 	
@@ -427,13 +418,22 @@ public class OpenCVPro {
 	/**
 	 * 
 	 * @param buffer 
-	 * 		The buffer from which to calculate the histogram. Get this from getBufferGray(), getBufferR(), getBufferG(), or getBufferB()
+	 * 		The buffer from which to calculate the histogram. Get this from getBufferGray(), getBufferR(), getBufferG(), or getBufferB().
+	 * 		By default this will normalize the histogram (scale the values to 0.0-1.0). Pass false as the third argument to keep values unormalized.
 	 * @param numBins 
 	 * 		The number of bins into which divide the histogram should be divided.
+	 * @param normalize (optional)
+	 * 		Whether or not to normalize the histogram (scale the values to 0.0-1.0). Defaults to true.
 	 * @return
 	 * 		A Histogram object that you can call draw() on.
 	 */
 	public Histogram findHistogram(Mat buffer, int numBins){
+		return findHistogram(buffer, numBins, true);
+	}
+	
+	
+	public Histogram findHistogram(Mat buffer, int numBins, boolean normalize){
+		
 		MatOfInt channels = new MatOfInt(0);
 		MatOfInt histSize = new MatOfInt(numBins);
 		float[] r = {0f, 256f};
@@ -444,9 +444,13 @@ public class OpenCVPro {
 		images.add(buffer);
 
 		Imgproc.calcHist( images, channels, new Mat(), hist, histSize, ranges);
-		Core.normalize(hist, hist);
+		
+		if(normalize){
+			Core.normalize(hist, hist);
+		}
 		
 		return new Histogram(parent, hist);
+		
 	}
 	
 	/**
