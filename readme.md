@@ -8,10 +8,13 @@ See the included examples below for an overview of what's possible and links to 
 
 OpenCVPro is based on the officially supported [OpenCV Java API](http://docs.opencv.org/java/), currently at version 2.4.5. In addition to using the wrapped functionality, you can import OpenCV modules and use any of its documented functions: [OpenCV javadocs](http://docs.opencv.org/java/). See the advanced examples (HistogramSkinDetection, DepthFromStereo, and Marker Detection) below for details. (This style of API was inspired by Kyle McDonald's [ofxCv addon](https://github.com/kylemcdonald/ofxCv) for OpenFrameworks.) 
 
-OpenCVPro is in the early stages of development. Currently it only supports Mac OSX. Windows and Linux (and hopefully Android) support coming soon. 
-
 Contributions welcome.
 
+### Installing
+
+OpenCVPro is in the early stages of development. Currently it only supports Mac OSX. Windows and Linux (and hopefully Android) support coming soon. 
+
+See [here](https://github.com/atduskgreg/OpenCVPro/releases) for the latest release.
 
 ### Examples
 
