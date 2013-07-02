@@ -1,8 +1,4 @@
 import gab.opencvpro.*;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Mat;
-import org.opencv.core.Core;
-import org.opencv.core.Scalar;
 
 OpenCVPro opencv;
 PImage img;

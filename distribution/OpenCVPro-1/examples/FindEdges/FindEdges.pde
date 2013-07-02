@@ -13,7 +13,7 @@ void setup() {
   canny = opencv.getSnapshot();
   
   opencv.loadImage(src);
-  opencv.findScharrX();// also try: opencv.findScharrY()
+  opencv.findScharrEdges(OpenCVPro.HORIZONTAL);
   scharr = opencv.getSnapshot();
   
   opencv.loadImage(src);
