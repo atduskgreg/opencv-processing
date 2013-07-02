@@ -19,11 +19,16 @@ void setup() {
 }
 
 void draw() {
-  background(0);
-  image(opencv.getOutput(), 0, 0);  
+  opencv.loadImage(img);
+  
+  image(img, 0, 0);  
+  
+  opencv.setBufferGray(opencv.getBufferH().clone());
+  opencv.inRange(lowerb, upperb);
+  histogram = opencv.findHistogram(opencv.getBufferH(), 255);
 
+  image(opencv.getOutput(), 3*width/4, 3*height/4, width/4,height/4);
 
-  histogram = opencv.findHistogram(opencv.getBufferH(), 180);
   noStroke(); fill(0);
   histogram.draw(10, height - 230, 400, 200);
   noFill(); stroke(0);
@@ -38,12 +43,9 @@ void draw() {
   strokeWeight(2);
   line(lb + 10, height-30, ub +10, height-30);
   ellipse(lb+10, height-30, 3, 3 );
-  text(lowerb, lb+10, height-15);
+  text(lowerb, lb-10, height-15);
   ellipse(ub+10, height-30, 3, 3 );
   text(upperb, ub+10, height-15);
-
-  //  
-  //  text("range: " + lowerb + " - " + upperb, 10 + 100, hImg.height*2 + hImg.height-20 + textAscent() + textDescent());
 }
 
 void mouseMoved() {
@@ -51,7 +53,7 @@ void mouseMoved() {
     upperb += mouseX - pmouseX;
   } 
   else {
-    if (upperb <255 || (mouseX - pmouseX) < 0) {
+    if (upperb < 255 || (mouseX - pmouseX) < 0) {
       lowerb += mouseX - pmouseX;
     }
 
@@ -61,15 +63,6 @@ void mouseMoved() {
   }
 
   upperb = constrain(upperb, lowerb, 255);
-  lowerb = constrain(lowerb, 0, upperb);
-
-  //  opencv.setBufferGray(opencv.getBufferH());
-  //  opencv.inRange(lowerb, upperb);
-}
-
-void drawHistogram(Histogram hist, String label, int x, int y, int w, int h) {
-  pushMatrix();
-
-  popMatrix();
+  lowerb = constrain(lowerb, 0, upperb-1);
 }
 

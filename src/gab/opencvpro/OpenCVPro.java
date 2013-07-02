@@ -103,7 +103,10 @@ public class OpenCVPro {
 	public final static String VERSION = "##library.prettyVersion##";
 	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
-
+	
+	public final static int HORIZONTAL = 0;
+	public final static int VERTICAL = 1;
+	
 	
     static{ System.loadLibrary("opencv_java245"); }
 	
@@ -423,12 +426,14 @@ public class OpenCVPro {
 		sobeled.convertTo(getCurrentBuffer(), getCurrentBuffer().type());
 	}
 	
-	public void findScharrX(){
-		Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 1, 0 );
-	}
-	
-	public void findScharrY(){
-		Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 0, 1 );
+	public void findScharrEdges(int direction){
+		if(direction == OpenCVPro.HORIZONTAL){
+			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 1, 0 );
+		}
+		
+		if(direction == OpenCVPro.VERTICAL){
+			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 0, 1 );
+		}
 	}
 	
 	public ArrayList<Contour> findContours(){
