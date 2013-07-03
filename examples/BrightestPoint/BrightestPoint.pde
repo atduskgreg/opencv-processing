@@ -6,8 +6,8 @@ void setup() {
   PImage src = loadImage("robot_light.jpg");
   src.resize(800, 0);
   size(src.width, src.height);
-
-  opencv = new OpenCVPro(this, src);
+  
+  opencv = new OpenCVPro(this, src);  
 }
 
 void draw() {
