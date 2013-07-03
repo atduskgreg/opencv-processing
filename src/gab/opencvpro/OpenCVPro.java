@@ -55,6 +55,7 @@ import org.opencv.core.Size;
 import org.opencv.core.Point;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvException;
+import org.opencv.core.Core.MinMaxLocResult;
 
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
@@ -350,6 +351,33 @@ public class OpenCVPro {
 		
 		Core.multiply(getCurrentBuffer(), modifier, getCurrentBuffer());
 	}
+	
+	/**
+	 * Get the x-y location of the maximum value in the current image.
+	 * 
+	 * @return 
+	 * 		A PVector with the location of the maximum value.
+	 */
+	public PVector max(){
+		MinMaxLocResult r = Core.minMaxLoc(getCurrentBuffer());
+		return OpenCVPro.pointToPVector(r.maxLoc);
+	}
+	
+	/**
+	 * Get the x-y location of the minimum value in the current image.
+	 * 
+	 * @return 
+	 * 		A PVector with the location of the minimum value.
+	 */
+	public PVector min(){
+		MinMaxLocResult r = Core.minMaxLoc(getCurrentBuffer());
+		return OpenCVPro.pointToPVector(r.minLoc);
+	}
+	
+	private static PVector pointToPVector(Point p){
+		return new PVector((float)p.x, (float)p.y);
+	}
+	
 	
 	/**
 	 * Adjust the brightness of the image. Works on color or black and white images.

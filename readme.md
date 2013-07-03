@@ -66,6 +66,14 @@ Three different edge-detection techniques: Canny, Scharr, and Sobel.
 
 Code: [FindEdges.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/FindEdges/FindEdges.pde)
 
+#### BrightestPoint
+
+Find the brightest point in an image.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9199572469/" title="finding the brightest point by atduskgreg, on Flickr"><img src="http://farm8.staticflickr.com/7407/9199572469_4a25c83062.jpg" width="500" height="366" alt="finding the brightest point"></a>
+
+Code: [BrightestPoint.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/BrightestPoint/BrightestPoint.pde)
+
 #### RegionOfInterest
 
 Assign a sub-section (or Region of Interest) of the image to be processed. Video of this example in action here: [Region of Interest demo on Vimeo](https://vimeo.com/69009345).
