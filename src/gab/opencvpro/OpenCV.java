@@ -222,9 +222,7 @@ public class OpenCV {
     	Imgproc.cvtColor(bufferBGRA, bufferHSV, Imgproc.COLOR_BGR2HSV);
     	ArrayList<Mat> channels = new ArrayList<Mat>();
     	Core.split(bufferHSV, channels);
-    	
-    	PApplet.println("populating hsv. num channels: " + channels.size());
-    	
+    	    	
     	bufferH = channels.get(0);
     	bufferS = channels.get(1);
     	bufferV = channels.get(2);
