@@ -2,34 +2,21 @@ import gab.opencvpro.*;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
-OpenCV beforeCv, afterCv;
+OpenCV opencv;
 PImage  before, after, colorDiff, grayDiff;
 void setup() {
   before = loadImage("before.jpg");
   after = loadImage("after.jpg");
   size(before.width, before.height);
 
-  beforeCv = new OpenCV(this, before);
-  afterCv = new OpenCV(this, after);
-
-  // NOTE: important to not do the color diff 
-  //       before calling these, as this makes
-  //       the gray buffer from the current color buffer.
-  beforeCv.gray();
-  afterCv.gray();
+  opencv = new OpenCV(this, before, true);
+  opencv.diff(after);
+  colorDiff = opencv.getSnapshot();
   
-
-  OpenCV.diff(beforeCv.getBufferColor(), afterCv.getBufferColor());
-  OpenCV.diff(beforeCv.getBufferGray(), afterCv.getBufferGray());
-
-  colorDiff = beforeCv.getColorImage();
-
-  // FIXME: same mysterious problem with getOutputImage()
-//  colorDiff = createImage(before.width, before.height, RGB);
-//  beforeCv.toPImage(beforeCv.getBufferColor(), colorDiff);
-//  colorDiff = beforeCv.getColorImage();
-
-  grayDiff = beforeCv.getGrayImage();
+  opencv.loadImage(before);
+  opencv.gray();
+  opencv.diff(after)
+  grayDiff = opencv.getSnapshot();
 }
 
 void draw() {

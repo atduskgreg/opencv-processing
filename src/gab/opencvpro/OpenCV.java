@@ -402,6 +402,23 @@ public class OpenCV {
 		return new Mat(m.height(), m.width(), m.type());
 	}
 	
+	
+	public void diff(PImage img){
+		Mat imgMat = imitate(getBufferColor());
+		toCv(img, imgMat);
+
+		Mat dst = imitate(getCurrentBuffer());
+
+		if(useColor){
+			ARGBtoBGRA(imgMat, imgMat);
+			Core.absdiff(getCurrentBuffer(), imgMat, dst);
+		} else {
+			Core.absdiff(getCurrentBuffer(), OpenCV.gray(imgMat), dst);
+		}
+		
+		dst.assignTo(getCurrentBuffer());
+	}
+	
 	public static void diff(Mat mat1, Mat mat2){
 		Mat dst = imitate(mat1);
 		Core.absdiff(mat1, mat2, dst);
@@ -455,11 +472,11 @@ public class OpenCV {
 	}
 	
 	public void findScharrEdges(int direction){
-		if(direction == OpenCV.HORIZONTAL){
+		if(direction == HORIZONTAL){
 			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 1, 0 );
 		}
 		
-		if(direction == OpenCV.VERTICAL){
+		if(direction == VERTICAL){
 			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 0, 1 );
 		}
 	}
@@ -483,7 +500,7 @@ public class OpenCV {
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();
 		Calib3d.findChessboardCorners(getCurrentBuffer(), new Size(patternWidth,patternHeight), corners);
-		return OpenCV.matToPVectors(corners);
+		return matToPVectors(corners);
 	}
 	
 	/**
@@ -544,7 +561,7 @@ public class OpenCV {
 	 * @return
 	 * 		A Mat of type 8UC1 in grayscale.
 	 */
-	public Mat gray(Mat src){
+	public static Mat gray(Mat src){
 		Mat result = new Mat(src.height(), src.width(), CvType.CV_8UC1);
 		Imgproc.cvtColor(src, result, Imgproc.COLOR_BGRA2GRAY);
 			
@@ -609,35 +626,8 @@ public class OpenCV {
 		// 			this?
 		inputImage = img;
 		
-		
-		BufferedImage image = (BufferedImage)img.getNative();
-		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		
-		ByteBuffer bb = ByteBuffer.allocate(matPixels.length * 4);
-		IntBuffer ib = bb.asIntBuffer();
-		ib.put(matPixels);
-		
-		byte[] bvals = bb.array();
-
-		bufferBGRA.put(0,0, bvals);
-		  
-		ArrayList<Mat> channels = new ArrayList<Mat>();
-		Core.split(bufferBGRA, channels);
-
-		// Starts as ARGB. 
-		// Make into BGRA.
-		bufferB = channels.get(3);
-		bufferG = channels.get(2);
-		bufferR = channels.get(1);
-		bufferA = channels.get(0);
-
-		ArrayList<Mat> reordered = new ArrayList<Mat>();
-		reordered.add(bufferB);
-		reordered.add(bufferG);
-		reordered.add(bufferR);
-		reordered.add(bufferA);
-		  
-		Core.merge(reordered, bufferBGRA);
+		toCv(img, bufferBGRA);
+		ARGBtoBGRA(bufferBGRA,bufferBGRA);
 		
 		if(useColor){
 			useColor(this.colorSpace);
@@ -645,6 +635,21 @@ public class OpenCV {
 			gray();
 		}
 		
+	}
+	
+	public static void ARGBtoBGRA(Mat rgba, Mat bgra){
+		ArrayList<Mat> channels = new ArrayList<Mat>();
+		Core.split(rgba, channels);
+
+		ArrayList<Mat> reordered = new ArrayList<Mat>();
+		// Starts as ARGB. 
+		// Make into BGRA.
+		reordered.add(channels.get(3));
+		reordered.add(channels.get(2));
+		reordered.add(channels.get(1));
+		reordered.add(channels.get(0));
+		  
+		Core.merge(reordered, bgra);	
 	}
 	
 	
@@ -662,10 +667,10 @@ public class OpenCV {
 	 * (Mainly used internally by OpenCV. Inspired by toCv()
 	 * from KyleMcDonald's ofxCv.)
 	 * 
-	 * @param mat
-	 * 			an OpenCV Mat
-	 * @return 
-	 * 			a PImage created from the given Mat
+	 * @param m
+	 * 			A Mat you want converted
+	 * @param img
+	 * 			The PImage you want the Mat converted into.
 	 */
 	public void toPImage(Mat m, PImage img){	
 		  img.loadPixels();
@@ -691,6 +696,28 @@ public class OpenCV {
 		  }
 		  
 		  img.updatePixels();
+	}
+	
+	/**
+	 * Convert a Processing PImage to an OpenCV Mat.
+	 * (Inspired by Kyle McDonald's ofxCv's toOf())
+	 * 
+	 * @param img
+	 * 		The PImage to convert.
+	 * @param m
+	 * 		The Mat to receive the image data.
+	 */	
+	public static void toCv(PImage img, Mat m){
+		BufferedImage image = (BufferedImage)img.getNative();
+		int[] matPixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		
+		ByteBuffer bb = ByteBuffer.allocate(matPixels.length * 4);
+		IntBuffer ib = bb.asIntBuffer();
+		ib.put(matPixels);
+		
+		byte[] bvals = bb.array();
+
+		m.put(0,0, bvals);
 	}
 	
 	public static ArrayList<PVector> matToPVectors(MatOfPoint mat){
