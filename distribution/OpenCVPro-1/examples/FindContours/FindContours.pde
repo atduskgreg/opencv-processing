@@ -1,7 +1,7 @@
 import gab.opencvpro.*;
 
 PImage src, dst;
-OpenCVPro opencv;
+OpenCV opencv;
 
 ArrayList<Contour> contours;
 ArrayList<Contour> polygons;
@@ -9,7 +9,7 @@ ArrayList<Contour> polygons;
 void setup() {
   src = loadImage("test.jpg"); 
   size(src.width, src.height/2, P2D);
-  opencv = new OpenCVPro(this, src);
+  opencv = new OpenCV(this, src);
 
   opencv.gray();
   opencv.threshold(70);

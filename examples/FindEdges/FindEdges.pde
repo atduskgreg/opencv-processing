@@ -1,19 +1,19 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
   size(src.width, src.height, P2D);
   
-  opencv = new OpenCVPro(this, src);
+  opencv = new OpenCV(this, src);
   
   opencv.findCannyEdges(20,75);
   canny = opencv.getSnapshot();
   
   opencv.loadImage(src);
-  opencv.findScharrEdges(OpenCVPro.HORIZONTAL);
+  opencv.findScharrEdges(OpenCV.HORIZONTAL);
   scharr = opencv.getSnapshot();
   
   opencv.loadImage(src);

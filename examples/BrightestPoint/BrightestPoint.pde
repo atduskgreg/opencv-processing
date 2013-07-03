@@ -1,13 +1,13 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 
 void setup() {
   PImage src = loadImage("robot_light.jpg");
   src.resize(800, 0);
   size(src.width, src.height);
   
-  opencv = new OpenCVPro(this, src);  
+  opencv = new OpenCV(this, src);  
 }
 
 void draw() {

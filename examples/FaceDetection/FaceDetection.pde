@@ -1,14 +1,14 @@
 import gab.opencvpro.*;
 import java.awt.Rectangle;
 
-OpenCVPro opencv;
+OpenCV opencv;
 Rectangle[] faces;
 
 void setup() {
-  opencv = new OpenCVPro(this, "test.jpg");
+  opencv = new OpenCV(this, "test.jpg");
   size(opencv.width, opencv.height);
 
-  opencv.loadCascade(OpenCVPro.CASCADE_FRONTALFACE_ALT);  
+  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE_ALT);  
   faces = opencv.detect();
 }
 

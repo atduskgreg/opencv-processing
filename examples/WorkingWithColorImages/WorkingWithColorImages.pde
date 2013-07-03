@@ -1,6 +1,6 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 PImage threshold, blur, adaptive, gray;
 
 void setup() {
@@ -9,7 +9,7 @@ void setup() {
 
   // By default, OpenCVPro works with a gray
   // version of the source image
-  opencv = new OpenCVPro(this, img);
+  opencv = new OpenCV(this, img);
   // but you can tell it explicitly to use color instead:
   opencv.useColor();  
 

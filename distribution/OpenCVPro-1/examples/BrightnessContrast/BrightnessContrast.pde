@@ -1,18 +1,12 @@
 import gab.opencvpro.*;
 
-import org.opencv.core.Core;
-import org.opencv.core.Scalar;
-import org.opencv.core.Mat;
-
-
 PImage img;
-OpenCVPro opencv;
+OpenCV opencv;
 
 void setup(){
   img = loadImage("test.jpg");
   size(img.width, img.height, P2D);
-  opencv = new OpenCVPro(this, img);
-  
+  opencv = new OpenCV(this, img);  
 }
 
 void draw(){

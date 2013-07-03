@@ -1,16 +1,14 @@
 import gab.opencvpro.*;
-import org.opencv.core.Core;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.CvType;
-
 import org.opencv.imgproc.Imgproc;
 
-
-OpenCVPro opencv;
+OpenCV opencv;
 PImage src,dst, hist, histMask;
 
 Mat skinHistogram;
@@ -20,7 +18,7 @@ void setup(){
   src.resize(src.width/2, 0);
   size(src.width*2 + 256, src.height, P2D);
   // third argument is: useColor
-  opencv = new OpenCVPro(this, src, true);  
+  opencv = new OpenCV(this, src, true);  
 
   skinHistogram = Mat.zeros(256, 256, CvType.CV_8UC1);
   Core.ellipse(skinHistogram, new Point(113.0, 155.6), new Size(40.0, 25.2), 43.0, 0.0, 360.0, new Scalar(255, 255, 255), Core.FILLED);

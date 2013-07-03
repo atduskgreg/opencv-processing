@@ -2,13 +2,14 @@ import gab.opencvpro.*;
 
 PImage src;
 ArrayList<PVector> cornerPoints;
-OpenCVPro opencv;
+OpenCV opencv;
+
 void setup() {
   src = loadImage("checkerboard.jpg");
   src.resize(500, 0);
   size(src.width, src.height, P2D);
 
-  opencv = new OpenCVPro(this, src);
+  opencv = new OpenCV(this, src);
   opencv.gray();
   
   cornerPoints = opencv.findChessboardCorners(9,6);

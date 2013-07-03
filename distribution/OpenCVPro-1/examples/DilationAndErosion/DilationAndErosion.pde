@@ -1,17 +1,14 @@
 import gab.opencvpro.*;
-import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
 
 PImage src, dilated, eroded, both;
-OpenCVPro opencv;
+OpenCV opencv;
 
 void setup() {
   src = loadImage("pen_sketch.jpg"); 
   src.resize(src.width/2, 0);
   size(src.width*2, src.height*2, P2D);
 
-  opencv = new OpenCVPro(this, src);
+  opencv = new OpenCV(this, src);
 
   // Dilate and Erode both need a binary image
   // So, we'll make it gray and threshold it.

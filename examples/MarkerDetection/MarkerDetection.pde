@@ -13,7 +13,7 @@ import org.opencv.core.Size;
 
 //import java.util.list;
 
-OpenCVPro opencv;
+OpenCV opencv;
 PImage  src, dst, markerImg;
 ArrayList<MatOfPoint> contours;
 ArrayList<MatOfPoint2f> approximations;
@@ -22,18 +22,15 @@ ArrayList<MatOfPoint2f> markers;
 boolean[][] markerCells;
 
 void setup() {
-  opencv = new OpenCVPro(this, "marker_test.jpg");
+  opencv = new OpenCV(this, "marker_test.jpg");
   size(opencv.width, opencv.height/2);
   src = opencv.getInput();
 
-  opencv.gray();
-
-
   // hold on to this for later, since adaptiveThreshold is destructive
-  Mat gray = OpenCVPro.imitate(opencv.getBufferGray());
+  Mat gray = OpenCV.imitate(opencv.getBufferGray());
   opencv.getBufferGray().copyTo(gray);
 
-  Mat thresholdMat = OpenCVPro.imitate(opencv.getBufferGray());
+  Mat thresholdMat = OpenCV.imitate(opencv.getBufferGray());
 
   opencv.blur(5);
   

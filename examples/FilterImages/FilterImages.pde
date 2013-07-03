@@ -1,13 +1,13 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 PImage  img, thresh, blur, adaptive;
 
 void setup() {
   img = loadImage("test.jpg");
   size(img.width, img.height);
 
-  opencv = new OpenCVPro(this, img);  
+  opencv = new OpenCV(this, img);  
   PImage gray = opencv.getSnapshot();
  
   opencv.threshold(80);

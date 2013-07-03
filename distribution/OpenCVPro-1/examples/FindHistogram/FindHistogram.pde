@@ -1,6 +1,6 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 Histogram grayHist, rHist, gHist, bHist;
 
 PImage img;
@@ -8,7 +8,7 @@ PImage img;
 void setup() {
   size(640, 400, P2D);
   img = loadImage("test.jpg");
-  opencv = new OpenCVPro(this, img);
+  opencv = new OpenCV(this, img);
 
   grayHist = opencv.findHistogram(opencv.getBufferGray(), 256);
   rHist = opencv.findHistogram(opencv.getBufferR(), 256);

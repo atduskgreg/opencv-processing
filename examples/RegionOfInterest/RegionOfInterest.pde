@@ -1,7 +1,7 @@
 import gab.opencvpro.*;
 
 PImage src;
-OpenCVPro opencv;
+OpenCV opencv;
 
 int roiWidth = 150;
 int roiHeight = 150;
@@ -10,7 +10,7 @@ boolean useROI = true;
 
 void setup() {
   src = loadImage("test.jpg");
-  opencv = new OpenCVPro(this, src);
+  opencv = new OpenCV(this, src);
   size(opencv.width, opencv.height, P2D);
 }
 

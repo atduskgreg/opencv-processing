@@ -1,9 +1,9 @@
 import gab.opencvpro.*;
 
-OpenCVPro opencv;
+OpenCV opencv;
 
 void setup() {
-  opencv = new OpenCVPro(this, "test.jpg");
+  opencv = new OpenCV(this, "test.jpg");
   size(opencv.width, opencv.height, P2D);
 }
 

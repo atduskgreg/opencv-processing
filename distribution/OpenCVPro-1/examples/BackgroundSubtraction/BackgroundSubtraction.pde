@@ -2,15 +2,15 @@ import gab.opencvpro.*;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
-OpenCVPro beforeCv, afterCv;
+OpenCV beforeCv, afterCv;
 PImage  before, after, colorDiff, grayDiff;
 void setup() {
   before = loadImage("before.jpg");
   after = loadImage("after.jpg");
   size(before.width, before.height);
 
-  beforeCv = new OpenCVPro(this, before);
-  afterCv = new OpenCVPro(this, after);
+  beforeCv = new OpenCV(this, before);
+  afterCv = new OpenCV(this, after);
 
   // NOTE: important to not do the color diff 
   //       before calling these, as this makes
@@ -19,8 +19,8 @@ void setup() {
   afterCv.gray();
   
 
-  OpenCVPro.diff(beforeCv.getBufferColor(), afterCv.getBufferColor());
-  OpenCVPro.diff(beforeCv.getBufferGray(), afterCv.getBufferGray());
+  OpenCV.diff(beforeCv.getBufferColor(), afterCv.getBufferColor());
+  OpenCV.diff(beforeCv.getBufferGray(), afterCv.getBufferGray());
 
   colorDiff = beforeCv.getColorImage();
 
