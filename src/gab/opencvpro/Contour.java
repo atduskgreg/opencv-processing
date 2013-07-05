@@ -88,5 +88,11 @@ public class Contour {
 	public Rectangle getBoundingBox(){
 		return boundingBox;
 	}
+	
+	public float area(){
+		return (boundingBox.width * boundingBox.height);
+	}
 }
+
+
 

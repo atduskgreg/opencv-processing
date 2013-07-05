@@ -30,6 +30,7 @@
 package gab.opencvpro;
 
 import gab.opencvpro.Contour;
+import gab.opencvpro.ContourComparator;
 import gab.opencvpro.Histogram;
 
 import java.awt.Rectangle;
@@ -40,6 +41,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -480,6 +482,10 @@ public class OpenCV {
 	}
 	
 	public ArrayList<Contour> findContours(){
+		return findContours(false);
+	}
+	
+	public ArrayList<Contour> findContours(boolean sort){
 		ArrayList<Contour> result = new ArrayList<Contour>();
 		
 		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
@@ -492,6 +498,10 @@ public class OpenCV {
 		    result.add(new Contour(parent, c));
 		  }
 		
+		if(sort){
+			Collections.sort(result, new ContourComparator());
+		}
+		  
 		return result;
 	}
 	
