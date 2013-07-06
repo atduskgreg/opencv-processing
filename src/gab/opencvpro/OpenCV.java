@@ -59,6 +59,8 @@ import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvException;
 import org.opencv.core.Core.MinMaxLocResult;
 
+import org.opencv.video.BackgroundSubtractorMOG;
+
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
 
@@ -102,6 +104,7 @@ public class OpenCV {
 	private PImage inputImage;
 	
 	CascadeClassifier classifier;
+	BackgroundSubtractorMOG backgroundSubtractor;
 
 	public final static String VERSION = "##library.prettyVersion##";
 	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
@@ -109,6 +112,7 @@ public class OpenCV {
 	
 	public final static int HORIZONTAL = 0;
 	public final static int VERTICAL = 1;
+	
 	
 	
     static{ System.loadLibrary("opencv_java245"); }
@@ -331,6 +335,16 @@ public class OpenCV {
 
 		return results;
 	}
+	
+	public void startBackgroundSubtraction(int history, int nMixtures, double backgroundRatio){
+		backgroundSubtractor = new BackgroundSubtractorMOG(history, nMixtures, backgroundRatio);
+	}
+	
+	public void updateBackground(){
+		Mat foreground = imitate(getCurrentBuffer());
+		backgroundSubtractor.apply(getCurrentBuffer(), foreground, 0.05);
+		setBufferGray(foreground);
+	}	
 	
 	/**
 	 * 

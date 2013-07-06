@@ -82,13 +82,13 @@ Assign a sub-section (or Region of Interest) of the image to be processed. Video
 
 Code: [RegionOfInterest.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/RegionOfInterest/RegionOfInterest.pde)
 
-#### BackgroundSubtraction
+#### ImageDiff
 
 Find the difference between two images in order to subtract the background or detect a new object in a scene.
 
 <a href="http://www.flickr.com/photos/unavoidablegrain/8640005799/" title="Screen Shot 2013-04-11 at 2.10.35 PM by atduskgreg, on Flickr"><img src="http://farm9.staticflickr.com/8114/8640005799_44b48e01ae.jpg" width="500" height="409" alt="Screen Shot 2013-04-11 at 2.10.35 PM"></a>
 
-Code: [BackgroundSubtraction.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/BackgroundSubtraction/BackgroundSubtraction.pde)
+Code: [ImageDiff.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/ImageDiff/ImageDiff.pde)
 
 #### DilationAndErosion
 
@@ -97,6 +97,15 @@ Thin (erode) and expand (dilate) an image in order to close holes. These are kno
 <a href="http://www.flickr.com/photos/unavoidablegrain/9075875005/" title="dilation and erosion by atduskgreg, on Flickr"><img src="http://farm3.staticflickr.com/2818/9075875005_8f7cde3ed7.jpg" width="496" height="500" alt="dilation and erosion"></a>
 
 Code: [DilationAndErosion.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/DilationAndErosion/DilationAndErosion.pde)
+
+#### BackgroundSubtraction
+
+Detect moving objects in a scene. Use background subtraction to distinguish background from foreground and contour tracking to track the foreground objects.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9220336868/" title="Background Subtraction by atduskgreg, on Flickr"><img src="http://farm8.staticflickr.com/7292/9220336868_bed3498528.jpg" width="500" height="369" alt="Background Subtraction"></a>
+
+Code: [BackgroundSubtraction.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/BackgroundSubtraction/BackgroundSubtraction.pde)
+
 
 #### WorkingWithColorImages
 
