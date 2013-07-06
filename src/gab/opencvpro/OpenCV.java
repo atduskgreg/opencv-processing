@@ -234,6 +234,15 @@ public class OpenCV {
     	bufferV = channels.get(2);
     }
     
+    private void populateBGRA(){
+    	ArrayList<Mat> channels = new ArrayList<Mat>();
+    	Core.split(bufferBGRA, channels);
+		bufferB = channels.get(0);
+		bufferG = channels.get(1);
+		bufferR = channels.get(2);
+		bufferA = channels.get(3);	
+    }
+    
     public void useGray(){
     	useColor = false;
     }
@@ -650,6 +659,7 @@ public class OpenCV {
 		
 		toCv(img, bufferBGRA);
 		ARGBtoBGRA(bufferBGRA,bufferBGRA);
+		populateBGRA();
 		
 		if(useColor){
 			useColor(this.colorSpace);
@@ -666,6 +676,7 @@ public class OpenCV {
 		ArrayList<Mat> reordered = new ArrayList<Mat>();
 		// Starts as ARGB. 
 		// Make into BGRA.
+		
 		reordered.add(channels.get(3));
 		reordered.add(channels.get(2));
 		reordered.add(channels.get(1));
