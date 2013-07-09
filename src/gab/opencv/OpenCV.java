@@ -263,7 +263,7 @@ public class OpenCV {
     	return useColor;
     }
     
-    private Mat getCurrentBuffer(){
+    private Mat getCurrentMat(){
     	if(useROI){
     		return matROI;
     		
@@ -345,7 +345,7 @@ public class OpenCV {
 	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
-		classifier.detectMultiScale(getCurrentBuffer(), detections);
+		classifier.detectMultiScale(getCurrentMat(), detections);
 		
 		Rect[] rects = detections.toArray(); 
 
@@ -362,8 +362,8 @@ public class OpenCV {
 	}
 	
 	public void updateBackground(){
-		Mat foreground = imitate(getCurrentBuffer());
-		backgroundSubtractor.apply(getCurrentBuffer(), foreground, 0.05);
+		Mat foreground = imitate(getCurrentMat());
+		backgroundSubtractor.apply(getCurrentMat(), foreground, 0.05);
 		setGray(foreground);
 	}	
 	
@@ -384,7 +384,7 @@ public class OpenCV {
 			modifier = new Scalar(amt);
 		}
 		
-		Core.multiply(getCurrentBuffer(), modifier, getCurrentBuffer());
+		Core.multiply(getCurrentMat(), modifier, getCurrentMat());
 	}
 	
 	/**
@@ -394,7 +394,7 @@ public class OpenCV {
 	 * 		A PVector with the location of the maximum value.
 	 */
 	public PVector max(){
-		MinMaxLocResult r = Core.minMaxLoc(getCurrentBuffer());
+		MinMaxLocResult r = Core.minMaxLoc(getCurrentMat());
 		return OpenCV.pointToPVector(r.maxLoc);
 	}
 	
@@ -405,7 +405,7 @@ public class OpenCV {
 	 * 		A PVector with the location of the minimum value.
 	 */
 	public PVector min(){
-		MinMaxLocResult r = Core.minMaxLoc(getCurrentBuffer());
+		MinMaxLocResult r = Core.minMaxLoc(getCurrentMat());
 		return OpenCV.pointToPVector(r.minLoc);
 	}
 	
@@ -430,7 +430,7 @@ public class OpenCV {
 			modifier = new Scalar(amt);
 		}
 		
-		Core.add(getCurrentBuffer(), modifier, getCurrentBuffer());
+		Core.add(getCurrentMat(), modifier, getCurrentMat());
 	}
 	
 	public static Mat imitate(Mat m){
@@ -442,16 +442,16 @@ public class OpenCV {
 		Mat imgMat = imitate(getColor());
 		toCv(img, imgMat);
 
-		Mat dst = imitate(getCurrentBuffer());
+		Mat dst = imitate(getCurrentMat());
 
 		if(useColor){
 			ARGBtoBGRA(imgMat, imgMat);
-			Core.absdiff(getCurrentBuffer(), imgMat, dst);
+			Core.absdiff(getCurrentMat(), imgMat, dst);
 		} else {
-			Core.absdiff(getCurrentBuffer(), OpenCV.gray(imgMat), dst);
+			Core.absdiff(getCurrentMat(), OpenCV.gray(imgMat), dst);
 		}
 		
-		dst.assignTo(getCurrentBuffer());
+		dst.assignTo(getCurrentMat());
 	}
 	
 	public static void diff(Mat mat1, Mat mat2){
@@ -461,12 +461,12 @@ public class OpenCV {
 	}
 	
 	public void threshold(int threshold){
-		Imgproc.threshold(getCurrentBuffer(), getCurrentBuffer(), threshold, 255, Imgproc.THRESH_BINARY); 
+		Imgproc.threshold(getCurrentMat(), getCurrentMat(), threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 
 	public void adaptiveThreshold(int blockSize, int c){
 		try{
-			Imgproc.adaptiveThreshold(getCurrentBuffer(), getCurrentBuffer(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
+			Imgproc.adaptiveThreshold(getCurrentMat(), getCurrentMat(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
 		} catch(CvException e){
 			PApplet.println("ERROR: adaptiveThreshold function only works on gray images.");
 		}
@@ -474,45 +474,45 @@ public class OpenCV {
 	
 	public void equalizeHistogram(){
 		try{
-			Imgproc.equalizeHist(getCurrentBuffer(), getCurrentBuffer());
+			Imgproc.equalizeHist(getCurrentMat(), getCurrentMat());
 		} catch(CvException e){
 			PApplet.println("ERROR: equalizeHistogram only works on a gray image.");
 		}
 	}
 	
 	public void invert(){
-		Core.bitwise_not(getCurrentBuffer(),getCurrentBuffer());
+		Core.bitwise_not(getCurrentMat(),getCurrentMat());
 	}
 	
 	public void dilate(){
-		Imgproc.dilate(getCurrentBuffer(), getCurrentBuffer(), new Mat());
+		Imgproc.dilate(getCurrentMat(), getCurrentMat(), new Mat());
 	}
 	
 	public void erode(){
-		Imgproc.erode(getCurrentBuffer(), getCurrentBuffer(), new Mat());
+		Imgproc.erode(getCurrentMat(), getCurrentMat(), new Mat());
 	}
 	
 	public void blur(int blurSize){
-		Imgproc.blur(getCurrentBuffer(), getCurrentBuffer(), new Size(blurSize, blurSize)); 
+		Imgproc.blur(getCurrentMat(), getCurrentMat(), new Size(blurSize, blurSize)); 
 	}
 	
 	public void findCannyEdges(int lowThreshold, int highThreshold){
-		Imgproc.Canny(getCurrentBuffer(), getCurrentBuffer(), lowThreshold, highThreshold);
+		Imgproc.Canny(getCurrentMat(), getCurrentMat(), lowThreshold, highThreshold);
 	}
 	
 	public void findSobelEdges(int dx, int dy){
-		Mat sobeled = new Mat(getCurrentBuffer().height(), getCurrentBuffer().width(), CvType.CV_32F);
-		Imgproc.Sobel(getCurrentBuffer(), sobeled, CvType.CV_32F, dx, dy);
-		sobeled.convertTo(getCurrentBuffer(), getCurrentBuffer().type());
+		Mat sobeled = new Mat(getCurrentMat().height(), getCurrentMat().width(), CvType.CV_32F);
+		Imgproc.Sobel(getCurrentMat(), sobeled, CvType.CV_32F, dx, dy);
+		sobeled.convertTo(getCurrentMat(), getCurrentMat().type());
 	}
 	
 	public void findScharrEdges(int direction){
 		if(direction == HORIZONTAL){
-			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 1, 0 );
+			Imgproc.Scharr(getCurrentMat(), getCurrentMat(), -1, 1, 0 );
 		}
 		
 		if(direction == VERTICAL){
-			Imgproc.Scharr(getCurrentBuffer(), getCurrentBuffer(), -1, 0, 1 );
+			Imgproc.Scharr(getCurrentMat(), getCurrentMat(), -1, 0, 1 );
 		}
 	}
 	
@@ -527,7 +527,7 @@ public class OpenCV {
 		try{
 			int contourFindingMode = (findHoles ? Imgproc.RETR_LIST : Imgproc.RETR_EXTERNAL);
 			
-			Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), contourFindingMode, Imgproc.CHAIN_APPROX_NONE);
+			Imgproc.findContours(getCurrentMat(), contourMat, new Mat(), contourFindingMode, Imgproc.CHAIN_APPROX_NONE);
 		} catch(CvException e){
 			PApplet.println("ERROR: findContours only works with a gray image.");
 		}
@@ -544,14 +544,14 @@ public class OpenCV {
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();
-		Calib3d.findChessboardCorners(getCurrentBuffer(), new Size(patternWidth,patternHeight), corners);
+		Calib3d.findChessboardCorners(getCurrentMat(), new Size(patternWidth,patternHeight), corners);
 		return matToPVectors(corners);
 	}
 	
 	/**
 	 * 
-	 * @param buffer 
-	 * 		The buffer from which to calculate the histogram. Get this from getBufferGray(), getBufferR(), getBufferG(), or getBufferB().
+	 * @param mat 
+	 * 		The mat from which to calculate the histogram. Get this from getGray(), getR(), getG(), getB(), etc..
 	 * 		By default this will normalize the histogram (scale the values to 0.0-1.0). Pass false as the third argument to keep values unormalized.
 	 * @param numBins 
 	 * 		The number of bins into which divide the histogram should be divided.
@@ -560,12 +560,12 @@ public class OpenCV {
 	 * @return
 	 * 		A Histogram object that you can call draw() on.
 	 */
-	public Histogram findHistogram(Mat buffer, int numBins){
-		return findHistogram(buffer, numBins, true);
+	public Histogram findHistogram(Mat mat, int numBins){
+		return findHistogram(mat, numBins, true);
 	}
 	
 	
-	public Histogram findHistogram(Mat buffer, int numBins, boolean normalize){
+	public Histogram findHistogram(Mat mat, int numBins, boolean normalize){
 		
 		MatOfInt channels = new MatOfInt(0);
 		MatOfInt histSize = new MatOfInt(numBins);
@@ -574,7 +574,7 @@ public class OpenCV {
 		Mat hist = new Mat();
 		
 		ArrayList<Mat> images = new ArrayList<Mat>();
-		images.add(buffer);
+		images.add(mat);
 
 		Imgproc.calcHist( images, channels, new Mat(), hist, histSize, ranges);
 		
@@ -583,7 +583,6 @@ public class OpenCV {
 		}
 		
 		return new Histogram(parent, hist);
-		
 	}
 	
 	/**
@@ -596,7 +595,7 @@ public class OpenCV {
 	 * @param upperBound
 	 */
 	public void inRange(int lowerBound, int upperBound){
-		Core.inRange(getCurrentBuffer(), new Scalar(lowerBound), new Scalar(upperBound), getCurrentBuffer());
+		Core.inRange(getCurrentMat(), new Scalar(lowerBound), new Scalar(upperBound), getCurrentMat());
 	}
 	
 	/**
