@@ -19,9 +19,9 @@ void draw() {
   
   image(img, 0, 0);  
   
-  opencv.setBufferGray(opencv.getBufferH().clone());
+  opencv.setGray(opencv.getH().clone());
   opencv.inRange(lowerb, upperb);
-  histogram = opencv.findHistogram(opencv.getBufferH(), 255);
+  histogram = opencv.findHistogram(opencv.getH(), 255);
 
   image(opencv.getOutput(), 3*width/4, 3*height/4, width/4,height/4);
 

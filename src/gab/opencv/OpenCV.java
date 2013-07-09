@@ -88,13 +88,13 @@ public class OpenCV {
 	private int roiWidth;
 	private int roiHeight;
 		
-	public Mat bufferBGRA;
-	public Mat bufferR, bufferG, bufferB, bufferA;
-	public Mat bufferHSV;
-	public Mat bufferH, bufferS, bufferV;
-	public Mat bufferGray;
-	public Mat bufferROI;
-	public Mat nonROIBuffer; // so that releaseROI() can return to color/gray as appropriate
+	public Mat matBGRA;
+	public Mat matR, matG, matB, matA;
+	public Mat matHSV;
+	public Mat matH, matS, matV;
+	public Mat matGray;
+	public Mat matROI;
+	public Mat nonROImat; // so that releaseROI() can return to color/gray as appropriate
 	
 	private boolean useColor;
 	private boolean useROI;
@@ -236,23 +236,23 @@ public class OpenCV {
     }
     
     private void populateHSV(){
-    	bufferHSV = imitate(bufferBGRA);
-    	Imgproc.cvtColor(bufferBGRA, bufferHSV, Imgproc.COLOR_BGR2HSV);
+    	matHSV = imitate(matBGRA);
+    	Imgproc.cvtColor(matBGRA, matHSV, Imgproc.COLOR_BGR2HSV);
     	ArrayList<Mat> channels = new ArrayList<Mat>();
-    	Core.split(bufferHSV, channels);
+    	Core.split(matHSV, channels);
     	    	
-    	bufferH = channels.get(0);
-    	bufferS = channels.get(1);
-    	bufferV = channels.get(2);
+    	matH = channels.get(0);
+    	matS = channels.get(1);
+    	matV = channels.get(2);
     }
     
     private void populateBGRA(){
     	ArrayList<Mat> channels = new ArrayList<Mat>();
-    	Core.split(bufferBGRA, channels);
-		bufferB = channels.get(0);
-		bufferG = channels.get(1);
-		bufferR = channels.get(2);
-		bufferA = channels.get(3);	
+    	Core.split(matBGRA, channels);
+		matB = channels.get(0);
+		matG = channels.get(1);
+		matR = channels.get(2);
+		matA = channels.get(3);	
     }
     
     public void useGray(){
@@ -265,14 +265,14 @@ public class OpenCV {
     
     private Mat getCurrentBuffer(){
     	if(useROI){
-    		return bufferROI;
+    		return matROI;
     		
     	} else{
     	
     		if(useColor){
-    			return bufferBGRA;
+    			return matBGRA;
     		} else{
-    			return bufferGray;
+    			return matGray;
     		}
     	}
     }
@@ -300,13 +300,13 @@ public class OpenCV {
 		welcome();
 		setupWorkingImages();
 		
-		bufferR = new Mat(height, width, CvType.CV_8UC1);
-		bufferG = new Mat(height, width, CvType.CV_8UC1);
-		bufferB = new Mat(height, width, CvType.CV_8UC1);
-		bufferA = new Mat(height, width, CvType.CV_8UC1);
-		bufferGray = new Mat(height, width, CvType.CV_8UC1);
+		matR = new Mat(height, width, CvType.CV_8UC1);
+		matG = new Mat(height, width, CvType.CV_8UC1);
+		matB = new Mat(height, width, CvType.CV_8UC1);
+		matA = new Mat(height, width, CvType.CV_8UC1);
+		matGray = new Mat(height, width, CvType.CV_8UC1);
 		
-		bufferBGRA = new Mat(height, width, CvType.CV_8UC4);
+		matBGRA = new Mat(height, width, CvType.CV_8UC4);
     }
     
     private void setupWorkingImages(){
@@ -364,7 +364,7 @@ public class OpenCV {
 	public void updateBackground(){
 		Mat foreground = imitate(getCurrentBuffer());
 		backgroundSubtractor.apply(getCurrentBuffer(), foreground, 0.05);
-		setBufferGray(foreground);
+		setGray(foreground);
 	}	
 	
 	/**
@@ -439,7 +439,7 @@ public class OpenCV {
 	
 	
 	public void diff(PImage img){
-		Mat imgMat = imitate(getBufferColor());
+		Mat imgMat = imitate(getColor());
 		toCv(img, imgMat);
 
 		Mat dst = imitate(getCurrentBuffer());
@@ -614,7 +614,7 @@ public class OpenCV {
 	}
 	
 	public void gray(){
-		bufferGray = gray(bufferBGRA);
+		matGray = gray(matBGRA);
 		useGray(); //???
 	}
 	
@@ -638,11 +638,11 @@ public class OpenCV {
 			roiHeight = h;
 		
 			if(useColor){
-				nonROIBuffer = bufferBGRA;
-				bufferROI = new Mat(bufferBGRA, new Rect(x, y, w, h));
+				nonROImat = matBGRA;
+				matROI = new Mat(matBGRA, new Rect(x, y, w, h));
 			} else {
-				nonROIBuffer = bufferGray;
-				bufferROI = new Mat(bufferGray, new Rect(x, y, w, h));
+				nonROImat = matGray;
+				matROI = new Mat(matGray, new Rect(x, y, w, h));
 			}
 			useROI = true;
 			
@@ -671,8 +671,8 @@ public class OpenCV {
 		// 			this?
 		inputImage = img;
 		
-		toCv(img, bufferBGRA);
-		ARGBtoBGRA(bufferBGRA,bufferBGRA);
+		toCv(img, matBGRA);
+		ARGBtoBGRA(matBGRA,matBGRA);
 		populateBGRA();
 		
 		if(useColor){
@@ -797,84 +797,84 @@ public class OpenCV {
 	
 	public PImage getOutput(){
 		if(useColor){
-			toPImage(bufferBGRA, outputImage);
+			toPImage(matBGRA, outputImage);
 		} else {
-			toPImage(bufferGray, outputImage);
+			toPImage(matGray, outputImage);
 		}
 		
 		return outputImage;	
 	}
 	
 	public PImage getSnapshot(){
+		PImage result;
+		
 		if(useColor){
 			if(colorSpace == PApplet.HSB){
-				toPImage(bufferHSV, outputImage);
+				result = getSnapshot(matHSV);
 			} else {
-				toPImage(bufferBGRA, outputImage);
+				result = getSnapshot(matBGRA);
 			}
 		} else {
-			toPImage(bufferGray, outputImage);
+			result = getSnapshot(matGray);
 		}
-		
-		PImage result = parent.createImage(width, height, PApplet.ARGB);
-		result.copy(outputImage, 0, 0, width, height, 0, 0, width, height);
+	
 		return result;
 	}
 	
-	public PImage getROI(){
-		PImage result = parent.createImage(roiWidth, roiHeight, PApplet.ARGB);
-		toPImage(bufferROI, result);
+	public PImage getSnapshot(Mat m){
+		PImage result = parent.createImage(m.width(), m.height(), PApplet.ARGB);
+		toPImage(m, result);
 		return result;
 	}
-	
-	public Mat getBufferR(){
-		return bufferR;
+
+	public Mat getR(){
+		return matR;
 	}
 	
-	public Mat getBufferG(){
-		return bufferG;
+	public Mat getG(){
+		return matG;
 	}
 	
-	public Mat getBufferB(){
-		return bufferB;
+	public Mat getB(){
+		return matB;
 	}
 	
-	public Mat getBufferA(){
-		return bufferA;
+	public Mat getA(){
+		return matA;
 	}
 	
-	public Mat getBufferH(){
-		return bufferH;
+	public Mat getH(){
+		return matH;
 	}
 	
-	public Mat getBufferS(){
-		return bufferS;
+	public Mat getS(){
+		return matS;
 	}
 	
-	public Mat getBufferV(){
-		return bufferV;
+	public Mat getV(){
+		return matV;
 	}
 	
-	public Mat getBufferGray(){
-		return bufferGray;
+	public Mat getGray(){
+		return matGray;
 	}
 	
-	public void setBufferGray(Mat m){
-		bufferGray = m;
+	public void setGray(Mat m){
+		matGray = m;
 		useColor = false;
 	}
 	
-	public void setBufferColor(Mat m){
-		bufferBGRA = m;
+	public void setColor(Mat m){
+		matBGRA = m;
 		useColor = true;
 	}
 	
-	public Mat getBufferColor(){
-		return bufferBGRA;
+	public Mat getColor(){
+		return matBGRA;
 	}
 	
-	public Mat getBufferROI(){
-		return bufferROI;
+	public Mat getROI(){
+		return matROI;
 	}
 
 	private void welcome() {

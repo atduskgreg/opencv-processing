@@ -27,14 +27,14 @@ void setup() {
   src = opencv.getInput();
 
   // hold on to this for later, since adaptiveThreshold is destructive
-  Mat gray = OpenCV.imitate(opencv.getBufferGray());
-  opencv.getBufferGray().copyTo(gray);
+  Mat gray = OpenCV.imitate(opencv.getGray());
+  opencv.getGray().copyTo(gray);
 
-  Mat thresholdMat = OpenCV.imitate(opencv.getBufferGray());
+  Mat thresholdMat = OpenCV.imitate(opencv.getGray());
 
   opencv.blur(5);
   
-  Imgproc.adaptiveThreshold(opencv.getBufferGray(), thresholdMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 451, -65);
+  Imgproc.adaptiveThreshold(opencv.getGray(), thresholdMat, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 451, -65);
 
   contours = new ArrayList<MatOfPoint>();
   Imgproc.findContours(thresholdMat, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);

@@ -13,24 +13,15 @@ void setup() {
   imgH = src.height/2;
   imgW = src.width/2;
   
-  opencv.setBufferGray(opencv.getBufferR());
-  r = opencv.getSnapshot();
-  
-  opencv.setBufferGray(opencv.getBufferG());
-  g = opencv.getSnapshot();
-  
-  opencv.setBufferGray(opencv.getBufferB());
-  b = opencv.getSnapshot();  
+  r = opencv.getSnapshot(opencv.getR());
+  g = opencv.getSnapshot(opencv.getG());
+  b = opencv.getSnapshot(opencv.getB());  
   
   opencv.useColor(HSB);
-  opencv.setBufferGray(opencv.getBufferH());
-  h = opencv.getSnapshot();
   
-  opencv.setBufferGray(opencv.getBufferS());
-  s = opencv.getSnapshot();
-  
-  opencv.setBufferGray(opencv.getBufferV());
-  v = opencv.getSnapshot();
+  h = opencv.getSnapshot(opencv.getH());
+  s = opencv.getSnapshot(opencv.getS());  
+  v = opencv.getSnapshot(opencv.getV());
 }
 
 void draw() {
@@ -51,5 +42,4 @@ void draw() {
   image(h, 0, 2*imgH, imgW, imgH);
   image(s, imgW, 2*imgH, imgW, imgH);
   image(v, 2*imgW, 2*imgH, imgW, imgH);
-
 }

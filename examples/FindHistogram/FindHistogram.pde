@@ -10,10 +10,10 @@ void setup() {
   img = loadImage("test.jpg");
   opencv = new OpenCV(this, img);
 
-  grayHist = opencv.findHistogram(opencv.getBufferGray(), 256);
-  rHist = opencv.findHistogram(opencv.getBufferR(), 256);
-  gHist = opencv.findHistogram(opencv.getBufferG(), 256);
-  bHist = opencv.findHistogram(opencv.getBufferB(), 256);
+  grayHist = opencv.findHistogram(opencv.getGray(), 256);
+  rHist = opencv.findHistogram(opencv.getR(), 256);
+  gHist = opencv.findHistogram(opencv.getG(), 256);
+  bHist = opencv.findHistogram(opencv.getB(), 256);
 }
 
 void draw() {

@@ -22,10 +22,10 @@ void setup() {
   // Save the gray image so we can compare it to Luma
   grayImage = opencv.getSnapshot();
   // Use built-in OpenCV function to conver the color image from BGR to LAB color space.
-  Imgproc.cvtColor(opencv.getBufferColor(), opencv.getBufferColor(), Imgproc.COLOR_BGR2Lab);
+  Imgproc.cvtColor(opencv.getColor(), opencv.getColor(), Imgproc.COLOR_BGR2Lab);
   // Since the channels start out in the order BGRA,
   // Converting to LAB will put the Luma in the B channel
-  opencv.setBufferGray(opencv.getBufferB());
+  opencv.setGray(opencv.getB());
 }
 
 void draw() {

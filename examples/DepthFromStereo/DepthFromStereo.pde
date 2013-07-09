@@ -19,8 +19,8 @@ void setup() {
 
   ocvL.gray();
   ocvR.gray();
-  Mat left = ocvL.getBufferGray();
-  Mat right = ocvR.getBufferGray();
+  Mat left = ocvL.getGray();
+  Mat right = ocvR.getGray();
 
   Mat disparity = OpenCV.imitate(left);
 
