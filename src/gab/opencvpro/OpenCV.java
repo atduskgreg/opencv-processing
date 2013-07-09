@@ -109,6 +109,18 @@ public class OpenCV {
 	public final static String VERSION = "##library.prettyVersion##";
 	public final static String CASCADE_FRONTALFACE_ALT = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
+	public final static String CASCADE_EYE = "haarcascade_eye.xml";
+	public final static String CASCADE_CLOCK = "haarcascade_clock.xml";
+	public final static String CASCADE_NOSE = "haarcascade_mcs_nose.xml";
+	public final static String CASCADE_MOUTH = "haarcascade_mcs_mouth.xml";
+	public final static String CASCADE_UPPERBODY = "haarcascade_upperbody.xml";
+	public final static String CASCADE_LOWERBODY = "haarcascade_lowerbody.xml";
+	public final static String CASCADE_FULLBODY = "haarcascade_fullbody.xml";
+	public final static String CASCADE_PEDESTRIAN = "hogcascade_pedestrians.xml";
+
+	public final static String CASCADE_RIGHT_EAR = "haarcascade_mcs_rightear.xml";
+	public final static String CASCADE_PROFILEFACE = "haarcascade_profileface.xml";
+	
 	
 	public final static int HORIZONTAL = 0;
 	public final static int VERTICAL = 1;
@@ -505,15 +517,17 @@ public class OpenCV {
 	}
 	
 	public ArrayList<Contour> findContours(){
-		return findContours(false);
+		return findContours(true, false);
 	}
 	
-	public ArrayList<Contour> findContours(boolean sort){
+	public ArrayList<Contour> findContours(boolean findHoles, boolean sort){
 		ArrayList<Contour> result = new ArrayList<Contour>();
 		
 		ArrayList<MatOfPoint> contourMat = new ArrayList<MatOfPoint>();
 		try{
-		Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+			int contourFindingMode = (findHoles ? Imgproc.RETR_LIST : Imgproc.RETR_EXTERNAL);
+			
+			Imgproc.findContours(getCurrentBuffer(), contourMat, new Mat(), contourFindingMode, Imgproc.CHAIN_APPROX_NONE);
 		} catch(CvException e){
 			PApplet.println("ERROR: findContours only works with a gray image.");
 		}

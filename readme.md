@@ -1,4 +1,4 @@
-## OpenCVPro - OpenCV for Processing
+## OpenCV for Processing
 
 **A Processing library for the [OpenCV](http://opencv.org/) computer vision library.**
 
@@ -114,6 +114,14 @@ Demonstration of what you can do color images in OpenCV (threshold, blur, etc) a
 <a href="http://www.flickr.com/photos/unavoidablegrain/9136033334/" title="color operations: threshold and blur by atduskgreg, on Flickr"><img src="http://farm6.staticflickr.com/5451/9136033334_3345dfa057.jpg" width="500" height="358" alt="color operations: threshold and blur"></a>
 
 Code: [WorkingWithColorImages.pde](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/WorkingWithColorImages/WorkingWithColorImages.pde)
+
+#### ColorChannels ####
+
+Separate a color image into red, green, blue or hue, saturation, and value channels in order to work with the channels individually.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9246157901/" title="ColorChannels by atduskgreg, on Flickr"><img src="http://farm3.staticflickr.com/2847/9246157901_08ccf19e7d.jpg" width="488" height="500" alt="ColorChannels"></a>
+
+Code: [ColorChannels](https://github.com/atduskgreg/OpenCVPro/blob/master/examples/ColorChannels/ColorChannels.pde)
 
 #### FindHistogram
 

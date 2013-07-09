@@ -107,8 +107,8 @@ ${line}
 		<antcall target="compile" />
 	  	<antcall target="generate.jar"><param name="folder" value="library"/></antcall>
 	  	<antcall target="generate.javadoc" />
-		<antcall target="copyToSketchbook"><param name="folder" value="libraries"/></antcall>
 		<antcall target="generate.libprops" />
+		<antcall target="copyToSketchbook"><param name="folder" value="libraries"/></antcall>
 		<antcall target="generate.distribution" />
 		<antcall target="generate.install.library" />
 		<antcall target="generate.web" />
@@ -163,20 +163,14 @@ ${line}
   		<mkdir dir="${project.tmp}/${project.name}/examples" />
 	  	<mkdir dir="${project.tmp}/${project.name}/reference" />
   		<mkdir dir="${project.tmp}/${project.name}/src" />
-  		<mkdir dir="${project.tmp}/${project.name}/data" />
-		
   		<copy todir="${project.tmp}/${project.name}/examples">
   			<fileset dir="${project.examples}">
 	  			<exclude name="**/*README*"/>
   			</fileset>
 	  	</copy>
-  		<copy todir="${project.tmp}/${project.name}/data">
-  			<fileset dir="${project.data}"/>
+  		<copy todir="${project.tmp}/${project.name}/src">
+  			<fileset dir="${project.src}"/>
 	  	</copy>
-		
-		<copy todir="${project.tmp}/${project.name}/src">
-		  			<fileset dir="${project.src}"/>
-			  	</copy>
 	  	<copy todir="${project.tmp}/${project.name}/${folder}">
   			<fileset dir="${project.lib}" excludes="README" />
 	  	</copy>
@@ -271,7 +265,7 @@ ${line}
     	<replaceregexp file="${file}" match="##author.name##" replace="${author.name}" flags="g" />
     	<replaceregexp file="${file}" match="##author.url##" replace="${author.url}" flags="g" />
     	        
-    	<replaceregexp file="${file}" match="##library.name##" replace="${project.name}" flags="g" />
+    	<replaceregexp file="${file}" match="##library.name##" replace="${project.prettyName}" flags="g" />
     	<replaceregexp file="${file}" match="##project.name##" replace="${project.name}" flags="g" />
     	        
         <replaceregexp file="${file}" match="##library.version##" replace="${library.version}" flags="g" />
