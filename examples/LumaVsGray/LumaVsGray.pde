@@ -7,7 +7,7 @@ grayscale version. Uses un-wrapped OpenCV cvtColor() function.
 
 */
 
-import gab.opencvpro.*;
+import gab.opencv.*;
 // Import the OpenCV Improc class,
 // it has the cvtColor() function we need.
 import org.opencv.imgproc.Imgproc;

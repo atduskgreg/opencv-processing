@@ -1,4 +1,4 @@
-import gab.opencvpro.*;
+import gab.opencv.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Core;
 

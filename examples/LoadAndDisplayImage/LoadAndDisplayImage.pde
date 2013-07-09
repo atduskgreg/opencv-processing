@@ -1,4 +1,4 @@
-import gab.opencvpro.*;
+import gab.opencv.*;
 
 OpenCV opencv;
 

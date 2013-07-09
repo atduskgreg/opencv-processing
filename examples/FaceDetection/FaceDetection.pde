@@ -1,4 +1,4 @@
-import gab.opencvpro.*;
+import gab.opencv.*;
 import java.awt.Rectangle;
 
 OpenCV opencv;
@@ -8,7 +8,7 @@ void setup() {
   opencv = new OpenCV(this, "test.jpg");
   size(opencv.width, opencv.height);
 
-  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE_ALT);  
+  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);  
   faces = opencv.detect();
 }
 

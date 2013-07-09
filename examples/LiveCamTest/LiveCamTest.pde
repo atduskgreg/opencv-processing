@@ -1,4 +1,4 @@
-import gab.opencvpro.*;
+import gab.opencv.*;
 import processing.video.*;
 import java.awt.*;
 
@@ -9,19 +9,16 @@ void setup() {
   size(640, 480);
   video = new Capture(this, 640/2, 480/2);
   opencv = new OpenCV(this, 640/2, 480/2);
-  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE_ALT);  
+  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);  
 
   video.start();
 }
 
 void draw() {
-  //scale(2);
-
+  scale(2);
   opencv.loadImage(video);
-  opencv.gray();
 
   image(video, 0, 0 );
-
 
   noFill();
   stroke(0, 255, 0);
