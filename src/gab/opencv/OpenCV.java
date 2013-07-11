@@ -32,6 +32,7 @@ package gab.opencv;
 import gab.opencv.Contour;
 import gab.opencv.ContourComparator;
 import gab.opencv.Histogram;
+import gab.opencv.Line;
 
 import java.awt.Rectangle;
 
@@ -518,6 +519,19 @@ public class OpenCV {
 	
 	public ArrayList<Contour> findContours(){
 		return findContours(true, false);
+	}
+	
+	public ArrayList<Line> findLines(int threshold, double minLineLength, double maxLineGap){
+		ArrayList<Line> result = new ArrayList<Line>();
+		
+		Mat lineMat = new Mat();
+		Imgproc.HoughLinesP(getCurrentMat(), lineMat, 1, PConstants.PI/180.0, threshold, minLineLength, maxLineGap);
+		for (int i = 0; i < lineMat.width(); i++) {
+			double[] coords = lineMat.get(0, i);
+		    result.add(new Line(coords[0], coords[1], coords[2], coords[3]));
+		}
+		
+		return result;
 	}
 	
 	public ArrayList<Contour> findContours(boolean findHoles, boolean sort){

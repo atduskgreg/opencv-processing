@@ -7,7 +7,7 @@ public class Histogram {
 	private Mat mat;
 	private PApplet parent;
 	
-	Histogram(PApplet parent, Mat mat){
+	public Histogram(PApplet parent, Mat mat){
 		this.mat = mat;
 		this.parent = parent;
 	}
