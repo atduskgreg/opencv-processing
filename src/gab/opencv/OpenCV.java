@@ -326,7 +326,7 @@ public class OpenCV {
 		// localize path to cascade file to point at the library's data folder
 		String relativePath = "data/" + cascadeFileName;		
 		String jarPath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-
+		
 		String[] parts = jarPath.split("/");
 		
 		String cascadePath = "";
@@ -334,7 +334,9 @@ public class OpenCV {
 			cascadePath += parts[i] + "/";
 		}
 		cascadePath += relativePath;
-		
+				
+		PApplet.println("Load cascade from: " + cascadePath);
+
 		classifier = new CascadeClassifier(cascadePath);   
         
         if(classifier.empty()){
@@ -521,18 +523,7 @@ public class OpenCV {
 		return findContours(true, false);
 	}
 	
-	public ArrayList<Line> findLines(int threshold, double minLineLength, double maxLineGap){
-		ArrayList<Line> result = new ArrayList<Line>();
-		
-		Mat lineMat = new Mat();
-		Imgproc.HoughLinesP(getCurrentMat(), lineMat, 1, PConstants.PI/180.0, threshold, minLineLength, maxLineGap);
-		for (int i = 0; i < lineMat.width(); i++) {
-			double[] coords = lineMat.get(0, i);
-		    result.add(new Line(coords[0], coords[1], coords[2], coords[3]));
-		}
-		
-		return result;
-	}
+	
 	
 	public ArrayList<Contour> findContours(boolean findHoles, boolean sort){
 		ArrayList<Contour> result = new ArrayList<Contour>();
@@ -555,6 +546,21 @@ public class OpenCV {
 		  
 		return result;
 	}
+	
+	public ArrayList<Line> findLines(int threshold, double minLineLength, double maxLineGap){
+		ArrayList<Line> result = new ArrayList<Line>();
+		
+		Mat lineMat = new Mat();
+		Imgproc.HoughLinesP(getCurrentMat(), lineMat, 1, PConstants.PI/180.0, threshold, minLineLength, maxLineGap);
+		for (int i = 0; i < lineMat.width(); i++) {
+			double[] coords = lineMat.get(0, i);
+		    result.add(new Line(coords[0], coords[1], coords[2], coords[3]));
+		}
+		
+		return result;
+	}
+	
+	
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();

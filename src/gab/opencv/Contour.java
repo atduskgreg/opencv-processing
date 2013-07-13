@@ -73,7 +73,7 @@ public class Contour {
 		for (PVector p : points) {
 			parent.vertex(p.x, p.y);
 		}
-		parent.endShape();
+		parent.endShape(PConstants.CLOSE);
 
 	}
 	

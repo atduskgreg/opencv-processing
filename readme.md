@@ -173,6 +173,14 @@ An advanced example. Calculates depth information from a pair of stereo images. 
 
 Code: [DepthFromStereo.pde](https://github.com/atduskgreg/opencv-processing/blob/master/examples/DepthFromStereo/DepthFromStereo.pde)
 
+#### WarpPerspective (in progress)
+
+Un-distort an object that's in perspective. Coming to the real API soon.
+
+<a href="http://www.flickr.com/photos/unavoidablegrain/9279197332/" title="Warp Perspective by atduskgreg, on Flickr"><img src="http://farm3.staticflickr.com/2861/9279197332_ca6beb3760.jpg" width="500" height="416" alt="Warp Perspective"></a>
+
+Code: [WarpPerspective.pde](https://github.com/atduskgreg/opencv-processing/blob/master/examples/WarpPerspective/WarpPerspective.pde)
+
 #### MarkerDetection
 
 An in-depth advanced example. Detect a CV marker in an image, warp perspective, and detect the number stored in the marker. Many steps in the code. Uses many un-wrapped OpenCV objects and functions.
