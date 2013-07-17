@@ -17,3 +17,4 @@ distribution/*
 *.launch
 
 .DS_Store
+/bin
