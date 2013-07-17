@@ -499,6 +499,10 @@ public class OpenCV {
 		Imgproc.blur(getCurrentMat(), getCurrentMat(), new Size(blurSize, blurSize)); 
 	}
 	
+	public void blur(int blurW, int blurH){
+		Imgproc.blur(getCurrentMat(), getCurrentMat(), new Size(blurW, blurH)); 
+	}
+	
 	public void findCannyEdges(int lowThreshold, int highThreshold){
 		Imgproc.Canny(getCurrentMat(), getCurrentMat(), lowThreshold, highThreshold);
 	}
