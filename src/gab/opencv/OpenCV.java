@@ -41,6 +41,9 @@ import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import java.lang.reflect.Field;
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -104,6 +107,8 @@ public class OpenCV {
 	private PImage outputImage;
 	private PImage inputImage;
 	
+	private boolean nativeLoaded;
+	
 	CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
 
@@ -127,9 +132,7 @@ public class OpenCV {
 	public final static int VERTICAL = 1;
 	
 	
-	
-    static{ System.loadLibrary("opencv_java245"); }
-	
+		
     
     /**
      * Initialize OpenCV with the path to an image.
@@ -139,6 +142,7 @@ public class OpenCV {
      * @param pathToImg - A String with a path to the image to be loaded
      */
     public OpenCV(PApplet theParent, String pathToImg){
+    	initNative();
     	useColor = false;
     	loadFromString(theParent, pathToImg);
     }
@@ -152,6 +156,7 @@ public class OpenCV {
      * @param useColor - (Optional) Set to true if you want to use the color version of the image for processing.
      */
     public OpenCV(PApplet theParent, String pathToImg, boolean useColor){
+    	initNative();
     	this.useColor = useColor;
     	if(useColor){
     		useColor(); // have to set the color space.
@@ -176,13 +181,14 @@ public class OpenCV {
      * 			A PImage to be loaded
      */
     public OpenCV(PApplet theParent, PImage img){
+    	initNative();
     	useColor = false;
     	loadFromPImage(theParent, img);
     }
     
     /**
      * Initialize OpenCV with an image.
-     * The image's pixels will be copied and prepared for processing.
+     * The image's pixels will be copiedd and prepared for processing.
      * 
      * @param theParent
      * 			A PApplet representing the user sketch, i.e "this"
@@ -192,6 +198,7 @@ public class OpenCV {
      * 			(Optional) Set to true if you want to use the color version of the image for processing.
      */
     public OpenCV(PApplet theParent, PImage img, boolean useColor){
+    	initNative();
     	this.useColor = useColor;
     	if(useColor){
     		useColor();  
@@ -291,6 +298,7 @@ public class OpenCV {
      * 			int
      */
 	public OpenCV(PApplet theParent, int width, int height) {
+		initNative();
 		parent = theParent;
 		init(width, height);
 	}
@@ -313,6 +321,70 @@ public class OpenCV {
     private void setupWorkingImages(){
 		outputImage = parent.createImage(width,height, PConstants.ARGB);
     }
+    
+    private String getLibPath() {
+        URL url = this.getClass().getResource("OpenCV.class");
+        if (url != null) {
+          // Convert URL to string, taking care of spaces represented by the "%20"
+          // string.
+          String path = url.toString().replace("%20", " ");
+          int n0 = path.indexOf('/');
+
+          int n1 = -1;
+            
+
+          n1 = path.indexOf("opencv_processing.jar");
+          if (PApplet.platform == 1) { //platform Windows
+            // In Windows, path string starts with "jar file/C:/..."
+            // so the substring up to the first / is removed.
+            n0++;
+          }
+
+
+          if ((-1 < n0) && (-1 < n1)) {
+            return path.substring(n0, n1);
+          } else {
+            return "";
+          }
+        }
+        return "";
+      }
+    
+    private void initNative(){
+    	if(!nativeLoaded){
+    		int bitsJVM = PApplet.parseInt(System.getProperty("sun.arch.data.model"));
+	    	String nativeLibPath = getLibPath() ;
+	    	if (PApplet.platform == 1) { //platform Windows
+	          nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
+	    	}
+	    	if (PApplet.platform == 2) { //platform Mac
+	    		nativeLibPath = nativeLibPath + "macosx" + bitsJVM;
+	    	}
+	    	
+	    	if((PApplet.platform == 2 && bitsJVM == 64) || (PApplet.platform == 1 && bitsJVM == 32)){
+		    	try {
+					addLibraryPath(nativeLibPath);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    	System.loadLibrary("opencv_java245"); 	
+	    	}
+	    	else{
+	    		 System.err.println("Cannot load local version of opencv_java245  : Windows 32 bits or Mac Os 64 bits are only avaible");
+	    	}
+    	}
+    }
+    
+
+    private void addLibraryPath(String path) throws Exception {
+        String originalPath = System.getProperty("java.library.path");
+    	System.setProperty("java.library.path", originalPath +System.getProperty("path.separator")+ path);
+     
+        //set sys_paths to null
+        final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
+        sysPathsField.setAccessible(true);
+        sysPathsField.set(null, null);
+    }
 
 	/**
 	 * load a cascade xml file from the data folder
@@ -324,15 +396,8 @@ public class OpenCV {
 	public void loadCascade(String cascadeFileName){
 
 		// localize path to cascade file to point at the library's data folder
-		String relativePath = "data/" + cascadeFileName;		
-		String jarPath = getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-		
-		String[] parts = jarPath.split("/");
-		
-		String cascadePath = "";
-		for(int i = 0; i < parts.length-2; i++){
-			cascadePath += parts[i] + "/";
-		}
+		String relativePath = "cascade-files/" + cascadeFileName;
+		String cascadePath = getLibPath();
 		cascadePath += relativePath;
 				
 		PApplet.println("Load cascade from: " + cascadePath);
