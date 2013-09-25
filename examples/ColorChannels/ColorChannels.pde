@@ -6,7 +6,7 @@ PImage src, r, g, b, h, s, v;
 int imgH, imgW;
 
 void setup() {
-  src = loadImage("testImage.png");
+  src = loadImage("green_object.png");
   opencv = new OpenCV(this, src);  
   size(int(opencv.width*1.5), int(opencv.height * 1.5), P2D);
   
