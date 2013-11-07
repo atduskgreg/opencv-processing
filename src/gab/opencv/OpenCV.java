@@ -109,7 +109,7 @@ public class OpenCV {
 	
 	private boolean nativeLoaded;
 	
-	CascadeClassifier classifier;
+	public CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
 
 	public final static String VERSION = "##library.prettyVersion##";
@@ -477,7 +477,7 @@ public class OpenCV {
 		return OpenCV.pointToPVector(r.minLoc);
 	}
 	
-	private static PVector pointToPVector(Point p){
+	public static PVector pointToPVector(Point p){
 		return new PVector((float)p.x, (float)p.y);
 	}
 	
