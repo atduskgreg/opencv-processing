@@ -334,7 +334,7 @@ public class OpenCV {
             
 
           n1 = path.indexOf("opencv_processing.jar");
-          if (PApplet.platform == 1) { //platform Windows
+          if (PApplet.platform == PConstants.WINDOWS) { //platform Windows
             // In Windows, path string starts with "jar file/C:/..."
             // so the substring up to the first / is removed.
             n0++;
@@ -354,14 +354,17 @@ public class OpenCV {
     	if(!nativeLoaded){
     		int bitsJVM = PApplet.parseInt(System.getProperty("sun.arch.data.model"));
 	    	String nativeLibPath = getLibPath() ;
-	    	if (PApplet.platform == 1) { //platform Windows
+	    	if (PApplet.platform == PConstants.WINDOWS) { //platform Windows
 	          nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
 	    	}
-	    	if (PApplet.platform == 2) { //platform Mac
+	    	if (PApplet.platform == PConstants.MACOSX) { //platform Mac
 	    		nativeLibPath = nativeLibPath + "macosx" + bitsJVM;
 	    	}
+	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
+	    		nativeLibPath = nativeLibPath + "linux" + bitsJVM;
+	    	}
 	    	
-	    	if((PApplet.platform == 2 && bitsJVM == 64) || (PApplet.platform == 1 && bitsJVM == 32)){
+	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS && bitsJVM == 32) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
 					addLibraryPath(nativeLibPath);
 				} catch (Exception e) {
@@ -370,7 +373,7 @@ public class OpenCV {
 		    	System.loadLibrary("opencv_java245"); 	
 	    	}
 	    	else{
-	    		 System.err.println("Cannot load local version of opencv_java245  : Windows 32 bits or Mac Os 64 bits are only avaible");
+	    		 System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, Windows 32 bits or Mac Os 64 bits are only avaible");
 	    	}
     	}
     }
