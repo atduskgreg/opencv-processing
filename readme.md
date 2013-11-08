@@ -12,7 +12,7 @@ Contributions welcome.
 
 ### Installing
 
-OpenCV for Processing is in the early stages of development. Currently it only supports Mac OSX and 32-bit Windows. Linux (and hopefully Android) support coming soon. 
+OpenCV for Processing currently supports Mac OSX, 32-bit Windows, 32- and 64-bit Linux. Android and 64-bit Windows support are hopefully coming soon (pull requests welcome).
 
 _NB: When running on the Mac, make sure you have Processing set to 64-bit mode in the Preferences_
 
