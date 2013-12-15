@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/opencv-245.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing-core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing-opencv"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

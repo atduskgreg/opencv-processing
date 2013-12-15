@@ -9,6 +9,7 @@ local.properties
 .settings/
 .loadpath
 distribution/*
+lib/
 
 # External tool builders
 .externalToolBuilders/
