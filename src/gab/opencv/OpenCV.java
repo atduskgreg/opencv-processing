@@ -35,15 +35,13 @@ import gab.opencv.Histogram;
 import gab.opencv.Line;
 
 import java.awt.Rectangle;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-
+import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -62,9 +60,7 @@ import org.opencv.core.Point;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvException;
 import org.opencv.core.Core.MinMaxLocResult;
-
 import org.opencv.video.BackgroundSubtractorMOG;
-
 import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.imgproc.Imgproc;
 
@@ -354,14 +350,24 @@ public class OpenCV {
     	if(!nativeLoaded){
     		int bitsJVM = PApplet.parseInt(System.getProperty("sun.arch.data.model"));
 	    	String nativeLibPath = getLibPath() ;
+
 	    	if (PApplet.platform == PConstants.WINDOWS) { //platform Windows
-	          nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
+	    		 File path = new File(nativeLibPath + "windows" + bitsJVM);
+	    		 if (path.exists()) {
+	    		    nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
+	    		 }
 	    	}
 	    	if (PApplet.platform == PConstants.MACOSX) { //platform Mac
-	    		nativeLibPath = nativeLibPath + "macosx" + bitsJVM;
+	    		 File path = new File(nativeLibPath + "macosx" + bitsJVM);
+	    		 if (path.exists()) {
+	    		    nativeLibPath = nativeLibPath + "macosx" + bitsJVM; 
+	    		 }
 	    	}
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
-	    		nativeLibPath = nativeLibPath + "linux" + bitsJVM;
+	    		File path = new File(nativeLibPath + "linux" + bitsJVM);
+	    		 if (path.exists()) {
+	    		    nativeLibPath = nativeLibPath + "linux" + bitsJVM; 
+	    		 }
 	    	}
 	    	
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS && bitsJVM == 32) || (PApplet.platform == PConstants.LINUX)){
