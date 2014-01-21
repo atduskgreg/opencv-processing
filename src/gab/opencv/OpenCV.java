@@ -370,7 +370,7 @@ public class OpenCV {
 	    		 }
 	    	}
 	    	
-	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS && bitsJVM == 32) || (PApplet.platform == PConstants.LINUX)){
+	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
 					addLibraryPath(nativeLibPath);
 				} catch (Exception e) {
