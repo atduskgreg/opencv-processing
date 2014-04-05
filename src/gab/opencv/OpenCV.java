@@ -1,9 +1,9 @@
 /**
- * ##library.name##
- * ##library.sentence##
- * ##library.url##
+ * OpenCV for Processing
+ * Computer vision with OpenCV.
+ * https://github.com/atduskgreg/opencv-processing
  *
- * Copyright ##copyright## ##author##
+ * Copyright (c) 2013 Greg Borenstein http://gregborenstein.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +20,9 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA  02111-1307  USA
  * 
- * @author      ##author##
- * @modified    ##date##
- * @version     ##library.prettyVersion## (##library.version##)
+ * @author      Greg Borenstein http://gregborenstein.com
+ * @modified    01/20/2014
+ * @version     0.4.4 (9)
  */
 
 
@@ -108,7 +108,7 @@ public class OpenCV {
 	public CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
 
-	public final static String VERSION = "##library.prettyVersion##";
+	public final static String VERSION = "0.4.4";
 	public final static String CASCADE_FRONTALFACE = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
 	public final static String CASCADE_EYE = "haarcascade_eye.xml";
@@ -411,7 +411,7 @@ public class OpenCV {
 				
 		PApplet.println("Load cascade from: " + cascadePath);
 
-		classifier = new CascadeClassifier(cascadePath);   
+		classifier = new CascadeClassifier(cascadePath);   		
         
         if(classifier.empty()){
         	PApplet.println("Cascade failed to load"); // raise exception here?
@@ -420,6 +420,21 @@ public class OpenCV {
         }
 	}
 	
+	public Rectangle[] detect(double scaleFactor , int minNeighbors , int flags, Size minSize , Size maxSize){
+		MatOfRect detections = new MatOfRect();
+		classifier.detectMultiScale(getCurrentMat(), detections, scaleFactor, minNeighbors, flags, minSize, maxSize );
+		
+		Rect[] rects = detections.toArray(); 
+
+		Rectangle[] results = new Rectangle[rects.length];
+		for(int i = 0; i < rects.length; i++){
+			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+		}
+
+		return results;
+		
+	}
+		
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
 		classifier.detectMultiScale(getCurrentMat(), detections);
@@ -975,7 +990,7 @@ public class OpenCV {
 	}
 
 	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+		System.out.println("OpenCV for Processing 0.4.4 by Greg Borenstein http://gregborenstein.com");
 		System.out.println("Using Java OpenCV " + Core.VERSION);
 	}
 	
