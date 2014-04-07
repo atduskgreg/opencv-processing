@@ -223,10 +223,28 @@ public class OpenCV {
     	useColor(PApplet.RGB);
     }
     
+    /**
+     * 
+     * Get the colorSpace of the current color image. Will be either RGB or HSB.
+     * 
+     * @return
+     * 		
+     * The color space of the color mats. Either PApplet.RGB or PApplet.HSB
+     */
     public int getColorSpace(){
     	return colorSpace;
     }
     
+    /**
+     * 
+     * Set the main working image to be the color version of the imported image.
+     * Subsequent image-processing functions will be applied to the color version
+     * of the image. Image is assumed to be HSB or RGB based on the argument
+     * 
+     * 
+     * @param colorSpace
+     * 		The color space of the image to be processed. Either RGB or HSB.
+     */
     public void useColor(int colorSpace){
     	useColor = true;
     	if(colorSpace != PApplet.RGB && colorSpace != PApplet.HSB){
@@ -260,10 +278,24 @@ public class OpenCV {
 		matA = channels.get(3);	
     }
     
+    /**
+     * 
+     * Set OpenCV to do image processing on the grayscale version
+     * of the loaded image.
+     * 
+     */
     public void useGray(){
     	useColor = false;
     }
     
+    /**
+     * 
+     * Checks whether OpenCV is currently using the color version of the image
+     * or the grayscale version.
+     * 
+     * @return
+     * 		True if OpenCV is currently using the color version of the image.
+     */
     public boolean getUseColor(){
     	return useColor;
     }
@@ -397,11 +429,33 @@ public class OpenCV {
     }
 
 	/**
-	 * load a cascade xml file from the data folder
-	 * NB: ant build scripts copy the data folder outside of the
-	 * jar so that this will work.
+	 * Load a cascade file for face or object detection.
+	 * Expects one of:
+	 * 
+	 * OpenCV.CASCADE_FRONTALFACE
+	 * OpenCV.CASCADE_PEDESTRIANS
+	 * OpenCV.CASCADE_EYE			
+	 * OpenCV.CASCADE_CLOCK		
+	 * OpenCV.CASCADE_NOSE 		
+	 * OpenCV.CASCADE_MOUTH		
+	 * OpenCV.CASCADE_UPPERBODY 	
+	 * OpenCV.CASCADE_LOWERBODY 	
+	 * OpenCV.CASCADE_FULLBODY 	
+	 * OpenCV.CASCADE_PEDESTRIANS
+	 * OpenCV.CASCADE_RIGHT_EAR 	
+	 * OpenCV.CASCADE_PROFILEFACE
+	 * 
+	 * To pass your own cascade file, provide an absolute path and a second
+	 * argument of true, thusly:
+	 * 
+	 * opencv.loadCascade("/path/to/my/custom/cascade.xml", true)
+	 * 
+	 * (NB: ant build scripts copy the data folder outside of the
+	 * jar so that this will work.)
 	 * 
 	 * @param cascadeFileName
+	 * 		The name of the cascade file to be loaded form within OpenCV for Processing.
+	 * 		Must be one of the constants provided by this library 
 	*/
 	public void loadCascade(String cascadeFileName){
 
@@ -420,50 +474,127 @@ public class OpenCV {
         	PApplet.println("Cascade loaded: " + cascadeFileName);
         }
 	}
+
+	/**
+	 * Load a cascade file for face or object detection.
+	 * If absolute is true, cascadeFilePath must be an
+	 * absolute path to a cascade xml file. If it is false
+	 * then cascadeFilePath must be one of the options provided
+	 * by OpenCV for Processing as in the single-argument
+	 * version of this function.
+	 * 
+	 * @param cascadeFilePath
+	 * 		A string. Either an absolute path to a cascade XML file or 
+	 * 		one of the constants provided by this library.
+	 * @param absolute
+	 * 		Whether or not the cascadeFilePath is an absolute path to an XML file.		
+	 */
+	public void loadCascade(String cascadeFilePath, boolean absolute){
+		if(absolute){
+			classifier = new CascadeClassifier(cascadeFilePath);   
+	        
+	        if(classifier.empty()){
+	        	PApplet.println("Cascade failed to load"); // raise exception here?
+	        } else {
+	        	PApplet.println("Cascade loaded from absolute path: " + cascadeFilePath);
+	        }
+		} else {
+			loadCascade(cascadeFilePath);
+		}
+	}
 	
+	/**
+	 * Convert an array of OpenCV Rect objects into
+	 * an array of java.awt.Rectangle rectangles.
+	 * Especially useful when working with
+	 * classifier.detectMultiScale().
+	 *
+	 * @param Rect[] rects
+	 * 
+	 * @return 
+	 *  A Rectangle[] of java.awt.Rectangle
+	 */
+	public static Rectangle[] toProcessing(Rect[] rects){
+		Rectangle[] results = new Rectangle[rects.length];
+		for(int i = 0; i < rects.length; i++){
+			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+		}
+		return results;
+	}
+	
+	/**
+	 * Detect objects using the cascade classifier. loadCascade() must already
+	 * have been called to setup the classifier. See the OpenCV documentation
+	 * for details on the arguments: http://docs.opencv.org/java/org/opencv/objdetect/CascadeClassifier.html#detectMultiScale(org.opencv.core.Mat, org.opencv.core.MatOfRect, double, int, int, org.opencv.core.Size, org.opencv.core.Size)
+	 * 
+	 * A simpler version of detect() that doesn't need these arguments is also available.
+	 * 
+	 * @param scaleFactor
+	 * @param minNeighbors
+	 * @param flags
+	 * @param minSize
+	 * @param maxSize
+	 * @return
+	 * 		An array of java.awt.Rectangle objects with the location, width, and height of each detected object.
+	 */
 	public Rectangle[] detect(double scaleFactor , int minNeighbors , int flags, int minSize , int maxSize){
 		Size minS = new Size(minSize, minSize);
 		Size maxS = new Size(maxSize, maxSize);
 		
-		
 		MatOfRect detections = new MatOfRect();
 		classifier.detectMultiScale(getCurrentMat(), detections, scaleFactor, minNeighbors, flags, minS, maxS );
-		
-		Rect[] rects = detections.toArray(); 
 
-		Rectangle[] results = new Rectangle[rects.length];
-		for(int i = 0; i < rects.length; i++){
-			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
-		}
-
-		return results;
-		
+		return OpenCV.toProcessing(detections.toArray());
 	}
 	
+	/**
+	 * Detect objects using the cascade classifier. loadCascade() must already
+	 * have been called to setup the classifier.
+	 * 
+	 * @return
+	 * 		An array of java.awt.Rectnangle objects with the location, width, and height of each detected object.
+	 */
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
 		classifier.detectMultiScale(getCurrentMat(), detections);
 		
-		Rect[] rects = detections.toArray(); 
-
-		Rectangle[] results = new Rectangle[rects.length];
-		for(int i = 0; i < rects.length; i++){
-			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
-		}
-
-		return results;
+		return OpenCV.toProcessing(detections.toArray());
 	}
 	
+	/**
+	 * Setup background subtraction. After calling this function,
+	 * updateBackground() must be called with each new frame
+	 * you want to add to the running background subtraction calculation.
+	 * 
+	 * For details on the arguments, see:
+	 * http://docs.opencv.org/java/org/opencv/video/BackgroundSubtractorMOG.html#BackgroundSubtractorMOG(int, int, double)
+	 * 
+	 * @param history
+	 * @param nMixtures
+	 * @param backgroundRatio
+	 */
 	public void startBackgroundSubtraction(int history, int nMixtures, double backgroundRatio){
 		backgroundSubtractor = new BackgroundSubtractorMOG(history, nMixtures, backgroundRatio);
 	}
 	
+	/**
+	 * Update the running background for background subtraction based on
+	 * the current image loaded into OpenCV. startBackgroundSubtraction()
+	 * must have been called before this to setup the background subtractor.
+	 * 
+	 */
 	public void updateBackground(){
 		Mat foreground = imitate(getCurrentMat());
 		backgroundSubtractor.apply(getCurrentMat(), foreground, 0.05);
 		setGray(foreground);
 	}	
 	
+	/**
+	 * Flip the current image.
+	 * 
+	 * @param direction
+	 * 		One of: OpenCV.HORIZONTAL, OpenCV.VERTICAL, or OpenCV.BOTH
+	 */
 	public void flip(int direction){
 		Core.flip(getCurrentMat(), getCurrentMat(), direction);
 	}
@@ -510,6 +641,14 @@ public class OpenCV {
 		return OpenCV.pointToPVector(r.minLoc);
 	}
 	
+	/**
+	 * Helper function to convert an OpenCV Point into a Processing PVector
+	 * 
+	 * @param p
+	 * 		A Point
+	 * @return
+	 * 		A PVector
+	 */
 	public static PVector pointToPVector(Point p){
 		return new PVector((float)p.x, (float)p.y);
 	}
@@ -534,11 +673,28 @@ public class OpenCV {
 		Core.add(getCurrentMat(), modifier, getCurrentMat());
 	}
 	
+	/**
+	 * Helper to create a new OpenCV Mat whose channels and
+	 * bit-depth mask an existing Mat.
+	 * 
+	 * @param m
+	 * 		The Mat to match
+	 * @return
+	 * 		A new Mat
+	 */
 	public static Mat imitate(Mat m){
 		return new Mat(m.height(), m.width(), m.type());
 	}
 	
-	
+	/**
+	 * Calculate the difference between the current image
+	 * loaded into OpenCV and a second image. The result is stored
+	 * in the loaded image in OpenCV. Works on both color and grayscale
+	 * images.
+	 * 
+	 * @param img
+	 * 		A PImage to diff against.
+	 */
 	public void diff(PImage img){
 		Mat imgMat = imitate(getColor());
 		toCv(img, imgMat);
@@ -555,16 +711,46 @@ public class OpenCV {
 		dst.assignTo(getCurrentMat());
 	}
 	
+	/**
+	 * A helper function that diffs two Mats using absdiff.
+	 * Places the result back into mat1 
+	 * 
+	 * @param mat1
+	 * 		The destination Mat
+	 * @param mat2
+	 * 		The Mat to diff against
+	 */
 	public static void diff(Mat mat1, Mat mat2){
 		Mat dst = imitate(mat1);
 		Core.absdiff(mat1, mat2, dst);
 		dst.assignTo(mat1);
 	}
 	
+	/**
+	 * Apply a global threshold to an image. Produces a binary image
+	 * with white pixels where the original image was above the threshold
+	 * and black where it was below.
+	 * 
+	 * @param threshold
+	 * 		An int from 0-255.
+	 */
 	public void threshold(int threshold){
 		Imgproc.threshold(getCurrentMat(), getCurrentMat(), threshold, 255, Imgproc.THRESH_BINARY); 
 	}
-
+	
+	/**
+	 * Apply an adaptive threshold to an image. Produces a binary image
+	 * with white pixels where the original image was above the threshold
+	 * and black where it was below.
+	 * 
+	 * See:
+	 * http://docs.opencv.org/java/org/opencv/imgproc/Imgproc.html#adaptiveThreshold(org.opencv.core.Mat, org.opencv.core.Mat, double, int, int, int, double)
+	 * 
+	 * @param blockSize
+	 * 		The size of the pixel neighborhood to use.
+	 * @param c
+	 * 		A constant subtracted from the mean of each neighborhood.
+	 */
 	public void adaptiveThreshold(int blockSize, int c){
 		try{
 			Imgproc.adaptiveThreshold(getCurrentMat(), getCurrentMat(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
@@ -573,6 +759,14 @@ public class OpenCV {
 		}
 	}
 	
+	/**
+	 * Normalize the histogram of the image. This will spread the image's color
+	 * spectrum over the full 0-255 range. Only works on grayscale images. 
+	 * 
+	 * 
+	 * See: http://docs.opencv.org/java/org/opencv/imgproc/Imgproc.html#equalizeHist(org.opencv.core.Mat, org.opencv.core.Mat)
+	 * 
+	 */
 	public void equalizeHistogram(){
 		try{
 			Imgproc.equalizeHist(getCurrentMat(), getCurrentMat());
@@ -581,26 +775,67 @@ public class OpenCV {
 		}
 	}
 	
+	/**
+	 * Invert the image.
+	 * See: http://docs.opencv.org/java/org/opencv/core/Core.html#bitwise_not(org.opencv.core.Mat, org.opencv.core.Mat)
+	 * 
+	 */
 	public void invert(){
 		Core.bitwise_not(getCurrentMat(),getCurrentMat());
 	}
 	
+	/**
+	 * Dilate the image. Dilation is a morphological operation (i.e. it affects the shape) often used to
+	 * close holes in contours. It expands white areas of the image.
+	 * 
+	 * See:
+	 * http://docs.opencv.org/java/org/opencv/imgproc/Imgproc.html#dilate(org.opencv.core.Mat, org.opencv.core.Mat, org.opencv.core.Mat)
+	 * 
+	 */
 	public void dilate(){
 		Imgproc.dilate(getCurrentMat(), getCurrentMat(), new Mat());
 	}
 	
+	/**
+	 * Erode the image. Erosion  is a morphological operation (i.e. it affects the shape) often used to
+	 * close holes in contours. It contracts white areas of the image.
+	 * 
+	 * See:
+	 * http://docs.opencv.org/java/org/opencv/imgproc/Imgproc.html#erode(org.opencv.core.Mat, org.opencv.core.Mat, org.opencv.core.Mat)
+	 * 
+	 */
 	public void erode(){
 		Imgproc.erode(getCurrentMat(), getCurrentMat(), new Mat());
 	}
 	
+	/**
+	 * Blur an image symetrically by a given number of pixels.
+	 * 
+	 * @param blurSize
+	 * 		int - the amount to blur by in x- and y-directions.
+	 */
 	public void blur(int blurSize){
 		Imgproc.blur(getCurrentMat(), getCurrentMat(), new Size(blurSize, blurSize)); 
 	}
 	
+	/**
+	 * Blur an image assymetrically by a different number of pixels in x- and y-directions.
+	 * 
+	 * @param blurW
+	 * 		amount to blur in the x-direction
+	 * @param blurH
+	 * 		amount to blur in the y-direction
+	 */
 	public void blur(int blurW, int blurH){
 		Imgproc.blur(getCurrentMat(), getCurrentMat(), new Size(blurW, blurH)); 
 	}
 	
+	/**
+	 * Find edges in the image using Canny edge detection.
+	 * 
+	 * @param lowThreshold
+	 * @param highThreshold
+	 */
 	public void findCannyEdges(int lowThreshold, int highThreshold){
 		Imgproc.Canny(getCurrentMat(), getCurrentMat(), lowThreshold, highThreshold);
 	}
@@ -743,7 +978,7 @@ public class OpenCV {
 		useGray(); //???
 	}
 	
-	/*
+	/**
 	 * Set a Region of Interest within the image. Subsequent image processing
 	 * functions will apply to this ROI rather than the full image.
 	 * Full image will display be included in output.
