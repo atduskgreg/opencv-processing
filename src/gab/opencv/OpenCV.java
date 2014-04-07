@@ -450,7 +450,9 @@ public class OpenCV {
 	 * To pass your own cascade file, provide an absolute path and a second
 	 * argument of true, thusly:
 	 * 
+	 * <pre>
 	 * opencv.loadCascade("/path/to/my/custom/cascade.xml", true)
+	 * </pre>
 	 * 
 	 * (NB: ant build scripts copy the data folder outside of the
 	 * jar so that this will work.)
