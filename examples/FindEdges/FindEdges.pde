@@ -8,7 +8,6 @@ void setup() {
   size(src.width, src.height, P2D);
   
   opencv = new OpenCV(this, src);
-  
   opencv.findCannyEdges(20,75);
   canny = opencv.getSnapshot();
   

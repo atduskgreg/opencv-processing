@@ -7,7 +7,7 @@ void setup() {
   PImage img = loadImage("test.jpg");
   size(img.width, img.height);
 
-  // By default, OpenCVPro works with a gray
+  // By default, OpenCV for Processing works with a gray
   // version of the source image
   opencv = new OpenCV(this, img);
   // but you can tell it explicitly to use color instead:

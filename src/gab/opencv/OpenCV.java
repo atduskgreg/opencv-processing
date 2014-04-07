@@ -123,12 +123,13 @@ public class OpenCV {
 	public final static String CASCADE_RIGHT_EAR = "haarcascade_mcs_rightear.xml";
 	public final static String CASCADE_PROFILEFACE = "haarcascade_profileface.xml";
 	
+	// used for both Scharr edge detection orientation
+	// and flip(). Values are set for flip, arbitrary from POV of Scharr
+	public final static int HORIZONTAL = 1;
+	public final static int VERTICAL = 0;
+	public final static int BOTH = -1;
 	
-	public final static int HORIZONTAL = 0;
-	public final static int VERTICAL = 1;
-	
-	
-		
+
     
     /**
      * Initialize OpenCV with the path to an image.
@@ -420,6 +421,25 @@ public class OpenCV {
         }
 	}
 	
+	public Rectangle[] detect(double scaleFactor , int minNeighbors , int flags, int minSize , int maxSize){
+		Size minS = new Size(minSize, minSize);
+		Size maxS = new Size(maxSize, maxSize);
+		
+		
+		MatOfRect detections = new MatOfRect();
+		classifier.detectMultiScale(getCurrentMat(), detections, scaleFactor, minNeighbors, flags, minS, maxS );
+		
+		Rect[] rects = detections.toArray(); 
+
+		Rectangle[] results = new Rectangle[rects.length];
+		for(int i = 0; i < rects.length; i++){
+			results[i] = new Rectangle(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+		}
+
+		return results;
+		
+	}
+	
 	public Rectangle[] detect(){
 		MatOfRect detections = new MatOfRect();
 		classifier.detectMultiScale(getCurrentMat(), detections);
@@ -443,6 +463,10 @@ public class OpenCV {
 		backgroundSubtractor.apply(getCurrentMat(), foreground, 0.05);
 		setGray(foreground);
 	}	
+	
+	public void flip(int direction){
+		Core.flip(getCurrentMat(), getCurrentMat(), direction);
+	}
 	
 	/**
 	 * 
@@ -595,13 +619,19 @@ public class OpenCV {
 		if(direction == VERTICAL){
 			Imgproc.Scharr(getCurrentMat(), getCurrentMat(), -1, 0, 1 );
 		}
+		
+		if(direction == BOTH){
+			Mat hMat = imitate(getCurrentMat());
+			Mat vMat = imitate(getCurrentMat());
+			Imgproc.Scharr(getCurrentMat(), hMat, -1, 1, 0 );
+			Imgproc.Scharr(getCurrentMat(), vMat, -1, 0, 1 );
+			Core.add(vMat,hMat, getCurrentMat());
+		}
 	}
 	
 	public ArrayList<Contour> findContours(){
 		return findContours(true, false);
 	}
-	
-	
 	
 	public ArrayList<Contour> findContours(boolean findHoles, boolean sort){
 		ArrayList<Contour> result = new ArrayList<Contour>();
@@ -637,8 +667,6 @@ public class OpenCV {
 		
 		return result;
 	}
-	
-	
 	
 	public ArrayList<PVector> findChessboardCorners(int patternWidth, int patternHeight){
 		MatOfPoint2f corners = new MatOfPoint2f();
