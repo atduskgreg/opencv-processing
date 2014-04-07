@@ -432,6 +432,7 @@ public class OpenCV {
 	 * Load a cascade file for face or object detection.
 	 * Expects one of:
 	 * 
+	 * <pre>
 	 * OpenCV.CASCADE_FRONTALFACE
 	 * OpenCV.CASCADE_PEDESTRIANS
 	 * OpenCV.CASCADE_EYE			
@@ -444,6 +445,7 @@ public class OpenCV {
 	 * OpenCV.CASCADE_PEDESTRIANS
 	 * OpenCV.CASCADE_RIGHT_EAR 	
 	 * OpenCV.CASCADE_PROFILEFACE
+	 * </pre>
 	 * 
 	 * To pass your own cascade file, provide an absolute path and a second
 	 * argument of true, thusly:
