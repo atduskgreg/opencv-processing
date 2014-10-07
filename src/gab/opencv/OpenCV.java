@@ -1092,6 +1092,25 @@ public class OpenCV {
         ByteBuffer.wrap(matPixels).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get(intPixels);
         return intPixels;
     }
+
+    /**
+     * Convert a 4 channel OpenCV Mat object into 
+     * pixels to be shoved into a 4 channel ARGB PImage's
+     * pixel array.
+     *
+     * @param m
+     *          A Mat you want converted
+     */
+    public int[] fourChanMatToARGBPixels(Mat m){
+        int pImageChannels = 4;
+        int numPixels = m.width()*m.height();
+        int[] intPixels = new int[numPixels];
+        byte[] matPixels = new byte[numPixels*pImageChannels];
+  
+        m.get(0,0, matPixels);
+        ByteBuffer.wrap(matPixels).order(ByteOrder.LITTLE_ENDIAN).asIntBuffer().get(intPixels);
+        return intPixels;
+    }
 	
 	
 	/**
@@ -1120,11 +1139,7 @@ public class OpenCV {
 		  } else if(m.channels() == 1){
               img.pixels = grayMatToARGBPixels(m);
 		  } else if(m.channels() == 4){
-			  byte[] matPixels = new byte[width*height*4];
-			  m.get(0,0, matPixels);
-			  for(int i = 0; i < m.width()*m.height()*4; i+=4){				  
-				  img.pixels[PApplet.floor(i/4)] = parent.color(matPixels[i+2]&0xFF, matPixels[i+1]&0xFF, matPixels[i]&0xFF, matPixels[i+3]&0xFF);
-			  }
+              img.pixels = fourChanMatToARGBPixels(m);
 		  }
 		  
 		  img.updatePixels();
