@@ -51,6 +51,14 @@ public class Contour {
 		}
 	}
 	
+	public boolean containsPoint(int x, int y){
+		Point p = new Point(x,y);
+		MatOfPoint2f m = new MatOfPoint2f(pointMat.toArray());
+		    
+		double r = Imgproc.pointPolygonTest(m,p, false);
+		return r == 1;
+	}
+	
 	// The polygonApproximationFactor is used to determine
 	// how strictly to follow a curvy polygon when converting
 	// it into a simpler polygon with getPolygonApproximation().
