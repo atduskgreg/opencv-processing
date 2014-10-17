@@ -6,7 +6,7 @@ OpenCV opencv;
 void setup() {
   src = loadImage("pen_sketch.jpg"); 
   src.resize(src.width/2, 0);
-  size(src.width*2, src.height*2, P2D);
+  size(src.width*2, src.height*2);
 
   opencv = new OpenCV(this, src);
 

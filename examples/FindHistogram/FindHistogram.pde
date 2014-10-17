@@ -6,7 +6,7 @@ Histogram grayHist, rHist, gHist, bHist;
 PImage img;
 
 void setup() {
-  size(640, 400, P2D);
+  size(640, 400);
   img = loadImage("test.jpg");
   opencv = new OpenCV(this, img);
 

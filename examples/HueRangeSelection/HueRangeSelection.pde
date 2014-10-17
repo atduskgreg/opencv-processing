@@ -10,7 +10,7 @@ int upperb = 100;
 void setup() {
   img = loadImage("colored_balls.jpg");
   opencv = new OpenCV(this, img);
-  size(opencv.width, opencv.height, P2D);
+  size(opencv.width, opencv.height);
   opencv.useColor(HSB);
 }
 

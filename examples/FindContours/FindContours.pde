@@ -8,7 +8,7 @@ ArrayList<Contour> polygons;
 
 void setup() {
   src = loadImage("test.jpg"); 
-  size(src.width, src.height/2, P2D);
+  size(src.width, src.height/2);
   opencv = new OpenCV(this, src);
 
   opencv.gray();

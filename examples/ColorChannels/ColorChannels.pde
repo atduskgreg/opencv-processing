@@ -7,8 +7,9 @@ int imgH, imgW;
 
 void setup() {
   src = loadImage("green_object.png");
+  src.resize(800,0);
   opencv = new OpenCV(this, src);  
-  size(int(opencv.width*1.5), int(opencv.height * 1.5), P2D);
+  size(int(opencv.width*1.5), int(opencv.height * 1.5));
   
   imgH = src.height/2;
   imgW = src.width/2;

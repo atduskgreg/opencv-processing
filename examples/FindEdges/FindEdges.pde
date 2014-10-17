@@ -5,7 +5,7 @@ PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
-  size(src.width, src.height, P2D);
+  size(src.width, src.height);
   
   opencv = new OpenCV(this, src);
   opencv.findCannyEdges(20,75);

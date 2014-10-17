@@ -5,7 +5,7 @@ OpenCV opencv;
 
 void setup(){
   img = loadImage("test.jpg");
-  size(img.width, img.height, P2D);
+  size(img.width, img.height);
   opencv = new OpenCV(this, img);  
 }
 

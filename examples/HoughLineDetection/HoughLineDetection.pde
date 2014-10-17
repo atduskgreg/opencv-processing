@@ -6,7 +6,7 @@ ArrayList<Line> lines;
 void setup() {
   PImage src = loadImage("film_scan.jpg");
   src.resize(0, 800);
-  size(src.width, src.height, P2D);
+  size(src.width, src.height);
 
   opencv = new OpenCV(this, src);
   opencv.findCannyEdges(20, 75);
