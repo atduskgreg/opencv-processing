@@ -5,7 +5,7 @@ Movie video;
 OpenCV opencv;
 
 void setup() {
-  size(720, 480, P2D);
+  size(720, 480);
   video = new Movie(this, "street.mov");
   opencv = new OpenCV(this, 720, 480);
   
