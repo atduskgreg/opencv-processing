@@ -383,26 +383,34 @@ public class OpenCV {
     private void initNative(){
     	if(!nativeLoaded){
     		int bitsJVM = PApplet.parseInt(System.getProperty("sun.arch.data.model"));
-	    	String nativeLibPath = getLibPath() ;
+    		
+    		String osArch = System.getProperty("os.arch");
+    		
+	    	String nativeLibPath = getLibPath();
+	    	
+	    	String path = null;
 
+	    	// determine the path to the platform-specific opencv libs
 	    	if (PApplet.platform == PConstants.WINDOWS) { //platform Windows
-	    		 File path = new File(nativeLibPath + "windows" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
-	    		 }
+	    		path = nativeLibPath + "windows" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.MACOSX) { //platform Mac
-	    		 File path = new File(nativeLibPath + "macosx" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "macosx" + bitsJVM; 
-	    		 }
+	    		path = nativeLibPath + "macosx" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
-	    		File path = new File(nativeLibPath + "linux" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "linux" + bitsJVM; 
-	    		 }
+				 // attempt to detect arm architecture
+	    		 boolean isArm = false; 
+				 if (osArch.contains("arm")) {
+					 isArm = true;
+				 }
+				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
 	    	}
+	    	
+	    	// ensure the determined path exists
+	    	File libDir = new File(path);
+			if (libDir.exists()) {
+				nativeLibPath = path; 
+			}
 	    	
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
