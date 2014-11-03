@@ -407,11 +407,18 @@ public class OpenCV {
 	    	}
 	    	
 	    	// ensure the determined path exists
-	    	File libDir = new File(path);
-			if (libDir.exists()) {
-				nativeLibPath = path; 
-			}
+	    	try {
+	    		File libDir = new File(path);
+	    		if (libDir.exists()) {
+	    			nativeLibPath = path; 
+	    		}
+	    	} catch (NullPointerException e) {
+	    		// platform couldn't be determined
+	    		System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, arm7, Windows 32 bits or Mac Os 64 bits are only avaible");
+	    		e.printStackTrace();
+	    	}
 	    	
+	    	// this check might be redundant?
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
 					addLibraryPath(nativeLibPath);
