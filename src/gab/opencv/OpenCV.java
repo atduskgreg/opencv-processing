@@ -407,8 +407,7 @@ public class OpenCV {
 					 isArm = true;
 				 }
 				 
-//				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
-				 path = nativeLibPath + "arm7";
+				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
 	    	}
 	    	
 	    	// ensure the determined path exists
@@ -423,7 +422,7 @@ public class OpenCV {
 	    		e.printStackTrace();
 	    	}
 	    	
-	    	// this check might be redundant?
+	    	// this check might be redundant now...
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
 		    		System.out.println("Adding native libarary path: " + nativeLibPath);
