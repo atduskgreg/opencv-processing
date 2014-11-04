@@ -430,7 +430,8 @@ public class OpenCV {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		    	System.loadLibrary("opencv_java245"); 	
+		    	System.out.println(System.getProperty("java.library.path"));
+		    	System.loadLibrary("opencv_java245");
 	    	}
 	    	else{
 	    		 System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, Windows 32 bits or Mac Os 64 bits are only avaible");
@@ -442,7 +443,7 @@ public class OpenCV {
     private void addLibraryPath(String path) throws Exception {
     	System.out.println("Adding libarary path: " + path);
         String originalPath = System.getProperty("java.library.path");
-    	System.setProperty("java.library.path", originalPath +System.getProperty("path.separator")+ path);
+    	System.setProperty("java.library.path", path + System.getProperty("path.separator") + originalPath);
      
         //set sys_paths to null
         final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
