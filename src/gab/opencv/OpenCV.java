@@ -105,6 +105,7 @@ public class OpenCV {
 	private PImage inputImage;
 	
 	private boolean nativeLoaded;
+	private boolean isArm = false;
 	
 	public CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
@@ -400,8 +401,7 @@ public class OpenCV {
 	    		path = nativeLibPath + "macosx" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
-				 // attempt to detect arm architecture
-	    		 boolean isArm = false; 
+				 // attempt to detect arm architecture 
 				 if (osArch.contains("arm")) {
 					 System.out.println("OS Architecture contains ARM");
 					 isArm = true;
@@ -443,7 +443,16 @@ public class OpenCV {
     private void addLibraryPath(String path) throws Exception {
     	System.out.println("Adding libarary path: " + path);
         String originalPath = System.getProperty("java.library.path");
-    	System.setProperty("java.library.path", path + System.getProperty("path.separator") + originalPath);
+        
+        // If this is an arm device running linux, Processing seems to include the linux32 dirs in the path,
+        // which conflict with the arm-specific libs. So we remove the linux32 segments from the path:
+        if (isArm) {
+        	if (originalPath.indexOf("linux32") != -1) {
+        		originalPath = originalPath.replaceAll(":[^:]*?linux32", "");
+        	}
+        }
+        
+    	System.setProperty("java.library.path", originalPath +System.getProperty("path.separator")+ path);
      
         //set sys_paths to null
         final Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
