@@ -387,8 +387,6 @@ public class OpenCV {
     		
     		String osArch = System.getProperty("os.arch");
     		
-    		System.out.println("os.arch = " + osArch);
-    		
 	    	String nativeLibPath = getLibPath();
 	    	
 	    	String path = null;
@@ -401,13 +399,9 @@ public class OpenCV {
 	    		path = nativeLibPath + "macosx" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
-				 // attempt to detect arm architecture 
-				 if (osArch.contains("arm")) {
-					 System.out.println("OS Architecture contains ARM");
-					 isArm = true;
-				 }
-				 
-				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
+	    		// attempt to detect arm architecture - is it fair to assume linux for ARM devices?
+	    		isArm = osArch.contains("arm");
+    			path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
 	    	}
 	    	
 	    	// ensure the determined path exists
@@ -425,23 +419,22 @@ public class OpenCV {
 	    	// this check might be redundant now...
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
-		    		System.out.println("Adding native libarary path: " + nativeLibPath);
 					addLibraryPath(nativeLibPath);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		    	System.out.println(System.getProperty("java.library.path"));
 		    	System.loadLibrary("opencv_java245");
 	    	}
 	    	else{
 	    		 System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, Windows 32 bits or Mac Os 64 bits are only avaible");
 	    	}
+	    	
+	    	nativeLoaded = true;
     	}
     }
     
 
     private void addLibraryPath(String path) throws Exception {
-    	System.out.println("Adding libarary path: " + path);
         String originalPath = System.getProperty("java.library.path");
         
         // If this is an arm device running linux, Processing seems to include the linux32 dirs in the path,
