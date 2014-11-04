@@ -386,6 +386,8 @@ public class OpenCV {
     		
     		String osArch = System.getProperty("os.arch");
     		
+    		System.out.println("os.arch = " + osArch);
+    		
 	    	String nativeLibPath = getLibPath();
 	    	
 	    	String path = null;
@@ -401,9 +403,12 @@ public class OpenCV {
 				 // attempt to detect arm architecture
 	    		 boolean isArm = false; 
 				 if (osArch.contains("arm")) {
+					 System.out.println("OS Architecture contains ARM");
 					 isArm = true;
 				 }
-				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
+				 
+//				 path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
+				 path = nativeLibPath + "arm7";
 	    	}
 	    	
 	    	// ensure the determined path exists
@@ -421,6 +426,7 @@ public class OpenCV {
 	    	// this check might be redundant?
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
+		    		System.out.println("Adding native libarary path: " + nativeLibPath);
 					addLibraryPath(nativeLibPath);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -435,6 +441,7 @@ public class OpenCV {
     
 
     private void addLibraryPath(String path) throws Exception {
+    	System.out.println("Adding libarary path: " + path);
         String originalPath = System.getProperty("java.library.path");
     	System.setProperty("java.library.path", originalPath +System.getProperty("path.separator")+ path);
      
