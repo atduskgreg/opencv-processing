@@ -33,6 +33,7 @@ import gab.opencv.Contour;
 import gab.opencv.ContourComparator;
 import gab.opencv.Histogram;
 import gab.opencv.Line;
+import gab.opencv.Flow;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -108,6 +109,7 @@ public class OpenCV {
 	
 	public CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
+	public Flow flow;
 
 	public final static String VERSION = "##library.prettyVersion##";
 	public final static String CASCADE_FRONTALFACE = "haarcascade_frontalface_alt.xml";
@@ -338,6 +340,7 @@ public class OpenCV {
     	height = h;
 		welcome();
 		setupWorkingImages();
+		setupFlow();
 		
 		matR = new Mat(height, width, CvType.CV_8UC1);
 		matG = new Mat(height, width, CvType.CV_8UC1);
@@ -346,6 +349,10 @@ public class OpenCV {
 		matGray = new Mat(height, width, CvType.CV_8UC1);
 		
 		matBGRA = new Mat(height, width, CvType.CV_8UC4);
+    }
+    
+    private void setupFlow(){
+    	flow = new Flow(parent);
     }
     
     private void setupWorkingImages(){
@@ -593,6 +600,67 @@ public class OpenCV {
 		backgroundSubtractor.apply(getCurrentMat(), foreground, 0.05);
 		setGray(foreground);
 	}	
+	
+	/**
+	 * Calculate the optical flow of the current image relative
+	 * to a running series of images (typically frames from video).
+	 * Optical flow is useful for detecting what parts of the image
+	 * are moving and in what direction.
+	 * 
+	 */
+	public void calculateOpticalFlow(){
+		flow.calculateOpticalFlow(getCurrentMat());
+	}
+	
+	/*
+	 * Get the total optical flow within a region of the image.
+	 * Be sure to call calculateOpticalFlow() first.
+	 * 
+	 */
+	public PVector getTotalFlowInRegion(int x, int y, int w, int h) {
+		return flow.getTotalFlowInRegion(x, y, w, h);
+	}
+	
+	/*
+	 * Get the average optical flow within a region of the image.
+	 * Be sure to call calculateOpticalFlow() first.
+	 * 
+	 */
+	public PVector getAverageFlowInRegion(int x, int y, int w, int h) {
+		return flow.getAverageFlowInRegion(x,y,w,h);
+	}
+	
+	/*
+	 * Get the total optical flow for the entire image.
+	 * Be sure to call calculateOpticalFlow() first. 
+	 */
+	public PVector getTotalFlow() {
+		return flow.getTotalFlow();
+	}
+	
+	/*
+	 * Get the average optical flow for the entire image.
+	 * Be sure to call calculateOpticalFlow() first.
+	 */
+	public PVector getAverageFlow() {
+		return flow.getAverageFlow();
+	}
+	
+	/*
+	 * Get the optical flow at a single point in the image.
+	 * Be sure to call calcuateOpticalFlow() first.
+	 */
+	public PVector getFlowAt(int x, int y){
+		return flow.getFlowAt(x,y);
+	}
+	
+	/*
+	 * Draw the optical flow.
+	 * Be sure to call calcuateOpticalFlow() first.
+	 */
+	public void drawOpticalFlow(){
+		flow.draw();
+	}
 	
 	/**
 	 * Flip the current image.
