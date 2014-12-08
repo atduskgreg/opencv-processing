@@ -23,6 +23,13 @@ void draw() {
 
   opencv.findCannyEdges(20,75);
   image(opencv.getOutput(), 0, 0);
+  
+  // if an ROI is in-use then getSnapshot()
+  // will return an image with the dimensions
+  // and content of the ROI
+  if(useROI){
+    image(opencv.getSnapshot(), width-roiWidth,0);
+  }
 }
 
 // toggle ROI on and off

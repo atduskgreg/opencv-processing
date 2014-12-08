@@ -1284,16 +1284,19 @@ public class OpenCV {
 	public PImage getSnapshot(){
 		PImage result;
 		
-		if(useColor){
-			if(colorSpace == PApplet.HSB){
-				result = getSnapshot(matHSV);
-			} else {
-				result = getSnapshot(matBGRA);
-			}
+		if(useROI){
+			result = getSnapshot(matROI);
 		} else {
-			result = getSnapshot(matGray);
+			if(useColor){
+				if(colorSpace == PApplet.HSB){
+					result = getSnapshot(matHSV);
+				} else {
+					result = getSnapshot(matBGRA);
+				}
+			} else {
+				result = getSnapshot(matGray);
+			}
 		}
-	
 		return result;
 	}
 	
