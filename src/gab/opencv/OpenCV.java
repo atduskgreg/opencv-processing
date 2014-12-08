@@ -106,6 +106,7 @@ public class OpenCV {
 	private PImage inputImage;
 	
 	private boolean nativeLoaded;
+	private boolean isArm = false;
 	
 	public CascadeClassifier classifier;
 	BackgroundSubtractorMOG backgroundSubtractor;
@@ -390,44 +391,72 @@ public class OpenCV {
     private void initNative(){
     	if(!nativeLoaded){
     		int bitsJVM = PApplet.parseInt(System.getProperty("sun.arch.data.model"));
-	    	String nativeLibPath = getLibPath() ;
+    		
+    		String osArch = System.getProperty("os.arch");
+    		
+	    	String nativeLibPath = getLibPath();
+	    	
+	    	String path = null;
 
+	    	// determine the path to the platform-specific opencv libs
 	    	if (PApplet.platform == PConstants.WINDOWS) { //platform Windows
-	    		 File path = new File(nativeLibPath + "windows" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "windows" + bitsJVM; 
-	    		 }
+	    		path = nativeLibPath + "windows" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.MACOSX) { //platform Mac
-	    		 File path = new File(nativeLibPath + "macosx" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "macosx" + bitsJVM; 
-	    		 }
+	    		path = nativeLibPath + "macosx" + bitsJVM;
 	    	}
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
-	    		File path = new File(nativeLibPath + "linux" + bitsJVM);
-	    		 if (path.exists()) {
-	    		    nativeLibPath = nativeLibPath + "linux" + bitsJVM; 
-	    		 }
+	    		// attempt to detect arm architecture - is it fair to assume linux for ARM devices?
+	    		isArm = osArch.contains("arm");
+    			path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
 	    	}
 	    	
+	    	// ensure the determined path exists
+	    	try {
+	    		File libDir = new File(path);
+	    		if (libDir.exists()) {
+	    			nativeLibPath = path; 
+	    		}
+	    	} catch (NullPointerException e) {
+	    		// platform couldn't be determined
+	    		System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, arm7, Windows 32 bits or Mac Os 64 bits are only avaible");
+	    		e.printStackTrace();
+	    	}
+	    	
+	    	// this check might be redundant now...
 	    	if((PApplet.platform == PConstants.MACOSX && bitsJVM == 64) || (PApplet.platform == PConstants.WINDOWS) || (PApplet.platform == PConstants.LINUX)){
 		    	try {
 					addLibraryPath(nativeLibPath);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-		    	System.loadLibrary("opencv_java245"); 	
+		    	System.loadLibrary("opencv_java245");
 	    	}
 	    	else{
 	    		 System.err.println("Cannot load local version of opencv_java245  : Linux 32/64, Windows 32 bits or Mac Os 64 bits are only avaible");
 	    	}
+	    	
+	    	nativeLoaded = true;
     	}
     }
     
 
     private void addLibraryPath(String path) throws Exception {
         String originalPath = System.getProperty("java.library.path");
+        
+        // If this is an arm device running linux, Processing seems to include the linux32 dirs in the path,
+        // which conflict with the arm-specific libs. To fix this, we remove the linux32 segments from the path.
+        //
+        // Alternatively, we could do one of the following:
+        // 		A) prepend to the path instead of append, forcing our libs to be used
+        // 		B) rename the libopencv_java245 in the arm7 dir and add logic to load it instead above in System.loadLibrary(...)
+        
+        if (isArm) {
+        	if (originalPath.indexOf("linux32") != -1) {
+        		originalPath = originalPath.replaceAll(":[^:]*?linux32", "");
+        	}
+        }
+        
     	System.setProperty("java.library.path", originalPath +System.getProperty("path.separator")+ path);
      
         //set sys_paths to null
