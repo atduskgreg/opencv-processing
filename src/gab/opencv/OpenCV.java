@@ -69,15 +69,19 @@ import org.opencv.imgproc.Imgproc;
 import processing.core.*;
 
 /**
- * This is a template class and can be used to start a new processing library or tool.
- * Make sure you rename this class as well as the name of the example package 'template' 
- * to your own library or tool naming convention.
+ * OpenCV is the main class for using OpenCV for Processing. Most of the documentation is found here.
  * 
- * @example Hello 
+ * OpenCV for Processing is a computer vision library for the Processing creative coding toolkit.
+ * It's based on OpenCV, which is widely used throughout industry and academic research. OpenCV for
+ * Processing provides friendly, Processing-style functions for doing all of the most common tasks
+ * in computer vision: loading images, filtering them, detecting faces, finding contours, background
+ * subtraction, optical flow, calculating histograms etc. OpenCV also provides access to all native
+ * OpenCV data types and functions. So advanced users can do anything described in the OpenCV java
+ * documentation: http://docs.opencv.org/java/ 
  * 
- * (the tag @example followed by the name of an example included in folder 'examples' will
- * automatically include the example in the javadoc.)
- *
+ * A text is also underway to provide a narrative introduction to computer vision for beginners using
+ * OpenCV for Processing: https://github.com/atduskgreg/opencv-processing-book/blob/master/book/toc.md
+ * 
  */
 
 public class OpenCV {
