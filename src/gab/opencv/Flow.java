@@ -59,7 +59,7 @@ public class Flow {
 
 	public PVector getAverageFlowInRegion(int x, int y, int w, int h) {
 	    PVector total = getTotalFlowInRegion(x, y, w, h);
-	    return new PVector(total.x/(flow.width() * flow.height()), total.y/(flow.width()*flow.height()));
+	    return new PVector(total.x/(w*h), total.y/(w*h));
 	}
 
 	public PVector getTotalFlow() {
