@@ -1,9 +1,9 @@
 /**
- * ##library.name##
- * ##library.sentence##
- * ##library.url##
+ * OpenCV for Processing
+ * Computer vision with OpenCV.
+ * https://github.com/atduskgreg/opencv-processing
  *
- * Copyright ##copyright## ##author##
+ * Copyright (c) 2013 Greg Borenstein http://gregborenstein.com
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,9 +20,9 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA  02111-1307  USA
  * 
- * @author      ##author##
- * @modified    ##date##
- * @version     ##library.prettyVersion## (##library.version##)
+ * @author      Greg Borenstein http://gregborenstein.com
+ * @modified    12/08/2014
+ * @version     0.5.2 (13)
  */
 
 
@@ -53,6 +53,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.MatOfPoint3f;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.Rect;
@@ -69,19 +70,15 @@ import org.opencv.imgproc.Imgproc;
 import processing.core.*;
 
 /**
- * OpenCV is the main class for using OpenCV for Processing. Most of the documentation is found here.
+ * This is a template class and can be used to start a new processing library or tool.
+ * Make sure you rename this class as well as the name of the example package 'template' 
+ * to your own library or tool naming convention.
  * 
- * OpenCV for Processing is a computer vision library for the Processing creative coding toolkit.
- * It's based on OpenCV, which is widely used throughout industry and academic research. OpenCV for
- * Processing provides friendly, Processing-style functions for doing all of the most common tasks
- * in computer vision: loading images, filtering them, detecting faces, finding contours, background
- * subtraction, optical flow, calculating histograms etc. OpenCV also provides access to all native
- * OpenCV data types and functions. So advanced users can do anything described in the OpenCV java
- * documentation: http://docs.opencv.org/java/ 
+ * @example Hello 
  * 
- * A text is also underway to provide a narrative introduction to computer vision for beginners using
- * OpenCV for Processing: https://github.com/atduskgreg/opencv-processing-book/blob/master/book/toc.md
- * 
+ * (the tag @example followed by the name of an example included in folder 'examples' will
+ * automatically include the example in the javadoc.)
+ *
  */
 
 public class OpenCV {
@@ -116,7 +113,7 @@ public class OpenCV {
 	BackgroundSubtractorMOG backgroundSubtractor;
 	public Flow flow;
 
-	public final static String VERSION = "##library.prettyVersion##";
+	public final static String VERSION = "0.5.2";
 	public final static String CASCADE_FRONTALFACE = "haarcascade_frontalface_alt.xml";
 	public final static String CASCADE_PEDESTRIANS = "hogcascade_pedestrians.xml";
 	public final static String CASCADE_EYE = "haarcascade_eye.xml";
@@ -844,6 +841,40 @@ public class OpenCV {
 		Imgproc.threshold(getCurrentMat(), getCurrentMat(), threshold, 255, Imgproc.THRESH_BINARY); 
 	}
 	
+	
+	/**
+	 * <p>Finds circles in a grayscale image using the Hough transform.</p>
+	 *
+	 * <p>The function finds circles in a grayscale image using a modification of the
+	 * Hough transform.
+	 * @param image 8-bit, single-channel, grayscale input image.
+	 * @param circles Output vector of found circles. Each vector is encoded as a
+	 * 3-element floating-point vector <em>(x, y, radius)</em>.
+	 * @param method Detection method to use. Currently, the only implemented method
+	 * is <code>CV_HOUGH_GRADIENT</code>, which is basically *21HT*, described in
+	 * [Yuen90].
+	 * @param dp Inverse ratio of the accumulator resolution to the image
+	 * resolution. For example, if <code>dp=1</code>, the accumulator has the same
+	 * resolution as the input image. If <code>dp=2</code>, the accumulator has half
+	 * as big width and height.
+	 * @param minDist Minimum distance between the centers of the detected circles.
+	 * If the parameter is too small, multiple neighbor circles may be falsely
+	 * detected in addition to a true one. If it is too large, some circles may be
+	 * missed.
+	 * @param param1 First method-specific parameter. In case of <code>CV_HOUGH_GRADIENT</code>,
+	 * it is the higher threshold of the two passed to the "Canny" edge detector
+	 * (the lower one is twice smaller).
+	 * @param param2 Second method-specific parameter. In case of <code>CV_HOUGH_GRADIENT</code>,
+	 * it is the accumulator threshold for the circle centers at the detection
+	 * stage. The smaller it is, the more false circles may be detected. Circles,
+	 * corresponding to the larger accumulator values, will be returned first.
+	 * @param minRadius Minimum circle radius.
+	 * @param maxRadius Maximum circle radius.
+	 *
+	 * @see <a href="http://docs.opencv.org/modules/imgproc/doc/feature_detection.html#houghcircles">org.opencv.imgproc.Imgproc.HoughCircles</a>
+	 * @see org.opencv.imgproc.Imgproc#minEnclosingCircle
+	 * @see org.opencv.imgproc.Imgproc#fitEllipse
+	 */
 	/**
 	 * Apply an adaptive threshold to an image. Produces a binary image
 	 * with white pixels where the original image was above the threshold
@@ -857,6 +888,15 @@ public class OpenCV {
 	 * @param c
 	 * 		A constant subtracted from the mean of each neighborhood.
 	 */
+	 
+	public Mat HoughCircles()
+	{
+		Mat circles=new Mat(10,10,CvType.CV_32FC3);
+		Imgproc.HoughCircles(getCurrentMat(), circles, Imgproc.CV_HOUGH_GRADIENT,2,getCurrentMat().width()/4, 200, 100,0,0);
+		return circles;
+	}
+	 
+	 
 	public void adaptiveThreshold(int blockSize, int c){
 		try{
 			Imgproc.adaptiveThreshold(getCurrentMat(), getCurrentMat(), 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, blockSize, c);
@@ -1288,19 +1328,16 @@ public class OpenCV {
 	public PImage getSnapshot(){
 		PImage result;
 		
-		if(useROI){
-			result = getSnapshot(matROI);
-		} else {
-			if(useColor){
-				if(colorSpace == PApplet.HSB){
-					result = getSnapshot(matHSV);
-				} else {
-					result = getSnapshot(matBGRA);
-				}
+		if(useColor){
+			if(colorSpace == PApplet.HSB){
+				result = getSnapshot(matHSV);
 			} else {
-				result = getSnapshot(matGray);
+				result = getSnapshot(matBGRA);
 			}
+		} else {
+			result = getSnapshot(matGray);
 		}
+	
 		return result;
 	}
 	
@@ -1361,7 +1398,7 @@ public class OpenCV {
 	}
 
 	private void welcome() {
-		System.out.println("##library.name## ##library.prettyVersion## by ##author##");
+		System.out.println("OpenCV for Processing 0.5.2 by Greg Borenstein http://gregborenstein.com");
 		System.out.println("Using Java OpenCV " + Core.VERSION);
 	}
 	

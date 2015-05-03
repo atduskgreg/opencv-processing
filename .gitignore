@@ -20,3 +20,5 @@ lib/
 .DS_Store
 *.DS_Store
 /bin
+*.ctxt
+*.class
