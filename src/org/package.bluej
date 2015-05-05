@@ -1,0 +1,15 @@
+#BlueJ package file
+package.editor.height=400
+package.editor.width=560
+package.editor.x=285
+package.editor.y=141
+package.numDependencies=0
+package.numTargets=1
+package.showExtends=true
+package.showUses=true
+target1.height=62
+target1.name=opencv
+target1.type=PackageTarget
+target1.width=80
+target1.x=160
+target1.y=10
