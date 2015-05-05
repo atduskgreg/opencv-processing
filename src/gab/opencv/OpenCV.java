@@ -506,15 +506,17 @@ public class OpenCV {
         String cascadePath = getLibPath();
         cascadePath += relativePath;
                 
-        PApplet.println("Load cascade from: " + cascadePath);
+        //PApplet.println("Load cascade from: " + cascadePath);
 
         classifier = new CascadeClassifier(cascadePath);   
         
         if(classifier.empty()){
             PApplet.println("Cascade failed to load"); // raise exception here?
-        } else {
+        }
+        /* else {
             PApplet.println("Cascade loaded: " + cascadeFileName);
         }
+        */
     }
 
     /**
@@ -537,9 +539,11 @@ public class OpenCV {
             
             if(classifier.empty()){
                 PApplet.println("Cascade failed to load"); // raise exception here?
-            } else {
+            }
+            /* else {
                 PApplet.println("Cascade loaded from absolute path: " + cascadeFilePath);
             }
+            */
         } else {
             loadCascade(cascadeFilePath);
         }
@@ -1411,7 +1415,8 @@ public class OpenCV {
     }
 
     private void welcome() {
-        System.out.println("OpenCV for Processing 0.5.2 by Greg Borenstein http://gregborenstein.com");
+        System.out.println("OpenCV for Processing by Evans Jahja http://github.com/charon77");
+        System.out.println("Based on: OpenCV for Processing 0.5.2 by Greg Borenstein http://gregborenstein.com");
         System.out.println("Using Java OpenCV " + Core.VERSION);
     }
     
