@@ -845,6 +845,17 @@ public class OpenCV {
 	}
 	
 	/**
+	 * Apply a global threshold to the image. The threshold is determined by Otsu's method, which
+	 * attempts to divide the image at a threshold which minimizes the variance of pixels in the black
+	 * and white regions.
+	 *
+	 * See: https://en.wikipedia.org/wiki/Otsu's_method
+	 */
+	public void threshold() {
+		Imgproc.threshold(getCurrentMat(), getCurrentMat(), 0, 255, Imgproc.THRESH_BINARY | Imgproc.THRESH_OTSU); 
+	}
+	
+	/**
 	 * Apply an adaptive threshold to an image. Produces a binary image
 	 * with white pixels where the original image was above the threshold
 	 * and black where it was below.
