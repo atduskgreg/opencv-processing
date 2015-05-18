@@ -914,6 +914,55 @@ public class OpenCV {
 		Imgproc.erode(getCurrentMat(), getCurrentMat(), new Mat());
 	}
 	
+  /**
+   * Apply a morphological operation (e.g., opening, closing) to the image with a given kernel element.
+   *
+   * See:
+   * http://docs.opencv.org/doc/tutorials/imgproc/opening_closing_hats/opening_closing_hats.html
+   * 
+   * @param operation
+   *    The morphological operation to apply: Imgproc.MORPH_CLOSE, MORPH_OPEN,
+   *    MORPH_TOPHAT, MORPH_BLACKHAT, MORPH_GRADIENT.
+   * @param kernelElement
+   *    The shape to apply the operation with: Imgproc.MORPH_RECT, MORPH_CROSS, or MORPH_ELLIPSE.
+   * @param width
+   *    Width of the shape.
+   * @param height
+   *    Height of the shape.
+   */
+  public void morphX(int operation, int kernelElement, int width, int height) {
+    Mat kernel = Imgproc.getStructuringElement(kernelElement, new Size(width, height));
+    Imgproc.morphologyEx(getCurrentMat(), getCurrentMat(), operation, kernel);
+  }
+  
+  /**
+   * Close the image with a circle of a given size.
+   *
+   * See:
+   * http://docs.opencv.org/doc/tutorials/imgproc/opening_closing_hats/opening_closing_hats.html#closing
+   *
+   * @param size
+   *    Radius of the circle to close with.
+   */
+  public void close(int size) {
+    Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(size, size));
+    Imgproc.morphologyEx(getCurrentMat(), getCurrentMat(), Imgproc.MORPH_CLOSE, kernel);
+  }
+	
+  /**
+   * Open the image with a circle of a given size.
+   *
+   * See:
+   * http://docs.opencv.org/doc/tutorials/imgproc/opening_closing_hats/opening_closing_hats.html#opening
+   *
+   * @param size
+   *    Radius of the circle to open with.
+   */
+  public void open(int size) {
+    Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, new Size(size, size));
+    Imgproc.morphologyEx(getCurrentMat(), getCurrentMat(), Imgproc.MORPH_OPEN, kernel);
+  }
+  
 	/**
 	 * Blur an image symetrically by a given number of pixels.
 	 * 

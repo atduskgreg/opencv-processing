@@ -191,4 +191,10 @@ An in-depth advanced example. Detect a CV marker in an image, warp perspective, 
 
 Code: [MarkerDetection.pde](https://github.com/atduskgreg/opencv-processing/blob/master/examples/MarkerDetection/MarkerDetection.pde)
 
+#### MorphologyOperations
 
+Open and close an image, or do more complicated morphological transformations.
+
+<a href="https://flic.kr/p/tazj7r" title="Morphology operations"><img src="https://farm6.staticflickr.com/5340/17829980821_1734e8bab8_z_d.jpg" width="640" height="393" alt="Morphology operations"></a>
+
+Code: [MorphologyOperations.pde](examples/MorphologyOperations/MorphologyOperations.pde)
