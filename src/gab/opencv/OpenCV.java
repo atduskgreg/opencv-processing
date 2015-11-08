@@ -412,7 +412,9 @@ public class OpenCV {
 	    	if (PApplet.platform == PConstants.LINUX) { //platform Linux
 	    		// attempt to detect arm architecture - is it fair to assume linux for ARM devices?
 	    		isArm = osArch.contains("arm");
-    			path = isArm ? nativeLibPath + "arm7" : nativeLibPath + "linux" + bitsJVM;
+			// armv6hf as found on the Raspberry Pi is the lowest architecture supported by Processing
+			// in the future we'll have runtime-detection of armv7 systems, and use the optimized library on those
+    			path = isArm ? nativeLibPath + "linux-armv6hf" : nativeLibPath + "linux" + bitsJVM;
 	    	}
 	    	
 	    	// ensure the determined path exists
