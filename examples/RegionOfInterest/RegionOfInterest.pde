@@ -11,7 +11,8 @@ boolean useROI = true;
 void setup() {
   src = loadImage("test.jpg");
   opencv = new OpenCV(this, src);
-  size(opencv.width, opencv.height);
+  size(1080, 720);
+  println(opencv.width, opencv.height);
 }
 
 void draw() {
@@ -40,4 +41,3 @@ void keyPressed() {
     opencv.releaseROI();
   }
 }
-
