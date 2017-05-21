@@ -5,7 +5,7 @@ OpenCV opencv;
 Movie video;
 
 void setup() {
-  size(568*2, 320);
+  size(1136, 320);
   video = new Movie(this, "sample1.mov");
   opencv = new OpenCV(this, 568, 320);
   video.loop();
@@ -33,4 +33,3 @@ void draw() {
 void movieEvent(Movie m) {
   m.read();
 }
-

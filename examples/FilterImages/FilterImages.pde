@@ -5,7 +5,7 @@ PImage  img, thresh, blur, adaptive;
 
 void setup() {
   img = loadImage("test.jpg");
-  size(img.width, img.height);
+  size(1080, 720);
 
   opencv = new OpenCV(this, img);  
   PImage gray = opencv.getSnapshot();
@@ -37,4 +37,3 @@ void draw() {
   text("blur", img.width/2 - 100, img.height/2 + 20 );
   text("adaptive threshold", img.width - 150, img.height/2 + 20 );
 }
-

@@ -28,7 +28,7 @@ void setup() {
   opencv = new OpenCV(this, video.width, video.height);
   contours = new ArrayList<Contour>();
   
-  size(2*opencv.width, opencv.height, P2D);
+  size(1280, 480, P2D);
 }
 
 void draw() {

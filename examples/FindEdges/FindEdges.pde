@@ -5,7 +5,7 @@ PImage src, canny, scharr, sobel;
 
 void setup() {
   src = loadImage("test.jpg");
-  size(src.width, src.height);
+  size(1080, 720);
   
   opencv = new OpenCV(this, src);
   opencv.findCannyEdges(20,75);
@@ -35,4 +35,3 @@ void draw() {
   text("Scharr", 10, src.height/2 + 25); 
   text("Sobel", src.width/2 + 10, src.height/2 + 25);
 }
-

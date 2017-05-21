@@ -6,7 +6,7 @@ OpenCV opencv;
 void setup() {
   src = loadImage("pen_sketch.jpg"); 
   src.resize(src.width/2, 0);
-  size(src.width*2, src.height*2);
+  size(800, 786);
 
   opencv = new OpenCV(this, src);
 
@@ -48,4 +48,3 @@ void draw() {
   text("dilate", 20, src.height+20);
   text("dilate then erode\n(close holes)", src.width+20, src.height+20);
 }
-

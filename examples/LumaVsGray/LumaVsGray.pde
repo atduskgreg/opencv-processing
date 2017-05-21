@@ -18,7 +18,8 @@ PImage colorImage, grayImage;
 void setup() {
   colorImage = loadImage("flashlight.jpg");
   opencv = new OpenCV(this, colorImage);  
-  size(opencv.width, opencv.height);
+  size(1080, 720);
+  
   // Save the gray image so we can compare it to Luma
   grayImage = opencv.getSnapshot();
   // Use built-in OpenCV function to conver the color image from BGR to LAB color space.
