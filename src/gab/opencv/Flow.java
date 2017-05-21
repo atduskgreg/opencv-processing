@@ -39,6 +39,10 @@ public class Flow {
 	public boolean hasFlow(){
 		return hasFlow;
 	}
+	
+	public Mat getFlowMat(){
+		return flow;
+	}
 
 	public void calculateOpticalFlow(Mat m) {
 		int flags = runningFlags;
