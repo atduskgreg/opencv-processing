@@ -6,7 +6,7 @@ PImage  before, after, grayDiff;
 void setup() {
   before = loadImage("before.jpg");
   after = loadImage("after.jpg");
-  size(before.width, before.height);
+  size(640, 480);
 
   opencv = new OpenCV(this, before);    
   opencv.diff(after);
@@ -35,4 +35,3 @@ void draw() {
 
 //  text("color diff", 10, before.height/2+ 20);
 }
-

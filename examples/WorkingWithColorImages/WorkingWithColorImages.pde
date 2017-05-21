@@ -5,7 +5,7 @@ PImage threshold, blur, adaptive, gray;
 
 void setup() {
   PImage img = loadImage("test.jpg");
-  size(img.width, img.height);
+  size(1080, 720);
 
   // By default, OpenCV for Processing works with a gray
   // version of the source image
@@ -40,4 +40,3 @@ void draw() {
   image(adaptive, 0,threshold.height);
   image(gray, threshold.width, threshold.height);
 }
-

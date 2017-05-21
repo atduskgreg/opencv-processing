@@ -62,7 +62,7 @@ void setup() {
   // Blobs list
   blobList = new ArrayList<Blob>();
   
-  size(opencv.width + 200, opencv.height, P2D);
+  size(840, 480, P2D);
   
   // Init Controls
   cp5 = new ControlP5(this);
@@ -452,4 +452,3 @@ void setLock(Controller theController, boolean theValue) {
     theController.setColorForeground(color(buttonColor));
   }
 }
-

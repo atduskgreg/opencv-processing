@@ -18,7 +18,7 @@ Contour contour;
 
 void setup() {
   src = loadImage("cards.png");
-  size(src.width + cardWidth, src.height);
+  size(950, 749);
   opencv = new OpenCV(this, src);
 
   opencv.blur(1);
@@ -73,4 +73,3 @@ void draw() {
   image(card, 0, 0);
   popMatrix();
 }
-

@@ -5,7 +5,7 @@ OpenCV opencv;
 void setup() {
   PImage src = loadImage("robot_light.jpg");
   src.resize(800, 0);
-  size(src.width, src.height);
+  size(800, 533);
   
   opencv = new OpenCV(this, src);  
 }
@@ -19,4 +19,3 @@ void draw() {
   noFill();
   ellipse(loc.x, loc.y, 10, 10);
 }
-

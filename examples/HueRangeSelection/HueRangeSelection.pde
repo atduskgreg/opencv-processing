@@ -10,7 +10,7 @@ int upperb = 100;
 void setup() {
   img = loadImage("colored_balls.jpg");
   opencv = new OpenCV(this, img);
-  size(opencv.width, opencv.height);
+  size(1024, 768);
   opencv.useColor(HSB);
 }
 
@@ -61,4 +61,3 @@ void mouseMoved() {
   upperb = constrain(upperb, lowerb, 255);
   lowerb = constrain(lowerb, 0, upperb-1);
 }
-

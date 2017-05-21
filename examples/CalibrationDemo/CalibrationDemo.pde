@@ -7,7 +7,7 @@ OpenCV opencv;
 void setup() {
   src = loadImage("checkerboard.jpg");
   src.resize(500, 0);
-  size(src.width, src.height);
+  size(500, 333);
 
   opencv = new OpenCV(this, src);
   opencv.gray();

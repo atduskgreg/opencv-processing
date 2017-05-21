@@ -5,7 +5,7 @@ OpenCV opencv;
 
 void setup(){
   img = loadImage("test.jpg");
-  size(img.width, img.height);
+  size(1080, 720);
   opencv = new OpenCV(this, img);  
 }
 
@@ -14,4 +14,3 @@ void draw(){
   opencv.brightness((int)map(mouseX, 0, width, -255, 255));
   image(opencv.getOutput(),0,0);
 }
-
