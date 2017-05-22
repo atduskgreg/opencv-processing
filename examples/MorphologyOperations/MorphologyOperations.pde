@@ -7,7 +7,7 @@ PImage  img, opened, closed, tophat;
 
 void setup() {
   img = loadImage("test.jpg");
-  size(img.width, img.height);
+  size(1280, 720);
 
   opencv = new OpenCV(this, img);
   PImage snap = opencv.getSnapshot();
@@ -40,4 +40,3 @@ void draw() {
   fill(255);
   text("tophat(cross, 8, 8)", img.width - 150, img.height/2 + 20 );
 }
-
