@@ -52,6 +52,17 @@ public class Contour {
 	}
 	
 	/**
+	 * Check if the Contour contains a given PVector point. 
+	 * Useful when working with polygon approximations.
+	 * 
+	 * @param pt, a PVector
+	 * @return boolean 
+	 */
+	public boolean containsPoint(PVector pt) {
+		return containsPoint((int) pt.x, (int) pt.y);
+	}
+	
+	/**
 	 * Check if the Contour contains a given x-y point.
 	 * Particularly, useful for interaction via mouseX and mouseY.
 	 * 
