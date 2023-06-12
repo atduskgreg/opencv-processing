@@ -41,6 +41,7 @@ import java.awt.image.DataBufferInt;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.nio.charset.StandardCharsets;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -367,9 +368,14 @@ public class OpenCV {
     private String getLibPath() {
         URL url = this.getClass().getResource("OpenCV.class");
         if (url != null) {
-          // Convert URL to string, taking care of spaces represented by the "%20"
-          // string.
-          String path = url.toString().replace("%20", " ");
+          String path = "";
+		  try{
+			  path = java.net.URLDecoder.decode(url.toString(), StandardCharsets.UTF_8.name()); 
+		  }
+		  catch(Exception e){
+              //not going to happen - value came from JDK's own StandardCharsets
+			  e.printStackTrace();
+		  }
           int n0 = path.indexOf('/');
 
           int n1 = -1;
